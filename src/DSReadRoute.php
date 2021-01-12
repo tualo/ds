@@ -1,7 +1,7 @@
 <?php
-namespace tualo\Office\DS\DS;
-use tualo\Office\Basic\TualoApplication;
-use tualo\Office\DS\DS\DataRenderer;
+namespace Tualo\Office\DS;
+use Tualo\Office\Basic\TualoApplication;
+use Tualo\Office\DS\DS\DataRenderer;
 
 class DSReadRoute{
 
@@ -92,7 +92,7 @@ class DSReadRoute{
         */
             $s = $db->singleValue('SELECT fn_ds_read({r}) s',['r'=>json_encode($queryparams)],'s');
             if ($queryparams['replaced']==0){
-                file_put_contents(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash,$s);
+                //file_put_contents(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash,$s);
             }
         //}
         // TualoApplication::timing("ds read fn_ds_read",$tablename);

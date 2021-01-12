@@ -1,6 +1,6 @@
 <?php
-namespace tualo\Office\DS\DS;
-use tualo\Office\Basic\TualoApplication;
+namespace Tualo\Office\DS;
+use Tualo\Office\Basic\TualoApplication;
 
 
 class DataRenderer {

@@ -1,9 +1,9 @@
 <?php
-namespace tualo\Office\DS\Routes;
-use tualo\Office\Basic\TualoApplication as App;
-use tualo\Office\Basic\Route as R;
-use tualo\Office\Basic\IRoute;
-use tualo\Office\DS\DS\DSReadRoute;
+namespace Tualo\Office\DS\Routes;
+use Tualo\Office\Basic\TualoApplication as App;
+use Tualo\Office\Basic\Route as R;
+use Tualo\Office\Basic\IRoute;
+use Tualo\Office\DS\DS\DSReadRoute;
 
 
 class DS implements IRoute{
@@ -80,7 +80,8 @@ class DS implements IRoute{
 
                 foreach($input as $row){ 
                     $sql = $db->singleValue('select ds_update({d}) s',['d'=>json_encode(['data'=>$row])],'s');
-                    $db->direct($sql);
+                    App::result('sql', $sql); 
+                    $db->execute($sql);
                 }
                 App::result('success', true);
                 

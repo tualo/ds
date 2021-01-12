@@ -1,8 +1,8 @@
 <?php
-namespace tualo\Office\DS\Routes;
-use tualo\Office\Basic\TualoApplication;
-use tualo\Office\Basic\Route;
-use tualo\Office\Basic\IRoute;
+namespace Tualo\Office\DS\Routes;
+use Tualo\Office\Basic\TualoApplication;
+use Tualo\Office\Basic\Route;
+use Tualo\Office\Basic\IRoute;
 
 
 class JS implements IRoute{
@@ -85,7 +85,7 @@ class JS implements IRoute{
                     &&  (!is_null($db))
                 ){
                     $v=false;
-        
+
                     if ($matches['type']=='store') $v = $db->singleValue('select js from view_ds_store where table_name=lower({tablename}) ',$matches,'js');
                     if ($matches['type']=='model') $v = $db->singleValue('select js from view_ds_model where table_name=lower({tablename}) ',$matches,'js');
                     

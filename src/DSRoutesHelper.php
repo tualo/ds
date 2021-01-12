@@ -1,5 +1,6 @@
 <?php
-
+namespace Tualo\Office\DS;
+use Tualo\Office\Basic\TualoApplication;
 
 class DSRoutesHelper{
     public static $triggers=array();

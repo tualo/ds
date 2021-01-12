@@ -145,6 +145,7 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     onSave: function(){
+        console.log(this.lookup('form').getValues());
         let store = this.lookup('list').getStore();
         store.sync();
     }
