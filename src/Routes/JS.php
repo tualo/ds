@@ -13,8 +13,9 @@ class JS implements IRoute{
         Route::add('/Tualo/cmp/cmp_ds/(?P<file>[\/.\w\d]+)',function($matches){
             if (file_exists(dirname(__DIR__).'/js/'.$matches['file'])){
                 TualoApplication::etagFile((dirname(__DIR__).'/js/'.$matches['file']));
+                TualoApplication::contenttype('application/javascript');
+                Route::$finished=true;
             }
-            TualoApplication::contenttype('application/javascript');
         },array('get'),false);
         
         
@@ -28,6 +29,7 @@ class JS implements IRoute{
         
                 if (file_exists(dirname(__DIR__).'/js/'.$matches['type'].'/'.$matches['tablename'].'.js')){  
                     TualoApplication::etagFile((dirname(__DIR__).'/js/'.$matches['type'].'/'.$matches['tablename'].'.js')); 
+                    Route::$finished=true;
                     return;
                 }
         
@@ -53,6 +55,9 @@ class JS implements IRoute{
                         TualoApplication::body($v);
                     }
                 }
+
+                Route::$finished=true;
+
             }catch(\Exception $e){
 //                echo $e->getMessage();
             }
@@ -107,6 +112,7 @@ class JS implements IRoute{
                         TualoApplication::body($v);
                     }
                 }
+                Route::$finished=true;
             }catch(\Exception $e){
         
             }
@@ -117,6 +123,7 @@ class JS implements IRoute{
             $matches=['file'=>'Viewport'];
             if (file_exists(dirname(__DIR__).'/js/'.$matches['file'])){  TualoApplication::etagFile((dirname(__DIR__).'/js/'.$matches['file'])); }
             TualoApplication::contenttype('application/javascript');
+            Route::$finished=true;
         
         });
         
@@ -125,6 +132,7 @@ class JS implements IRoute{
             $matches=['file'=>'Viewport'];
             if (file_exists(dirname(__DIR__).'/js/'.$matches['file'])){  TualoApplication::etagFile((dirname(__DIR__).'/js/'.$matches['file'])); }
             TualoApplication::contenttype('application/javascript');
+            Route::$finished=true;
         
         });
     }

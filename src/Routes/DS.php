@@ -60,6 +60,7 @@ class DS implements IRoute{
                 App::result('dq', implode("\n",$GLOBALS['debug_query']));
         
             }
+            Route::$finished=true;
             App::contenttype('application/json');
         },array('get','post'),true);
 
@@ -90,6 +91,7 @@ class DS implements IRoute{
                 App::result('msg', $e->getMessage());
         
             }
+            Route::$finished=true;
         },array('post'),true);
         
     }
