@@ -3,7 +3,7 @@ namespace Tualo\Office\DS\Routes;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\Basic\Route as R;
 use Tualo\Office\Basic\IRoute;
-use Tualo\Office\DS\DS\DSReadRoute;
+use Tualo\Office\DS\DSReadRoute;
 
 
 class DS implements IRoute{

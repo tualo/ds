@@ -1,7 +1,7 @@
 <?php
 namespace Tualo\Office\DS;
 use Tualo\Office\Basic\TualoApplication;
-use Tualo\Office\DS\DS\DataRenderer;
+use Tualo\Office\DS\DataRenderer;
 
 class DSReadRoute{
 
