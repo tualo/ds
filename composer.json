@@ -16,5 +16,7 @@
         "files": ["src/functions.php"]
     },
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "tualo/bsc": "*"
+    }
 }
