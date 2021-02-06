@@ -78,8 +78,9 @@ class DS implements IRoute{
 
 
                 foreach($input as $row){ 
+                    $sql = $db->singleValue('select ds_serial({d}) s',['d'=>json_encode(['data'=>$row])],'s');
+                    $db->execute($sql);
                     $sql = $db->singleValue('select ds_update({d}) s',['d'=>json_encode(['data'=>$row])],'s');
-                    App::result('sql', $sql); 
                     $db->execute($sql);
                 }
                 App::result('success', true);
@@ -91,6 +92,35 @@ class DS implements IRoute{
             }
             Route::$finished=true;
         },array('post'),true);
+   
+        Route::add('/ds/(?P<tablename>\w+)/create',function($matches){
+            App::contenttype('application/json');
+
+            $db = App::get('session')->getDB();
+            $tablename = $matches['tablename'];
+            try{
+
+                $input = json_decode(file_get_contents('php://input'),true);
+                if (is_null( $input )) throw new Exception("Error Processing Request", 1);
+                if (isset( $input['__id'] )){ 
+                    $input = [$input];
+                }
+
+
+                foreach($input as $row){ 
+                    $sql = $db->singleValue('select ds_serial({d}) s',['d'=>json_encode(['data'=>$row])],'s');
+                    $db->execute($sql);
+                    $sql = $db->singleValue('select ds_insert({d}) s',['d'=>json_encode(['data'=>$row])],'s');
+                    $db->execute($sql);
+                }
+                App::result('success', true);
+                
+            }catch(\Exception $e){
         
+                App::result('msg', $e->getMessage());
+        
+            }
+            Route::$finished=true;
+        },array('post'),true);
     }
 };

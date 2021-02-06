@@ -5,7 +5,8 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
             empty: '',
             selectRecordRecordNumber: 1,
             activeItem: 0,
-            pageSize: 0
+            pageSize: 0,
+            isNew: false
         }
     },
     listeners: {
@@ -71,10 +72,15 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
                 vertical: false,
                 align: 'stretch'
             },
-            items: [{
-                iconCls: 'x-fa fa-save',
-                handler: 'onSave'
-            },
+            items: [
+                {
+                    iconCls: 'x-fa fa-save',
+                    handler: 'onSave'
+                },
+                {
+                    iconCls: 'x-fa fa-plus',
+                    handler: 'onAdd'
+                }
             ]
         },
         {

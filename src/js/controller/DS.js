@@ -145,9 +145,68 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     onSave: function(){
+        var model = this.getViewModel();
         console.log(this.lookup('form').getValues());
-        let store = this.lookup('list').getStore();
-        store.sync();
+        if (model.set('isNew',true)){
+
+        }else{
+            let store = this.lookup('list').getStore();
+            store.sync();
+        }
+    },
+
+    onAdd: function(){
+        var model = this.getViewModel(),
+            store = this.lookup('list').getStore(),
+            view = this.getView(),
+            referencedList = model.get('referencedList'),
+            referencedRecord = model.get('referencedRecord'),
+            
+            fields = store.getModel().getFields(),
+            values = {};
+
+
+        for(i=0;i<fields.length;i++){
+            if(!Ext.isEmpty(fields[i].defaultValue)){
+                values[fields[i].name] = fields[i].defaultValue;
+            }
+        }
+        if (referencedList==true){
+            for(var ref in view.referenced){
+                if (typeof view.referenced[ref]== 'string')
+                    values[ref.toLowerCase()]=referencedRecord.get(view.referenced[ref].toLowerCase());
+                if (typeof view.referenced[ref]== 'object'){
+                    if (typeof view.referenced[ref].v== 'string')
+                        values[ref.toLowerCase()]=view.referenced[ref].v;
+                }
+            }
+        }
+
+        console.debug(view.dsName);
+        var record = Ext.create('Tualo.DataSets.model.'+view.dsName,values);
+
+        
+        if (this.showSpecialAppend()){ return; }
+        //if (this.showAppendContext(item,evt,record)){ return; }
+        this.appendRecord(record);
+    },
+
+    appendRecord: function(record){
+        var model = this.getViewModel(),
+            view = this.getView(),
+            store = this.lookup('list').getStore(),
+            list = this.lookup('list');
+        
+        store.add(record);
+        model.set('record',record);
+        list.setSelection( record );
+        //list.focusRow(record);
+        model.set('isNew',true);
+        
+    },
+
+    showSpecialAppend: function(){
+        return false;
     }
 });
 

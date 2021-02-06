@@ -19,7 +19,9 @@ class DSReadRoute{
 
             }else{
                 if ($arrayOnly==false){
-                    if (!is_string($entry['value'])&&!is_numeric($entry['value'])) throw new Exception( "invalid type on *".$entry['property']."* (".gettype($entry['value']).")");
+                    if (!is_string($entry['value'])&&!is_numeric($entry['value'])&&!is_null($entry['value'])){
+                        throw new \Exception( "invalid type on *".$entry['property']."* (".gettype($entry['value']).")");
+                    }
                     $hash['filter_'.$index]=$entry['value'];
                     if ($entry['operator']=='like'){
                         $hash['filter_'.$index]='%'.$entry['value'].'%';
@@ -43,7 +45,8 @@ class DSReadRoute{
     }
 
     public static function read($db,$tablename,$request){
-        
+        $time_start=microtime(true); 
+
         if ($r = $db->singleRow('show procedure status where db=database() and name=\'dsreadtrigger__'.$tablename.'\'')){
             $db->direct('call dsreadtrigger__'.$tablename.'()'); 
         }
@@ -56,8 +59,8 @@ class DSReadRoute{
             'comibedfieldname'=>1,
             'calcrows'=>1,
 
-            'filter'=>(isset($request['filter'])&& is_string($request['filter'])?json_decode($request['filter'],true): (isset($request['filter']) && is_array(isset($request['filter']))?$request['filter']:[]) ),
-            'sort'=>(isset($request['sort'])&& is_string($request['sort'])?json_decode($request['sort'],true): (isset($request['sort']) && is_array(isset($request['sort']))?$request['sort']:[]) ),
+            'filter'=>(isset($request['filter'])&& is_string($request['filter'])?json_decode($request['filter'],true): (isset($request['filter']) && is_array( $request['filter'] )?$request['filter']:[]) ),
+            'sort'=>(isset($request['sort'])&& is_string($request['sort'])?json_decode($request['sort'],true): (isset($request['sort']) && is_array( $request['sort'] )?$request['sort']:[]) ),
 
             'page'=> (isset($request['page']))?intval($request['page']):1,
             'start'=> (isset($request['start']))?intval($request['start']):0,
@@ -73,31 +76,14 @@ class DSReadRoute{
                 $queryparams['filter'][]=['operator'=>'==','value'=>$val,'property'=>$key];
             }
         }
-// TualoApplication::timing("ds read reference",'');
         $sqlhash = '0';
-        /*
-        if (isset($queryparams['replaced']) && ($queryparams['replaced']===0)){
-            if (!file_exists(TualoApplication::get("basePath").'/cache/'.$db->dbname)){  mkdir(TualoApplication::get("basePath").'/cache/'.$db->dbname);  }
-            if (!file_exists(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/')){  mkdir(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/');  }
-            $sqlhash = self::qhash($queryparams);
+        $s = $db->singleValue('SELECT fn_ds_read({r}) s',['r'=>json_encode($queryparams)],'s');
+
+        if ($queryparams['replaced']==0){
+            //file_put_contents(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash,$s);
         }
-
-
-        $s = '';
-        if (isset($queryparams['replaced']) && ($queryparams['replaced']===0)  && file_exists(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash)){
-            $s = file_get_contents(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash);
-
-            TualoApplication::result('cached',1);
-        }else{
-        */
-            $s = $db->singleValue('SELECT fn_ds_read({r}) s',['r'=>json_encode($queryparams)],'s');
-            if ($queryparams['replaced']==0){
-                //file_put_contents(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash,$s);
-            }
-        //}
-        // TualoApplication::timing("ds read fn_ds_read",$tablename);
-
         TualoApplication::result('s',$s);
+
         if ($queryparams['replaced']==0){
             $hashed = DSReadRoute::getFilterValuesHashed($db,$queryparams,true);
 
@@ -116,17 +102,17 @@ class DSReadRoute{
             }
         }
         TualoApplication::result('qsql',$s);
-        // TualoApplication::timing("ds read qsql",$tablename);
 
-        // TualoApplication::timing("ds read before",$tablename);
         $db->direct( 'SET @rownum=0;' ); // old db versions lower than maria 10.
         $result['data'] = DSReadRoute::shortFieldNames($request,$db->direct( $s ));
-        // TualoApplication::timing("ds read after",$tablename);
+        TualoApplication::logger('dsreadroute')->debug($tablename." ".$db->last_sql." ");
         TualoApplication::debug($s);
         
         $result['total'] = $db->singleValue('select found_rows() total',array(),'total');
-        // TualoApplication::timing("ds read found_rows",$tablename);
-        //$db->direct('call cleanDSQuery(@queryid)',$queryparams); $GLOBALS['debug_query'][] = $db->last_sql;
+        $time_stop=microtime(true); 
+        TualoApplication::logger('timing')->error($tablename." ".number_format($time_stop-$time_start,5)."s");
+        TualoApplication::logger('timing')->error($tablename." ".number_format($result['total'] ,0,'.',',')."records");
+
         return $result;
     }
 
@@ -172,6 +158,7 @@ class DSReadRoute{
             $request['filter'] = $referenceFilter;
         }
 
+        
         $result = DSReadRoute::read($db,$tablename,$request);
         $result = $result['data'];
 
