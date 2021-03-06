@@ -8,6 +8,7 @@ Ext.define('TualoOffice.routes.DS',{
         before: function (type,tablename,action) {
             let tablenamecase = tablename.toLocaleUpperCase().substring(0,1) + tablename.toLowerCase().slice(1);
             Ext.require([
+                
                 'Tualo.DataSets.model.'+tablenamecase,
                 'Tualo.DataSets.store.'+tablenamecase,
                 'Tualo.DataSets.'+type+'.'+tablenamecase

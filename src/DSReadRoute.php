@@ -47,11 +47,43 @@ class DSReadRoute{
     public static function read($db,$tablename,$request){
         $time_start=microtime(true); 
 
+        TualoApplication::timing("ds read start ".$tablename,'');
+        /*
         if ($r = $db->singleRow('show procedure status where db=database() and name=\'dsreadtrigger__'.$tablename.'\'')){
             $db->direct('call dsreadtrigger__'.$tablename.'()'); 
         }
+        */
+
+        /*
+        SELECT
+            concat(
+                rownumber,', ',
+                displayfield,', ',
+                idfield,', ',
+                quote(ds_column.table_name),' AS __table_name, ',
+
+                
+                group_concat( 
+                    concat(
+                        ds_column.table_name,'.',ds_column.column_name,
+                        if(comibedfieldname=1,concat(' AS `',ds_column.table_name,'__',ds_column.column_name,'`'),'')
+                    )  separator ',')
+            )
+        INTO 
+            fieldlist
+        FROM
+            ds_column
+            join ds_column_list_label
+                on (ds_column.table_name, ds_column.column_name) = (ds_column_list_label.table_name, ds_column_list_label.column_name)
+                and ds_column_list_label.active=1
+            join ds_column x on (x.table_name,x.column_name) = (readtable,ds_column.column_name)
+        WHERE
+            ds_column.table_name = JSON_VALUE(request,'$.tablename')
+            and ds_column.existsreal=1
+        */
 
         
+        TualoApplication::timing("ds read procedure ".$tablename,'');
         $queryparams = array(
 
             'tablename'=>$tablename,
@@ -78,6 +110,7 @@ class DSReadRoute{
         }
         $sqlhash = '0';
         $s = $db->singleValue('SELECT fn_ds_read({r}) s',['r'=>json_encode($queryparams)],'s');
+        TualoApplication::timing("ds read fn_ds_read ".$tablename,'');
 
         if ($queryparams['replaced']==0){
             //file_put_contents(TualoApplication::get("basePath").'/cache/'.$db->dbname.'/readcache/'.$sqlhash,$s);
@@ -105,10 +138,12 @@ class DSReadRoute{
 
         $db->direct( 'SET @rownum=0;' ); // old db versions lower than maria 10.
         $result['data'] = DSReadRoute::shortFieldNames($request,$db->direct( $s ));
+        TualoApplication::timing("ds read query ".$tablename,'');
         TualoApplication::logger('dsreadroute')->debug($tablename." ".$db->last_sql." ");
         TualoApplication::debug($s);
         
         $result['total'] = $db->singleValue('select found_rows() total',array(),'total');
+        TualoApplication::timing("ds read found_rows ".$tablename,'');
         $time_stop=microtime(true); 
         TualoApplication::logger('timing')->error($tablename." ".number_format($time_stop-$time_start,5)."s");
         TualoApplication::logger('timing')->error($tablename." ".number_format($result['total'] ,0,'.',',')."records");
