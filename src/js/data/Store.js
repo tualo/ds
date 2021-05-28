@@ -23,7 +23,28 @@ Ext.define("Tualo.DataSets.data.Store",{
                   rootProperty: 'data',
                   idProperty: '__id'
               },
-              writer: 'json'
+              writer: {
+                type: 'json',
+                writeAllFields: false,
+                transform: {
+                  fn: function(data, request) {
+                      let result = {}, key;
+                      console.log(request,);
+                      for (key in data) {
+                        if (
+                          data.hasOwnProperty(key) && ( 
+                            ( data[key]!=null ) ||
+                            ( this.model.getField(key).critical )
+                          )
+                        ) {
+                            result[key] = data[key];
+                        }
+                    }
+                    return result;
+                  },
+                  scope: this
+              }
+              }
           }
       }, config);
 

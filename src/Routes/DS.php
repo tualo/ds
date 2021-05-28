@@ -111,6 +111,7 @@ class DS implements IRoute{
                     $sql = $db->singleValue('select ds_serial({d}) s',['d'=>json_encode(['data'=>$row])],'s');
                     $db->execute($sql);
                     $sql = $db->singleValue('select ds_insert({d}) s',['d'=>json_encode(['data'=>$row])],'s');
+                    App::result('debugsql', $sql);
                     $db->execute($sql);
                 }
                 App::result('success', true);

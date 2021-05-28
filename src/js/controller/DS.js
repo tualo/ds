@@ -155,14 +155,10 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     onSave: function(){
-        var model = this.getViewModel();
+        var model = this.getViewModel(),
+            store = this.lookup('list').getStore();
         console.log(this.lookup('form').getValues());
-        if (model.set('isNew',true)){
-
-        }else{
-            let store = this.lookup('list').getStore();
-            store.sync();
-        }
+        store.sync();
     },
 
     onAdd: function(){
