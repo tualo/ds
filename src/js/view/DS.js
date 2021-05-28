@@ -1,12 +1,38 @@
 Ext.define('Tualo.cmp.cmp_ds.view.DS', {
     extend: 'Ext.panel.Panel',
+    header:{
+        bind: {
+            style: '{style}'
+        }
+    },
     viewModel: {
         data: {
             empty: '',
             selectRecordRecordNumber: 1,
             activeItem: 0,
             pageSize: 0,
-            isNew: false
+            isNew: false,
+            showFormOnAddRecord: true,
+            visibleReference: 'list'
+        },
+        formulas: {
+            iconListForm: function(get){
+                if (get('visibleReference')=='list'){
+                    return 'x-fa fa-edit';
+                }else{
+                    return 'x-fa fa-list';
+                }
+            },
+            style: function(get){
+                if (get('isNew')){
+                    return {
+                        'background-color': 'var(--confirm-color)'
+                    }
+                }
+                return {
+                    'background-color': 'var(--base-color)'
+                }
+            }
         }
     },
     listeners: {
@@ -80,6 +106,10 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
                 {
                     iconCls: 'x-fa fa-plus',
                     handler: 'onAdd'
+                },
+                {
+                    iconCls: 'x-fa fa-redo',
+                    handler: 'onReject'
                 }
             ]
         },
@@ -95,15 +125,10 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
                 align: 'stretch'
             },
             items: [{
-                iconCls: 'x-fa fa-list',
-                //text: 'Liste',
-                useReference: 'list',
+                bind: {
+                    iconCls: '{iconListForm}'
+                },
                 handler: 'onSegClicked'
-            }, {
-                iconCls: 'x-fa fa-edit',
-                handler: 'onSegClicked',
-                useReference: 'form',
-                // text: 'Formular'
             }]
         }
     ],

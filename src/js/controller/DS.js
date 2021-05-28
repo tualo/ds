@@ -24,13 +24,23 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
 
     onChildDoubleTab: function(){
         console.log( this.lookup('form') );
-        console.log( this.getView().setActiveItem( this.lookup('form') ) );
+        console.log( this.getViewModel().get( 'selectedRecord' ) );
+        this.getView().setActiveItem( this.lookup('form') );
         console.debug(this.$className,'onChildDoubleTab',arguments);
     },
     onSegClicked: function(btn){
-        console.debug(this.$className,'onSegClicked',arguments);
-        this.getView().setActiveItem( this.lookup(btn.config.useReference) )
-        
+        var model = this.getViewModel(),
+            view = this.getView(),
+            store = this.lookup('list').getStore(),
+            list = this.lookup('list'),
+            form = this.lookup('form');
+        if (this.getView().getActiveItem().reference=='list' ){
+            view.setActiveItem( form );
+            model.set('visibleReference',form.reference);
+        }else{
+            view.setActiveItem( list )
+            model.set('visibleReference',list.reference);
+        }
     },
 
 
@@ -182,12 +192,8 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
             }
         }
 
-        console.debug(view.dsName);
         var record = Ext.create('Tualo.DataSets.model.'+view.dsName,values);
-
-        
         if (this.showSpecialAppend()){ return; }
-        //if (this.showAppendContext(item,evt,record)){ return; }
         this.appendRecord(record);
     },
 
@@ -200,9 +206,25 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         store.add(record);
         model.set('record',record);
         list.setSelection( record );
-        //list.focusRow(record);
         model.set('isNew',true);
+
+        if (model.get('showFormOnAddRecord')){
+            view.setActiveItem( this.lookup('form') );
+        }
         
+    },
+
+    onReject: function(){
+        let model = this.getViewModel(),
+            store = this.lookup('list').getStore(),
+            view = this.getView(),
+            list = this.lookup('list');
+
+        if (model.get('isNew')){
+            model.set('isNew',false);
+            view.setActiveItem( list );
+        }
+        store.rejectChanges();
     },
 
     showSpecialAppend: function(){
