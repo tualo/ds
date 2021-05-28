@@ -29,7 +29,6 @@ Ext.define("Tualo.DataSets.data.Store",{
                 transform: {
                   fn: function(data, request) {
                       let result = {}, key;
-                      console.log(request,);
                       for (key in data) {
                         if (
                           data.hasOwnProperty(key) && ( 
