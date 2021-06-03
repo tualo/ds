@@ -16,7 +16,7 @@ Ext.define('TualoOffice.routes.DS',{
                 (typeof TualoOfficeApplication.getApplication().record=='undefined') ||
                 (TualoOfficeApplication.getApplication().record==null)
             )){
-            //    TualoOfficeApplication.getApplication().redirectTo('ds/list/'+tablename);
+               // TualoOfficeApplication.getApplication().redirectTo('ds/list/'+tablename);
             }
 
             let tablenamecase = tablename.toLocaleUpperCase().substring(0,1) + tablename.toLowerCase().slice(1),
@@ -38,8 +38,8 @@ Ext.define('TualoOffice.routes.DS',{
                 }
             }
 
-            TualoOfficeApplication.getApplication().getMainView().add( newNode  );
-            TualoOfficeApplication.getApplication().getMainView().setActiveItem(newNode);
+            TualoOfficeApplication.getApplication().getMainView().down('dashboard_dashboard').getComponent('stage').add( newNode  );
+            TualoOfficeApplication.getApplication().getMainView().down('dashboard_dashboard').getComponent('stage').setActiveItem(newNode);
 
         },
         before: function (type,tablename,action) {

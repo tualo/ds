@@ -107,7 +107,7 @@ Ext.define('Tualo.DataSets.form.Controller', {
                         //el.labelElement.addCls('label-shake');
                         
                         Ext.defer(()=>{  el.removeCls('panel-shake') }, 1000 );
-                        Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden');
+                        Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden',2000);
                         showToast = false;
                     })
                 }
