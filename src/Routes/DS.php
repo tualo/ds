@@ -11,6 +11,7 @@ class DS implements IRoute{
         Route::add('/ds/(?P<tablename>\w+)/read',function($matches){
             $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
+            
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             try{
 
@@ -37,8 +38,8 @@ class DS implements IRoute{
 
                         if (isset($headers['If-None-Match']) && ($headers['If-None-Match']==$etag) ){
                             //HTTP/1.1 304 Not Modified
-                            header("HTTP/1.1 304 Not Modified"); 
-                            exit();
+                            //header("HTTP/1.1 304 Not Modified"); 
+                            //exit();
                         }
 
                     }

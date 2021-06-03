@@ -18,6 +18,12 @@ Ext.define("Tualo.DataSets.data.Store",{
                 update  : './ds/lager/update',
                 destroy : './ds/lager/delete'
               },
+              listeners: {
+                scope: this,
+                exception: function(proxy, response, operation, eOpts) {
+                    this.fireEvent('proxyerror',response);
+                }
+              },
               reader: {
                   type: 'json',
                   rootProperty: 'data',
@@ -61,7 +67,6 @@ Ext.define("Tualo.DataSets.data.Store",{
       //console.log(this,this.tablename);
 
   },
-
   remoteFilter: true,
   remoteSort: true,
   pageSize: 1000,

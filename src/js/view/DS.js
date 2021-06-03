@@ -1,10 +1,13 @@
 Ext.define('Tualo.cmp.cmp_ds.view.DS', {
+    //extend: 'Ext.panel.Accordion',
     extend: 'Ext.panel.Panel',
     header:{
         bind: {
             style: '{style}'
         }
     },
+    
+    
     viewModel: {
         data: {
             empty: '',
@@ -13,14 +16,16 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
             pageSize: 0,
             isNew: false,
             showFormOnAddRecord: true,
-            visibleReference: 'list'
+            visibleReference: 'list',
+            referencedRecord: null,
+            hasModifiedRecords: false
         },
         formulas: {
             iconListForm: function(get){
                 if (get('visibleReference')=='list'){
                     return 'x-fa fa-edit';
                 }else{
-                    return 'x-fa fa-list';
+                    return 'x-fa fa-table';
                 }
             },
             style: function(get){
@@ -38,6 +43,7 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
     listeners: {
         painted: 'onPainted'
     },
+    /*
     bbar: [
         '->',
         {
@@ -86,6 +92,7 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
             }]
         }
     ],
+    */
     tools: [
         {
             xtype: 'container',
@@ -101,7 +108,10 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
             items: [
                 {
                     iconCls: 'x-fa fa-save',
-                    handler: 'onSave'
+                    handler: 'onSave',
+                    bind:{
+                        disabled: '{!hasModifiedRecords}'
+                    }
                 },
                 {
                     iconCls: 'x-fa fa-plus',
@@ -109,7 +119,10 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
                 },
                 {
                     iconCls: 'x-fa fa-redo',
-                    handler: 'onReject'
+                    handler: 'onReject',
+                    bind:{
+                        disabled: '{!hasModifiedRecords}'
+                    }
                 }
             ]
         },
@@ -131,8 +144,8 @@ Ext.define('Tualo.cmp.cmp_ds.view.DS', {
                 handler: 'onSegClicked'
             }]
         }
-    ],
+    ]/*,
     bind: {
         activeItem: '{activeItem}'
-    }
+    }*/
 });

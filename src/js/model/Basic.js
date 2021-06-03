@@ -1,5 +1,13 @@
 Ext.define('Tualo.DataSets.model.Basic', {
     extend: 'Ext.data.Model',
+    requires: [
+        'Tualo.DataSets.model.Schema',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.data.writer.Json'
+    ],
+    
+
     fields: [
         {name: '__id',  type: 'string'},
     ],

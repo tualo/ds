@@ -1,13 +1,44 @@
 Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     extend: 'Ext.app.ViewController',
+    mixins: ['Tualo.cmp.cmp_ds.controller.mixins.Save'],
+
     alias: 'controller.cmp_ds_dsview_controller',
 
     initViewModel: function(vm) {
         //console.debug(this.$className,'initViewModel',vm);
 //        vm.bind('{selectedCompany}', 'onSelect', this);
-        vm.bind('{activeItem}', 'onActiveItem', this);
-        vm.bind('{pageSize}', 'onPageSizeChanged', this);
+        //vm.bind('{activeItem}', 'onActiveItem', this);
+        //vm.bind('{pageSize}', 'onPageSizeChanged', this);
         //
+    },
+
+    onFormPainted: function(view){
+        console.log('onFormPainted',this.alias);
+    },
+    onListPainted: function(view){
+        console.log('onListPainted',this.alias);
+        window.view = view;
+        
+        //view.getView().refresh();
+        //view.realign();
+
+    },
+
+    onListSelect: function(listview,record){
+        console.debug('onListSelect',this.alias);
+        let model = this.getViewModel(),
+            view = this.getView(),
+            store = this.lookup('list').getStore(),
+            list = this.lookup('list'),
+            form = this.lookup('form');
+
+        form.items.each(function(elmform){
+            elmform.items.each(function(elm){
+                if (elm.referencedList){
+                    elm.getViewModel().set('referencedRecord',record[0]);
+                }
+            });
+        });
     },
 
     onPageSizeChanged: function(nv,ov){
@@ -19,14 +50,46 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         }
     },
     onPainted: function(){
-        this.lookup('list').getStore().on('load',this.onStoreLoad,this);
-    },
+        let form = this.lookup('form'),
+            view = this.getView(),
+            list = this.lookup('list'),
+            me = this;
 
+        list.getStore().on('beforeload',this.onBeforeStoreLoad,this);
+        list.getStore().on('datachanged',this.onDatachange,this);
+        list.getStore().on('load',this.onStoreLoad,this);
+
+        form.items.each(function(elmform){
+            elmform.items.each(function(elm){
+                if (elm.referencedList){
+                    elm.lookup('list').getStore().on('datachanged',me.onDatachange,me);
+                }
+            });
+        });
+
+
+    },
+    onDatachange: function(store,eopts){
+        let modified=false,
+            model = this.getViewModel(),
+            view = this.getView(),
+            form = this.lookup('form');
+        modified = store.getModifiedRecords().length!==0;
+        form.items.each(function(elmform){
+            elmform.items.each(function(elm){
+                if (elm.referencedList){
+                    modified = modified || elm.getViewModel().get('hasModifiedRecords');
+                }
+            });
+        });
+        console.log(store.tablename,modified);
+        view.fireEvent('datachanged',store,eopts);
+        model.set('hasModifiedRecords',modified);
+    },
     onChildDoubleTab: function(){
-        console.log( this.lookup('form') );
-        console.log( this.getViewModel().get( 'selectedRecord' ) );
-        this.getView().setActiveItem( this.lookup('form') );
-        console.debug(this.$className,'onChildDoubleTab',arguments);
+        //this.getView().setActiveItem( this.lookup('form') );
+        //console.debug(this.$className,'onChildDoubleTab',arguments);
+        this.onSegClicked(null);
     },
     onSegClicked: function(btn){
         var model = this.getViewModel(),
@@ -45,7 +108,55 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
 
 
     onBeforeStoreLoad: function(store){
-        console.debug(this.$className,'onBeforeStoreLoad',this.getView().tablename,view.referencedList);
+        var model = this.getViewModel(),
+            view = this.getView(),
+            referencedRecord = model.get('referencedRecord'),
+            reference = {},
+            listfilter = [],//this.lookup('list').getStore().getFilters(),
+            listsorters =this.lookup('list').getStore().getSorters(),
+            
+
+            filters = [],
+            sorters = [],
+            extraParams = store.getProxy().getExtraParams();
+            
+            //console.log('onBeforeQuicksearchStoreLoad','listfilter',listfilter)
+            //console.log('onBeforeQuicksearchStoreLoad','listsorters',listsorters)
+        /*
+        listfilter.forEach(function(item){
+
+            filters.push({
+                operator: item._operator,
+                value: item._value,
+                property: item._property
+            });
+
+        });
+
+        listsorters.forEach(function(item){
+            sorters.push(item.getConfig());
+        });
+        */
+
+        if (Ext.isEmpty(extraParams)){ extraParams = {}; };
+        if (view.referencedList===true){
+            if (!Ext.isEmpty(referencedRecord)){
+                for(var ref in view.referenced){
+                    if (typeof view.referenced[ref]== 'string')
+                        reference[ref]=referencedRecord.get(view.referenced[ref]);
+                    if (typeof view.referenced[ref]== 'object'){
+                        if (typeof view.referenced[ref].v== 'string')
+                        reference[ref]=referencedRecord.get(view.referenced[ref].v);
+                    }
+                }
+            }
+            extraParams.reference = Ext.JSON.encode(reference);
+        }
+        extraParams.filter = Ext.JSON.encode(filters);
+        extraParams.sort = Ext.JSON.encode(sorters);
+        store.getProxy().setExtraParams(extraParams);
+        return true;
+
     },
 
     onStoreLoad: function(store, records, successful, operation, eOpts){
@@ -64,7 +175,10 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
 
 
     },
-
+    onReload: function(){
+        let store = this.lookup('list').getStore();
+        store.load();
+    },
     onPrev: function(){
         if (Ext.isEmpty(this.getViewModel().get('selectedRecord'))) return;
         let store = this.lookup('list').getStore(),
@@ -108,7 +222,8 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     doSelectRecordIndex: function(){
-        // con sole.de bug('doSelectRecordIndex',this.alias);
+        console.debug('doSelectRecordIndex',this.alias);
+        /*
         try{
             var model = this.getViewModel(),
                 view = this.getView(),
@@ -136,14 +251,16 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         }catch(e){
             console.debug('doSelectRecordIndex','error',e);
         }
+        */
     },
 
     skipRecord: function(){
-        ;
+
     },
     onActiveItem: function(item){
-        console.debug('X',item);
+
     },
+    /*
     onSelect: function(selection) {
         var dataview;
 
@@ -153,13 +270,8 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
             dataview.getScrollable().scrollIntoView(dataview.getNode(selection));
         }
     },
-
-    onSave: function(){
-        var model = this.getViewModel(),
-            store = this.lookup('list').getStore();
-        console.log(this.lookup('form').getValues());
-        store.sync();
-    },
+    */
+    
 
     onAdd: function(){
         var model = this.getViewModel(),
@@ -214,13 +326,22 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         let model = this.getViewModel(),
             store = this.lookup('list').getStore(),
             view = this.getView(),
-            list = this.lookup('list');
+            list = this.lookup('list'),
+            form = this.lookup('form');
 
         if (model.get('isNew')){
             model.set('isNew',false);
             view.setActiveItem( list );
         }
         store.rejectChanges();
+
+        form.items.each(function(elmform){
+            elmform.items.each(function(elm){
+                if (elm.referencedList){
+                    elm.lookup('list').getStore().rejectChanges();
+                }
+            });
+        });
     },
 
     showSpecialAppend: function(){

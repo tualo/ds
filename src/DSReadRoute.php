@@ -81,26 +81,46 @@ class DSReadRoute{
             ds_column.table_name = JSON_VALUE(request,'$.tablename')
             and ds_column.existsreal=1
         */
+    
+        $filter = (isset($request['filter'])&& is_string($request['filter'])?json_decode($request['filter'],true): (isset($request['filter']) && is_array( $request['filter'] )?$request['filter']:[]) );
+        $query = false;
+        if (isset($request['query'])&&is_string($request['query'])){
+            $q = json_decode($request['query'],true);
+            if (is_array($q)){
+                foreach($q as $qry){
+                    if (is_string($qry)){
+                        $query=$qry;
+                    }
+                    if (is_array($qry)){
+                        $filter[] = $qry;
+                    }
+                }
+            }else{
+                $query=$request['query'];
+            }
+        }
+        if (isset($request['quicksearchquery'])){
+            $query=$request['quicksearchquery'];
+        }
 
-        
         TualoApplication::timing("ds read procedure ".$tablename,'');
         $queryparams = array(
 
             'tablename'=>$tablename,
-            'replaced'=>0,
+            'replaced'=>1,
             'comibedfieldname'=>1,
             'calcrows'=>1,
-
-            'filter'=>(isset($request['filter'])&& is_string($request['filter'])?json_decode($request['filter'],true): (isset($request['filter']) && is_array( $request['filter'] )?$request['filter']:[]) ),
+            'filter'=>$filter,
             'sort'=>(isset($request['sort'])&& is_string($request['sort'])?json_decode($request['sort'],true): (isset($request['sort']) && is_array( $request['sort'] )?$request['sort']:[]) ),
-
             'page'=> (isset($request['page']))?intval($request['page']):1,
             'start'=> (isset($request['start']))?intval($request['start']):0,
             'limit'=> (isset($request['limit']))?intval($request['limit']):100,
 
-            //'search'=> (isset($request['query']) ? $request['query']:'')
-
         );
+
+        if($query!==false){
+            $queryparams['search'] = '%'.$query.'%';
+        }
 
         if (isset($request['reference'])){
             if (is_string($request['reference'])) $request['reference']=json_decode($request['reference'],true);
@@ -110,6 +130,7 @@ class DSReadRoute{
         }
         $sqlhash = '0';
         $s = $db->singleValue('SELECT fn_ds_read({r}) s',['r'=>json_encode($queryparams)],'s');
+        TualoApplication::result('qsqlx',$s);
         TualoApplication::timing("ds read fn_ds_read ".$tablename,'');
 
         if ($queryparams['replaced']==0){
@@ -134,7 +155,7 @@ class DSReadRoute{
                 TualoApplication::result('qsql',$s);
             }
         }
-        TualoApplication::result('qsql',$s);
+        TualoApplication::result('q_sql',$s);
 
         $db->direct( 'SET @rownum=0;' ); // old db versions lower than maria 10.
         $result['data'] = DSReadRoute::shortFieldNames($request,$db->direct( $s ));
