@@ -42,23 +42,28 @@ Ext.define('TualoOffice.routes.DS',{
             TualoOfficeApplication.getApplication().getMainView().down('dashboard_dashboard').getComponent('stage').setActiveItem(newNode);
 
         },
+            
         before: function (type,tablename,action) {
             let tablenamecase = tablename.toLocaleUpperCase().substring(0,1) + tablename.toLowerCase().slice(1);
+
             Ext.require([
                 'Tualo.DataSets.grid.Controller',
                 'Tualo.DataSets.grid.Grid',
                 'Tualo.DataSets.form.Controller',
                 'Tualo.DataSets.form.Form',
-                'Tualo.DataSets.grid.PagingToolbar',
+                'Tualo.DataSets.grid.PagingToolbar'
+                /*,
                 'Tualo.DataSets.model.'+tablenamecase,
                 'Tualo.DataSets.store.'+tablenamecase,
                 'Tualo.DataSets.'+type+'.'+tablenamecase
+                */
             ],function(){
                 
                 action.resume();
             },this)
             
         }
+        
     },
     
     

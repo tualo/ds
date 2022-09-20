@@ -18,6 +18,56 @@ class JS implements IRoute{
             }
         },array('get'),false);
         
+
+        Route::add('/dslibrary/(?P<file>[\/.\w\d]+).js',function($matches){
+            /*
+            if (file_exists(dirname(__DIR__).'/js/'.$matches['file'])){
+                TualoApplication::etagFile((dirname(__DIR__).'/js/'.$matches['file']));
+                TualoApplication::contenttype('application/javascript');
+                Route::$finished=true;
+            }
+            */
+            try{
+
+                if (!file_exists(TualoApplication::get('cachePath').'/jscache')){
+                    mkdir(TualoApplication::get('cachePath').'/jscache',0777,true);
+                }
+
+                $session = TualoApplication::get('session');
+                $db = TualoApplication::get('session')->getDB();
+                $data = [];
+                if(($matches['file']=='all') || ($matches['file']=='model')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_model" m from view_ds_model limit 2000 ' ));
+                if(($matches['file']=='all') || ($matches['file']=='store')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_store" m from view_ds_store limit 2000 ' ));
+                if(($matches['file']=='all') || ($matches['file']=='column')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_column" m from view_ds_column limit 2000  '));
+                
+                if(($matches['file']=='all') || ($matches['file']=='combobx')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_combobox" m from view_ds_combobox limit 2000 '));
+                if(($matches['file']=='all') || ($matches['file']=='displayfield')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_displayfield" m from view_ds_displayfield  2imit 1000 '));
+                if(($matches['file']=='all') || ($matches['file']=='controller')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_controller" m from view_ds_controller 2imit 1000 '));
+                if(($matches['file']=='all') || ($matches['file']=='list'))  $data = array_merge($data,$db->direct('select js,table_name,"view_ds_list" m from view_ds_list limit 2000 '));
+                if(($matches['file']=='all') || ($matches['file']=='form')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_form" m from view_ds_form limit 2000 '));
+                if(($matches['file']=='all') || ($matches['file']=='dsview')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_dsview" m from view_ds_dsview limit 2000  '));
+                
+
+                file_put_contents(
+                    TualoApplication::get('cachePath').'/jscache/compile.js',
+                    'function dsmicroloader(){'.PHP_EOL.'Ext.Loader.syncModeEnabled=true;'.PHP_EOL.
+                    array_reduce($data, function($acc,$item){
+                    return $acc."\n".
+                          "/* console.debug('".$item['table_name']."','".$item['m']."');*/".
+                          "\n".$item['js'];
+                }).'Ext.Loader.syncModeEnabled=false;}');
+
+
+                TualoApplication::etagFile(TualoApplication::get('cachePath').'/jscache/compile.js');
+                TualoApplication::contenttype('application/javascript');
+                Route::$finished=true;
+
+            }catch(\Exception $e){
+                
+            }
+
+        },array('get'),true);
+        
         
         Route::add('/Tualo/DataSets/(?P<type>[\/.\w\d\_]+)/(?P<tablename>[\/.\w\d\_]+)/(?P<name>[\/.\w\d\_]+).js',function($matches){
             try{
