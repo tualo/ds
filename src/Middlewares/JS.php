@@ -9,8 +9,8 @@ class JS implements IMiddleware{
         TualoApplication::use('ds_middleware',function(){
             try{
                 
-                TualoApplication::javascript('ds_middleware_routes', './dslibrary/Routes.js',[],0);
-                TualoApplication::javascript('ds_middleware_custom', './dslibrary/all.js',[],0);
+                //TualoApplication::javascript('ds_middleware_routes', './dslibrary/Routes.js',[],0);
+                //TualoApplication::javascript('ds_middleware_custom', './dslibrary/all.js',[],0);
 
                 /*
                 if ($matches['file']=='model') $data = array_merge($data,$db->direct('select js,table_name,"view_ds_model" m from view_ds_model limit 2000 ' ));

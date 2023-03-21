@@ -31,8 +31,9 @@ class DSLibrary implements IRoute{
                     $db->direct('set @suppressRequires=1');
                     $data = $db->direct(
                         implode(' union ',[
-                            'select js from view_ds_custom',
-                            'select js from view_ds_model',
+//                            'select js from view_ds_custom',
+                            'select js from view_ds_model limit 10',
+                            /*
                             'select js from view_ds_store',
                             'select js from view_ds_column',
                             'select js from view_ds_displayfield',
@@ -41,6 +42,7 @@ class DSLibrary implements IRoute{
                             'select js from view_ds_list',
                             'select js from view_ds_form',
                             'select js from view_ds_dsview'
+                            */
                         ])
                     );
                     foreach($data as $row){
