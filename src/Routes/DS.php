@@ -1,5 +1,6 @@
 <?php
 namespace Tualo\Office\DS\Routes;
+use Exception;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\Basic\Route ;
 use Tualo\Office\Basic\IRoute;
@@ -12,40 +13,8 @@ class DS implements IRoute{
             $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
             
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             try{
-
-                //try{
-                    /*
-                    $tables = $db->direct('select used_table_name from view_readtable_ds_used_tables where table_name={table_name} ',['table_name'=>$tablename]);
-                    $checksum = false;
-                    foreach($tables as $tn){
-                        if (!($chk = $db->singleValue('CHECKSUM TABLE `'.$tn['used_table_name'].'`',[],'checksum'))){
-                            if ($checksum===false) $checksum='';
-                            $checksum.=$chk;
-                        }
-                    }
-                    */
-                    $checksum = $db->singleValue('CHECKSUM TABLE `'.$tablename.'`',[],'checksum');
-
-
-                    if ($checksum!==false){
-                        $request_checksum = md5(print_r($_REQUEST,true));
-                        $etag = md5($checksum.$tablename.$request_checksum);
-                        header('ETag: '.$etag);
-                        header('Cache-Control: private,max-age=3000');
-                        $headers = getallheaders();
-
-                        if (isset($headers['If-None-Match']) && ($headers['If-None-Match']==$etag) ){
-                            //HTTP/1.1 304 Not Modified
-                            //header("HTTP/1.1 304 Not Modified"); 
-                            //exit();
-                        }
-
-                    }
-                    // }catch(\Exception $e){ }
-
-                $GLOBALS['debug_query'] =array();
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 $read = DSReadRoute::read($db,$tablename,$_REQUEST);
                 App::result('data',$read['data']);
                 App::result('total',$read['total']);

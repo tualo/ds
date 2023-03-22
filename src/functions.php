@@ -1,5 +1,6 @@
 <?php
 require_once "Compiler.php";
+require_once "Routes/DS.php";
 
 /*
 if (class_exists("Tualo\Office\DS\Middlewares\JS")){ }
