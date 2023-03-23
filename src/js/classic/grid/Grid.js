@@ -70,7 +70,7 @@ Ext.define('Tualo.DataSets.grid.Grid', {
     onBeforeStoreLoad: function(store){
         var model = this.getViewModel(),
             view = this,
-            referencedRecord = this.getParentRecord()//model.get('referencedRecord'),
+            referencedRecord = null, // this.getParentRecord()//model.get('referencedRecord'),
             reference = {},
             listfilter = view.getStore().getFilters(),
             listsorters =view.getStore().getSorters(),
