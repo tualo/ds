@@ -1,4 +1,3 @@
-Ext.define('Tualo.DataSets.form.Form', {
+Ext.define('Tualo.DS.form.Form', {
     extend: 'Ext.form.Panel',
-    
-});
+})
