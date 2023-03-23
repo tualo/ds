@@ -65,7 +65,12 @@ Ext.define('Tualo.DataSets.grid.Grid', {
     },
     getParentRecord: function(){
         let view = this;
-        return view.up(view.referencedXType).getRecord();
+        try{
+            return view.up(view.referencedXType).getRecord();
+        }catch(e){
+
+        }
+        return null;
     },
     onBeforeStoreLoad: function(store){
         var model = this.getViewModel(),
