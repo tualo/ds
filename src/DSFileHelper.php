@@ -137,7 +137,7 @@ class DSFileHelper{
             $sql =str_replace('#fk',implode(',',$fks),$sql);
             $sql =str_replace('#tablename',$tablename.'',$sql);
             $db->execute($sql);
-        }catch(Exception $e){
+        }catch(\Exception $e){
     
         }
       
@@ -250,7 +250,7 @@ class DSFileHelper{
             }else{
                 $req['msg'] = 'File not found';
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $req['msg'] = $e->getMessage();
             $req['success'] = false;
         }
@@ -325,14 +325,14 @@ class DSFileHelper{
                 if ( (strlen($usename)>0) ){
                     $fname = $usename . '.' . $ext;
                 }else{
-                    $fname = generateGUID(5) . '.' . $ext;
+                    $fname = (Uuid::uuid4())->toString() . '.' . $ext;
                 }
                 file_put_contents($path . $fname, $o);
                 $req['file'] = $fname;
             }
             $req['success'] = true;
             $req['mime'] = $mime;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $req['msg'] = $e->getMessage();
             $req['success'] = false;
         }
