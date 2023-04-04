@@ -1,7 +1,7 @@
 <?php
 namespace Tualo\Office\DS;
 use Tualo\Office\Basic\TualoApplication;
-
+use Ramsey\Uuid\Uuid;
 class DSFileHelper{
 
     public static function uploadRoute($tablename){
@@ -69,7 +69,7 @@ class DSFileHelper{
             TualoApplication::result('msg',$msg);
             TualoApplication::result('file_id',$id);
             
-        }catch(Exception $e){
+        }catch(\Exception $e){
 
             TualoApplication::result('sql', $db->last_sql);
             TualoApplication::result('msg', $e->getMessage());
@@ -142,6 +142,27 @@ class DSFileHelper{
         }
       
     }
+
+    public static function uploadFileToDB(string $attribute,string $table_name, array $hash):void{
+        $db = TualoApplication::get('session')->getDB();
+        $sfile = $_FILES[$attribute]['tmp_name'];
+        $name = $_FILES[$attribute]['name'];
+        $extension = pathinfo($name, PATHINFO_EXTENSION);
+        $type = $_FILES[$attribute]['type'];
+        $error = $_FILES[$attribute]['error'];
+        $local_file_name = TualoApplication::get('tempPath').'/.ht_'.(Uuid::uuid4())->toString().$extension;
+        if ($error == UPLOAD_ERR_OK){
+            if (file_exists($local_file_name)){
+                unlink($local_file_name);
+            }
+            move_uploaded_file($sfile,$local_file_name);
+        }
+        $res = self::setFile($db,$table_name,$table_name,$hash,$local_file_name,$name,$extension);
+        if (file_exists($local_file_name)){
+            unlink($local_file_name);
+        }
+    }
+
 
     public static function setFile($db,$tablename,$writetable,$request,$file,$originalname,$ext){
         self::createDocumentDDL($writetable);
