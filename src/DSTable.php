@@ -21,6 +21,10 @@ class DSTable {
         $this->tablename=$tablename;
     }
 
+    public function f(string $field,string $operator,mixed $value):DSTable{ 
+        return $this->filter($field,$operator,$value);
+    }
+
     public function filter(string $field,string $operator,mixed $value):DSTable{
 
         $this->filter[] = [
@@ -31,6 +35,9 @@ class DSTable {
         return $this;
     }
 
+    public function s(string $field,string $direction):DSTable{ 
+        return $this->s($field,$direction);
+    }
     public function sort(string $field,string $direction):DSTable{
 
         $this->sorter[] = [
@@ -55,6 +62,9 @@ class DSTable {
     public function error():bool { return $this->hasError; }
     public function errorMessage():string { return $this->errorMessage; }
 
+    public function g():array{
+        return $this->get();
+    }
     public function get():array{
         $request = array(
             'start' => $this->start,

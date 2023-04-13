@@ -12,5 +12,8 @@ class DS {
     public function table($tablename):DSTable{
         return new DSTable($this->db,$tablename);
     }
+    public function t($tablename):DSTable{
+        return $this->table($tablename);
+    }
 }
 
