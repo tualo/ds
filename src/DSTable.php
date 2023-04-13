@@ -13,6 +13,7 @@ class DSTable {
     private bool $isQueried = false;
     private bool $isEmpty = true;
     private bool $hasError = false;
+    private string $errorMessage = "";
     
 
     function __construct(mixed $db,string $tablename){
@@ -52,6 +53,7 @@ class DSTable {
     public function empty():bool { return $this->isEmpty; }
     public function queried():bool { return $this->isQueried; }
     public function error():bool { return $this->hasError; }
+    public function errorMessage():string { return $this->errorMessage; }
 
     public function get():array{
         $request = array(
@@ -61,6 +63,7 @@ class DSTable {
             'filter' => $this->filter,
             'sort' => $this->sorter
         );
+        try{
         $read = DSReadRoute::read($this->db,$this->tablename,$request);
         $this->isQueried=true;
         /*
@@ -72,5 +75,10 @@ class DSTable {
             if (count($read['data'])==0){ $this->isEmpty=true; }else{ $this->isEmpty=false; }
             return $read['data'];
         //}
+        }catch(\Exception $e){
+            $this->hasError=true;
+            $this->errorMessage=$e->getMessage();
+        }
+        return [];
     }
 }
