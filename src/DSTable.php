@@ -23,7 +23,7 @@ class DSTable {
     public function filter(string $field,string $operator,mixed $value):DSTable{
 
         $this->filter[] = [
-            'property' => $this->tablename.'__'.$field,
+            'property' => /*$this->tablename.'__'.*/$field,
             'operator' => $operator,
             'value'    =>  $value
         ];
@@ -33,7 +33,7 @@ class DSTable {
     public function sort(string $field,string $direction):DSTable{
 
         $this->sorter[] = [
-            'property' => $this->tablename.'__'.$field,
+            'property' => /*$this->tablename.'__'.*/$field,
             'direction' => $direction
         ];
         return $this;
@@ -56,6 +56,7 @@ class DSTable {
     public function get():array{
         $request = array(
             'start' => $this->start,
+            'shortfieldnames'=>1,
             'limit' => $this->limit,
             'filter' => $this->filter,
             'sort' => $this->sorter
