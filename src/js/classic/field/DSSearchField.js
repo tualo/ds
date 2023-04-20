@@ -10,9 +10,12 @@ Ext.define('Tualo.DS.field.SearchField', {
             cls: Ext.baseCSSPrefix + "form-clear-trigger",
             handler: function(field) {
                 field.setValue("");
-                let store = field.up().up().getViewModel().getStore("list");
-                store.getProxy().setExtraParam("filter_by_search",1);
-                store.getProxy().setExtraParam("search",field.getValue());
+                let store = fld.up().up().getComponent('list').getStore(),
+                    params = store.getProxy().getExtraParams();
+                    if (Ext.isEmpty(params)){ params = {}; };
+                delete params.filter_by_search;
+                delete params.search;
+                store.getProxy().setExtraParams(params);
                 store.load();
                 field.up().up().getController().setViewType("list");
             }
@@ -22,7 +25,7 @@ Ext.define('Tualo.DS.field.SearchField', {
         specialkey: function(field, e){
             if (e.getKey() == e.ENTER) {
                 window.fld = field;
-                let store = field.up().up().getViewModel().getStore("list");
+                let store = fld.up().up().getComponent('list').getStore();
                 store.getProxy().setExtraParam("filter_by_search",1);
                 store.getProxy().setExtraParam("search",field.getValue());
                 store.load();

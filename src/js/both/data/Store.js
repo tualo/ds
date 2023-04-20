@@ -63,6 +63,7 @@ Ext.define("Tualo.DataSets.data.Store",{
           destroy: './ds/'+this.tablename+'/delete'
         });
   
+        console.log(this.$className,'constructor')
         //console.log(this,this.tablename);
   
     },

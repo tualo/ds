@@ -85,7 +85,7 @@
     initialize: function() {
         var me = this;
  
-        me.callParent();
+       // me.callParent();
  
         me.add([
             me.getPrevButton(),

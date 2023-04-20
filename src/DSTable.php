@@ -65,6 +65,32 @@ class DSTable {
     public function g():array{
         return $this->get();
     }
+
+    public function update(mixed $record):bool{
+        try{
+            $sql = $this->db->singleValue('select ds_update({d}) s',['d'=>json_encode(['data'=>$record])],'s');
+            $this->db->execute($sql);
+            return true;
+        }catch(\Exception $e){
+            $this->hasError=true;
+            $this->errorMessage=$e->getMessage();
+        }
+        return false;
+    }
+
+    public function insert(mixed $record):bool{
+        try{
+            $sql = $this->db->singleValue('select ds_insert({d}) s',['d'=>json_encode(['data'=>$record])],'s');
+            $this->db->execute($sql);
+            return true;
+        }catch(\Exception $e){
+            $this->hasError=true;
+            $this->errorMessage=$e->getMessage();
+        }
+        return false;
+    }
+
+
     public function get():array{
         $request = array(
             'start' => $this->start,
@@ -74,14 +100,8 @@ class DSTable {
             'sort' => $this->sorter
         );
         try{
-        $read = DSReadRoute::read($this->db,$this->tablename,$request);
-        $this->isQueried=true;
-        /*
-        if ($read===false){
-            $this->hasError=true;
-            return [];
-        }else{
-            */
+            $read = DSReadRoute::read($this->db,$this->tablename,$request);
+            $this->isQueried=true;
             if (count($read['data'])==0){ $this->isEmpty=true; }else{ $this->isEmpty=false; }
             return $read['data'];
         //}

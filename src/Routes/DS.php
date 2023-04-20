@@ -24,7 +24,7 @@ class DS implements IRoute{
         
                 App::result('last_sql', $db->last_sql );
                 App::result('msg', $e->getMessage());
-                App::result('dq', implode("\n",$GLOBALS['debug_query']));
+                //App::result('dq', implode("\n",$GLOBALS['debug_query']));
         
             }
 
