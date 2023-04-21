@@ -66,10 +66,54 @@ class DSTable {
         return $this->get();
     }
 
+
+    public function prepareRecord(array $record):array{
+
+        $rec = ['__table_name'=>$this->tablename];
+        foreach($record as $key=>$value){
+                $rec[$this->tablename.'__'.$key]=$value;
+        }
+        return $rec;
+    }
+
+
+    public function delete(mixed $record):bool{
+        try{
+            $record=$this->prepareRecord($record);
+            $this->db->direct('set @request = {d}',
+            [
+                'd'=>json_encode([
+                    'tablename'=>$this->tablename,
+                    'type'=>'delete',
+                    'data'=>$record
+                ])
+            ]
+            );
+            $this->db->direct('call dsx_rest_api_set(@request,@result) s');
+            $this->db->singleValue('select @result s',[],'s');
+            return true;
+        }catch(\Exception $e){
+            $this->hasError=true;
+            $this->errorMessage=$e->getMessage();
+        }
+        return false;
+    }
+
+
     public function update(mixed $record):bool{
         try{
-            $sql = $this->db->singleValue('select ds_update({d}) s',['d'=>json_encode(['data'=>$record])],'s');
-            $this->db->execute($sql);
+            $record=$this->prepareRecord($record);
+            $this->db->direct('set @request = {d}',
+            [
+                'd'=>json_encode([
+                    'tablename'=>$this->tablename,
+                    'type'=>'update',
+                    'data'=>$record
+                ])
+            ]
+            );
+            $this->db->direct('call dsx_rest_api_set(@request,@result) s');
+            $this->db->singleValue('select @result s',[],'s');
             return true;
         }catch(\Exception $e){
             $this->hasError=true;
@@ -80,8 +124,19 @@ class DSTable {
 
     public function insert(mixed $record):bool{
         try{
-            $sql = $this->db->singleValue('select ds_insert({d}) s',['d'=>json_encode(['data'=>$record])],'s');
-            $this->db->execute($sql);
+            $record=$this->prepareRecord($record);
+            $this->db->direct('set @request = {d}',
+            [
+                'd'=>json_encode([
+                    'tablename'=>$this->tablename,
+                    'type'=>'insert',
+                    'update'=>true,
+                    'data'=>$record
+                ])
+            ]
+            );
+            $this->db->direct('call dsx_rest_api_set(@request,@result) s');
+            $this->db->singleValue('select @result s',[],'s');
             return true;
         }catch(\Exception $e){
             $this->hasError=true;
@@ -89,6 +144,7 @@ class DSTable {
         }
         return false;
     }
+        
 
 
     public function get():array{

@@ -9,8 +9,6 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
     onBoxReady: function(x){
         this.initEvents();
-        window.view = this.getView();
-        console.log('onBoxReady',this.getView());
         if (this.getView().referencedList===true){
             window.referencedListView=this
             if (!Ext.isEmpty(this.getReferencedRecord())){
@@ -19,7 +17,6 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
     },
     onReferencedRecordChange: function(record){
-        console.log('onReferencedRecordChange',record);
         if (record){
             this.getStore().load();
         }
@@ -49,6 +46,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             model = me.getViewModel(),
             store = me.getStore(),
             record = selModel.getSelection()[0];
+
         if (record){
             model.set('selectRecordRecordNumber',store.indexOf(record)+1);
         } else {
@@ -59,12 +57,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
     },
 
-    onListSelect: function(view,record){
-        // nsole.log('onListSelect',arguments)
-        // window.view=view;
-        // let form = view.view.up().up().getComponent('form');
-        //form.loadRecord(record)
-    },
+    
     onItemDblClick: function ( view, record, item, index, e, eOpts ){
         this.setViewType('form');
     },
@@ -75,12 +68,6 @@ Ext.define('Tualo.DS.panel.Controller', {
         }else{
             this.getView().setActiveItem(v);
         }
-        /*
-        window.c=this;
-
-        let v = this.getView().getComponent(view);
-        this.getView().setActiveItem(v);
-        */
     },
     getStore: function(){
         return this.getView().getComponent('list').getStore();
@@ -96,7 +83,6 @@ Ext.define('Tualo.DS.panel.Controller', {
             this.setViewType('list');
         }
         this.updatePager();
-        //this.doSelectRecordIndex();
     },
     
 
@@ -106,7 +92,6 @@ Ext.define('Tualo.DS.panel.Controller', {
             store = me.getStore(),
             model = me.getViewModel(),
             selModel = me.getView().getComponent('list').getSelectionModel(),
-            // pager = view.getComponent('pager'),
             pagerData = {
                 total: store.getTotalCount(),
                 count: store.getCount(),
@@ -114,6 +99,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 pages: store.getTotalCount() / store.pageSize
             },
             record = selModel.getSelection()[0];
+            console.warn( view.$className, view.id,model.$className,model.id,store.$className,store.id,selModel.$className);
             if (record){
                 model.set('selectRecordRecordNumber',store.indexOf(record)+1);
             } else {
