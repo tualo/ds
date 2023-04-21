@@ -85,11 +85,11 @@ class DSTable {
                 'd'=>json_encode([
                     'tablename'=>$this->tablename,
                     'type'=>'delete',
-                    'data'=>$record
+                    'data'=>[$record]
                 ])
             ]
             );
-            $this->db->direct('call dsx_rest_api_set(@request,@result) s');
+            $this->db->direct('call dsx_rest_api_set(@request,@result)');
             $this->db->singleValue('select @result s',[],'s');
             return true;
         }catch(\Exception $e){
@@ -108,11 +108,11 @@ class DSTable {
                 'd'=>json_encode([
                     'tablename'=>$this->tablename,
                     'type'=>'update',
-                    'data'=>$record
+                    'data'=>[$record]
                 ])
             ]
             );
-            $this->db->direct('call dsx_rest_api_set(@request,@result) s');
+            $this->db->direct('call dsx_rest_api_set(@request,@result)');
             $this->db->singleValue('select @result s',[],'s');
             return true;
         }catch(\Exception $e){
@@ -131,11 +131,11 @@ class DSTable {
                     'tablename'=>$this->tablename,
                     'type'=>'insert',
                     'update'=>true,
-                    'data'=>$record
+                    'data'=>[$record]
                 ])
             ]
             );
-            $this->db->direct('call dsx_rest_api_set(@request,@result) s');
+            $this->db->direct('call dsx_rest_api_set(@request,@result)');
             $this->db->singleValue('select @result s',[],'s');
             return true;
         }catch(\Exception $e){
