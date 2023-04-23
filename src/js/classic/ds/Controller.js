@@ -9,20 +9,33 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
     onBoxReady: function(x){
         this.initEvents();
+        //window[this.getView().xtype]=this;
         if (this.getView().referencedList===true){
-            window.referencedListView=this
             if (!Ext.isEmpty(this.getReferencedRecord())){
-                this.getView().up().up().up().getViewModel().bind('{record}', this.onReferencedRecordChange, this);
+                this.getReferencedView().getViewModel().bind('{record}', this.onReferencedRecordChange, this);
             }
         }
     },
     onReferencedRecordChange: function(record){
         if (record){
+            console.log('referenced record changed',this.$className,record);
             this.getStore().load();
         }
     },
+    getReferencedView: function(){
+        let view = this.getView().up().up().up();
+        console.log('getReferencedView',this.getView().referencedList,view);
+        return view;
+    },
     getReferencedRecord: function(){
-        return this.getView().up().up().up().getViewModel().get('record');
+        if (
+            this.getView().referencedList===true &&
+            (this.getReferencedView().getViewModel())){
+            return this.getReferencedView().getViewModel().get('record');
+        }
+
+        return null;
+        //return this.getReferencedView().getComponent('list').getSelectionModel().getSelection()[0];
     },
     initEvents: function(){
        let c = this;
@@ -35,26 +48,38 @@ Ext.define('Tualo.DS.panel.Controller', {
        list.on('selectionchange',c.onListSelectionChange,this);
        store.load();
     },
+    
     onDataChanged: function(t,e){
         let me = this,
             model = me.getViewModel(),
             store = me.getStore();
+        console.log('onDataChanged',model.$className,store.getModifiedRecords().length,model.get('disableSave'));
+
         model.set('isModified',store.getModifiedRecords().length!=0);
     },
+    
     onListSelectionChange: function(selModel, selected, eOpts){
+        
         let me = this,
             model = me.getViewModel(),
             store = me.getStore(),
+            form = this.getView().getComponent('form'),
             record = selModel.getSelection()[0];
 
         if (record){
             model.set('selectRecordRecordNumber',store.indexOf(record)+1);
+            model.set('record',record);
+            form.loadRecord(record);
+
         } else {
             model.set('selectRecordRecordNumber',0);
         }
+
+        console.log('onListSelectionChange',model.$className);
         model.set('disablePrev',model.get('selectRecordRecordNumber')<=1);
         model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
         model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
+        
     },
 
     
@@ -76,7 +101,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
 
     onStoreLoad: function(store, records, successful, operation, eOpts){
-        console.debug(this.$className,'onStoreLoad',records.length,successful,operation,eOpts);
+        console.debug(this.$className,'onStoreLoad',records,successful,operation,eOpts);
         let model = this.getViewModel();
         if (model.get('isNew')){
             model.set('isNew',false);
@@ -87,28 +112,30 @@ Ext.define('Tualo.DS.panel.Controller', {
     
 
     updatePager: function(){
+        
         let me = this,
             view = me.getView(),
             store = me.getStore(),
+            range = store.getRange()
             model = me.getViewModel(),
             selModel = me.getView().getComponent('list').getSelectionModel(),
-            pagerData = {
-                total: store.getTotalCount(),
-                count: store.getCount(),
-                page: store.currentPage,
-                pages: store.getTotalCount() / store.pageSize
-            },
             record = selModel.getSelection()[0];
-            console.warn( view.$className, view.id,model.$className,model.id,store.$className,store.id,selModel.$className);
+            if (Ext.isEmpty(record)&&(range.length>0)){ 
+                    record = range[0];
+                    selModel.select(record);
+            }
+            /*
+            console.warn( view.$className, view.id,model.$className,model.id,store.$className,store,selModel.$className);
             if (record){
                 model.set('selectRecordRecordNumber',store.indexOf(record)+1);
             } else {
                 model.set('selectRecordRecordNumber',0);
             }
-            model.set('pager',pagerData);
+            //model.set('pager',pagerData);
             model.set('disablePrev',model.get('selectRecordRecordNumber')<=1);
             model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
             model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
+            */
     },
 
             

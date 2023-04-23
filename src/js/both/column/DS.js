@@ -35,7 +35,11 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS",{
                 scope: this,
                 load: function(){ try{ this.up('grid').refresh(); }catch(e){ console.debug(e); } }
             }
-            this.store = Ext.createByAlias('store.'+this.configStore.type, this.configStore );
+            
+            Ext.createByAlias('store.'+this.configStore.type, this.configStore );
+
+        }else{
+            console.debug('store already exists',Ext.data.StoreManager.lookup(this.configStore.storeId).getRange());  
 
         }
     }

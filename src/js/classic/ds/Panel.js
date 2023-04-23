@@ -2,19 +2,7 @@ Ext.define('Tualo.DS.Panel', {
     extend: "Ext.panel.Panel",
     controller: 'dspanelcontroller',
     viewModel: {
-        data: {
-            record: null,
-            isNew: false,
-            disablePrev: false,
-            referencedList: false,
-            selectRecordRecordNumber: 0,
-            isModified: false,
-        },
-        formulas: {
-            disableSave: function(get){
-                return !get('isModified');
-            }
-        }
+        type:'dspanelmodel',
     },
     dockedItems: [
         {   
@@ -22,6 +10,7 @@ Ext.define('Tualo.DS.Panel', {
             dock: "top",
             layout: 'hbox',
             cls: "x-panel-header-default",
+             
             items: [
                 {
                     flex: 1,
@@ -31,7 +20,7 @@ Ext.define('Tualo.DS.Panel', {
                     xtype: "glyphtool",
                     glyph: "chevron-left",
                     handler: "prev",
-                    bind:{
+                    bind: {
                         disabled: "{disablePrev}"
                     },
                     tooltip: "vorheriger"
@@ -39,7 +28,7 @@ Ext.define('Tualo.DS.Panel', {
                 {
                     xtype: "tbtext",
                     cls: "ds-toolbar-text",
-                    bind:{
+                    bind: {
                         text: "{pagerText}"
                     }
                 },
@@ -47,16 +36,20 @@ Ext.define('Tualo.DS.Panel', {
                     xtype: "glyphtool",
                     glyph: "chevron-right",
                     handler: "next",
-                    bind:{
+                    bind: {
                         disabled: "{disableNext}"
                     },
+
                     tooltip: "nächster"
                 },
                 {
                     xtype: "glyphtool",
                     glyph: "refresh",
                     handler: "refresh",
-                    tooltip: "neu Laden"
+                    tooltip: "neu Laden",
+                    bind: {
+                        disabled: "{disableRefresh}"
+                    }
                 },
         
         
@@ -69,10 +62,9 @@ Ext.define('Tualo.DS.Panel', {
                     xtype: "glyphtool",
                     glyph: "save",
                     tooltip: "Speichern",
-                    reference: "savebtn",
                     handler: "save",
                     bind:{
-                        disabled: "{disableSave}",
+                        disabled: "{!isModified}",
                         hidden: "{hideSave}"
                     }
                 },
@@ -80,7 +72,6 @@ Ext.define('Tualo.DS.Panel', {
                     xtype: "glyphtool",
                     glyph: "history",
                     tooltip: "Änderungen verwerfen",
-                    reference: "historybtn",
                     handler: "reject",
                     bind:{
                         disabled: "{disableSave}",
@@ -91,10 +82,12 @@ Ext.define('Tualo.DS.Panel', {
                     glyph: "plus",
                     tooltip: "Hinzufügen",
                     handler: "append",
+                    
                     bind:{
                         disabled: "{disableAdd}",
                         hidden: "{hideAppend}"
                     }
+                    
                 },
                 {
                     xtype: "glyphtool",
