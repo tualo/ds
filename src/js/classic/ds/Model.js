@@ -8,7 +8,8 @@ Ext.define('Tualo.DS.panel.Model', {
         isModified: false,
         pagerText: '0/0',
         disableNext: false,
-        disablePrev: false
+        disablePrev: false,
+        saving: false
     },
     formulas: {
         disableSave: function(get){

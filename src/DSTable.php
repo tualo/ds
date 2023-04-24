@@ -100,6 +100,11 @@ class DSTable {
                 ])
             ]
             );
+            echo (json_encode([
+                'tablename'=>$this->tablename,
+                'type'=>'delete',
+                'data'=>$input
+            ]));
             $this->db->direct('call dsx_rest_api_set(@request,@result)');
             $this->_warnings = $this->db->getWarnings();
             $mr = $this->db->moreResults();

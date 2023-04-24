@@ -38,12 +38,14 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
             store = this.getStore(),
             fields = store.getModel().getFields(),
             values = {};
+
+
         for(i=0;i<fields.length;i++){
             if(!Ext.isEmpty(fields[i].defaultValue)){
                 values[fields[i].name] = fields[i].defaultValue;
             }
         }
-        console.log('append',values);
+        console.log('append',values,'fields',fields);
         if (referencedList==true){
             for(var ref in view.referenced){
                 if (typeof this.view.referenced[ref]== 'string')
@@ -126,7 +128,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
     delete: function(){
         let model = this.getViewModel(),
             view = this.getView(),
-            store = model.getStore(),
+            store = this.getStore(),
             list = view.getComponent('list'),
             selection =list.getSelectionModel().getSelection(),
             selectionCount = selection.length,
@@ -143,14 +145,19 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                     store.sync({
                         scope: this,
                         failure: function(){
+                            console.error('delete failure',arguments);
                             model.set('saving',false);
                         },
                         success: function(c,o){
-                            this.prepareRowNumbers();
                             model.set('saving',false);
                             model.set('isNew',false);
                             model.set('selectRecordRecordNumber',  1);
-                            this.doSelectRecordIndex();
+                            model.set('isModified',store.getModifiedRecords().length!=0);
+                            store.load();
+                            let record = store.getAt(1);
+                            if ((record) ){
+                                view.getComponent('list').getSelectionModel().select(record);
+                            }
                         }
                     });
                 }

@@ -4,6 +4,9 @@ Ext.define('Tualo.DS.Panel', {
     viewModel: {
         type:'dspanelmodel',
     },
+    bind: {
+        disabled: "{saving}"
+    },
     dockedItems: [
         {   
             xtype: "toolbar",

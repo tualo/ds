@@ -31,7 +31,7 @@ class DS implements IRoute{
 
             Route::$finished=true;
             App::contenttype('application/json');
-        },array('get','post'),true);
+        },['get','post'],true);
 
 
         Route::add('/ds/(?P<tablename>\w+)/update',function($matches){
@@ -49,7 +49,7 @@ class DS implements IRoute{
 
 
                 $table = new DSTable($db ,$tablename);
-                if($table->update($input)===true){
+                if($table->update($input)!==false){
                     App::result('success', true);
                 }else{
                     App::result('success', false);
@@ -62,7 +62,7 @@ class DS implements IRoute{
         
             }
             Route::$finished=true;
-        },array('post'),true);
+        },['post'],true);
    
         Route::add('/ds/(?P<tablename>\w+)/create',function($matches){
             App::contenttype('application/json');
@@ -97,6 +97,37 @@ class DS implements IRoute{
         
             }
             Route::$finished=true;
-        },array('post'),true);
+        },['post'],true);
+
+
+        Route::add('/ds/(?P<tablename>\w+)/delete',function($matches){
+            App::contenttype('application/json');
+
+            $db = App::get('session')->getDB();
+            $tablename = $matches['tablename'];
+            try{
+
+                $input = json_decode(file_get_contents('php://input'),true);
+                if (is_null( $input )) throw new Exception("Error Processing Request", 1);
+                if (isset( $input['__id'] )){ 
+                    $input = [$input];
+                }
+
+
+                $table = new DSTable($db ,$tablename);
+                if($table->delete($input)!==false){
+                    App::result('success', true);
+                }else{
+                    App::result('success', false);
+                    App::result('msg', $table->errorMessage());
+                }
+                
+            }catch(\Exception $e){
+        
+                App::result('msg', $e->getMessage());
+        
+            }
+            Route::$finished=true;
+        },['post'],true);
     }
 };

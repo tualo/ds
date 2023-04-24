@@ -220,18 +220,20 @@ Ext.define('Tualo.DS.panel.Controller', {
         }catch(e){
             console.error('invalidFields',e);
         }
-        
+
         if ( !Ext.isEmpty(store.getModifiedRecords()) ){
             model.set('saving',true);
             store.sync({
                 scope: this,
                 failure: function(){
+                    console.error('save failure',arguments);
                     model.set('saving',false);
                 },
                 success: function(c,o){
                     this.saveSubStores();
                     model.set('saving',false);
                     model.set('isNew',false);
+                    model.set('isModified',store.getModifiedRecords().length!=0);
                     // if (typeof cb=='function') cb(c,o);
                 }
             });

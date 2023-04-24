@@ -20,7 +20,18 @@ Ext.define("Tualo.DataSets.data.Store",{
                 listeners: {
                   scope: this,
                   exception: function(proxy, response, operation, eOpts) {
-                      this.fireEvent('proxyerror',response);
+                    console.log('exception',proxy, response, operation, eOpts);
+                    if (response.responseJson){
+                      let msg = response.responseJson.msg;
+                      if (msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+                      Ext.toast({
+                          html: msg,
+                          title: 'Fehler',
+                          width: 200,
+                          align: 't'
+                      });
+                    }
+                    this.fireEvent('proxyerror',response);
                   }
                 },
                 reader: {
