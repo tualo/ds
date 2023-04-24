@@ -21,7 +21,13 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
     },
     reject: function(){ 
         var model = this.getViewModel(),
-            store = this.getStore();
+            store = this.getStore(),
+            record = store.getAt(model.get('lastSelectRecordRecordNumber'));
+
+        if ((record)&&(model.get('isNew'))){
+            model.set('isNew',false);
+            this.getView().getComponent('list').getSelectionModel().select(record);
+        }
         store.rejectChanges();
     },
     append: function()  {   
@@ -37,6 +43,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                 values[fields[i].name] = fields[i].defaultValue;
             }
         }
+        console.log('append',values);
         if (referencedList==true){
             for(var ref in view.referenced){
                 if (typeof this.view.referenced[ref]== 'string')
@@ -47,7 +54,8 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                 }
             }
         }
-        var record = Ext.create('Tualo.DataSets.model.'+view.$className,values);
+        let tablenamecase = model.get('table_name').toLocaleUpperCase().substring(0, 1) + model.get('table_name').toLowerCase().slice(1);
+        var record = Ext.create('Tualo.DataSets.model.'+tablenamecase,values);
         if (this.showSpecialAppend()){ return; }
         this.appendRecord(record);
     },
@@ -114,5 +122,40 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
         
     },
 
+
+    delete: function(){
+        let model = this.getViewModel(),
+            view = this.getView(),
+            store = model.getStore(),
+            list = view.getComponent('list'),
+            selection =list.getSelectionModel().getSelection(),
+            selectionCount = selection.length,
+            questionText = ((selectionCount==1)?'Möchten Sie wirklich den Datensatz löschen?':'Möchten Sie wirklich die Datensätze ('+selectionCount+' Stück) löschen?')
+        if (selectionCount>0){
+            Ext.MessageBox.confirm('Löschen?',questionText,function(btn){
+                if (btn=='yes'){
+                    this.setViewType('list');
+
+                    selection.forEach(function(record){
+                        store.remove(record);
+                    });
+                    model.set('saving',true);
+                    store.sync({
+                        scope: this,
+                        failure: function(){
+                            model.set('saving',false);
+                        },
+                        success: function(c,o){
+                            this.prepareRowNumbers();
+                            model.set('saving',false);
+                            model.set('isNew',false);
+                            model.set('selectRecordRecordNumber',  1);
+                            this.doSelectRecordIndex();
+                        }
+                    });
+                }
+            },this);
+        }
+    }
 
 });

@@ -5,6 +5,7 @@ use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\Basic\Route ;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSReadRoute;
+use Tualo\Office\DS\DSTable;
 
 
 class DS implements IRoute{
@@ -47,13 +48,13 @@ class DS implements IRoute{
                 }
 
 
-                foreach($input as $row){ 
-                    $sql = $db->singleValue('select ds_serial({d}) s',['d'=>json_encode(['data'=>$row])],'s');
-                    $db->execute($sql);
-                    $sql = $db->singleValue('select ds_update({d}) s',['d'=>json_encode(['data'=>$row])],'s');
-                    $db->execute($sql);
+                $table = new DSTable($db ,$tablename);
+                if($table->update($input)===true){
+                    App::result('success', true);
+                }else{
+                    App::result('success', false);
+                    App::result('msg', $table->errorMessage());
                 }
-                App::result('success', true);
                 
             }catch(\Exception $e){
         
@@ -76,15 +77,19 @@ class DS implements IRoute{
                     $input = [$input];
                 }
 
-
-                foreach($input as $row){ 
-                    $sql = $db->singleValue('select ds_serial({d}) s',['d'=>json_encode(['data'=>$row])],'s');
-                    $db->execute($sql);
-                    $sql = $db->singleValue('select ds_insert({d}) s',['d'=>json_encode(['data'=>$row])],'s');
-                    App::result('debugsql', $sql);
-                    $db->execute($sql);
+                $table = new DSTable($db ,$tablename);
+                if(($result = $table->insert($input))!==false){
+                    App::result('success', true);
+                    App::result('data', $result);
+                    App::result('warnings', $table->warnings());
+                    App::result('moreResults', $table->moreResults());
+                    
+                }else{
+                    App::result('success', false);
+                    App::result('msg', $table->errorMessage());
                 }
-                App::result('success', true);
+                
+                
                 
             }catch(\Exception $e){
         

@@ -15,6 +15,7 @@ Ext.define('Tualo.DS.panel.Model', {
             return !get('isModified');
         },
         userCls: function(get){
+            console.log('userCls',get('isNew'));
             return get("isNew")?"new_cmp_ds":"";
         },
     },

@@ -14,6 +14,9 @@ class DSTable {
     private bool $isEmpty = true;
     private bool $hasError = false;
     private string $errorMessage = "";
+    private array $_warnings = [];
+    private array $_moreResults = [];
+    
     
 
     function __construct(mixed $db,string $tablename){
@@ -61,6 +64,9 @@ class DSTable {
     public function queried():bool { return $this->isQueried; }
     public function error():bool { return $this->hasError; }
     public function errorMessage():string { return $this->errorMessage; }
+    public function warnings():array { return $this->_warnings; }
+    public function moreResults():array { return $this->_moreResults; }
+    
 
     public function g():array{
         return $this->get();
@@ -69,29 +75,38 @@ class DSTable {
 
     public function prepareRecord(array $record):array{
 
+        /*
         $rec = ['__table_name'=>$this->tablename];
         foreach($record as $key=>$value){
                 $rec[$this->tablename.'__'.$key]=$value;
-        }
-        return $rec;
+        }*/
+        return $record;
     }
 
 
-    public function delete(mixed $record):bool{
+    public function delete(mixed $record):mixed{
         try{
             $record=$this->prepareRecord($record);
+            $input = $record; 
+            if (isset( $input['__id'] )){ 
+                $input = [$input];
+            }
             $this->db->direct('set @request = {d}',
             [
                 'd'=>json_encode([
                     'tablename'=>$this->tablename,
                     'type'=>'delete',
-                    'data'=>[$record]
+                    'data'=>$input
                 ])
             ]
             );
             $this->db->direct('call dsx_rest_api_set(@request,@result)');
-            $this->db->singleValue('select @result s',[],'s');
-            return true;
+            $this->_warnings = $this->db->getWarnings();
+            $mr = $this->db->moreResults();
+            if (!is_null($mr)){
+                $this->_moreResults = $mr;
+            }
+            return json_decode($this->db->singleValue('select @result s',[],'s'),true);
         }catch(\Exception $e){
             $this->hasError=true;
             $this->errorMessage=$e->getMessage();
@@ -100,21 +115,29 @@ class DSTable {
     }
 
 
-    public function update(mixed $record):bool{
+    public function update(mixed $record):mixed{
         try{
             $record=$this->prepareRecord($record);
+            $input = $record; 
+            if (isset( $input['__id'] )){ 
+                $input = [$input];
+            }
             $this->db->direct('set @request = {d}',
             [
                 'd'=>json_encode([
                     'tablename'=>$this->tablename,
                     'type'=>'update',
-                    'data'=>[$record]
+                    'data'=>$input
                 ])
             ]
             );
             $this->db->direct('call dsx_rest_api_set(@request,@result)');
-            $this->db->singleValue('select @result s',[],'s');
-            return true;
+            $this->_warnings = $this->db->getWarnings();
+            $mr = $this->db->moreResults();
+            if (!is_null($mr)){
+                $this->_moreResults = $mr;
+            }
+            return json_decode($this->db->singleValue('select @result s',[],'s'),true);
         }catch(\Exception $e){
             $this->hasError=true;
             $this->errorMessage=$e->getMessage();
@@ -122,22 +145,32 @@ class DSTable {
         return false;
     }
 
-    public function insert(mixed $record):bool{
+    public function insert(mixed $record):mixed{
         try{
             $record=$this->prepareRecord($record);
+            $input = $record; 
+            if (isset( $input['__id'] )){ 
+                echo 123; exit();
+                $input = [$input];
+            }
+
             $this->db->direct('set @request = {d}',
             [
                 'd'=>json_encode([
                     'tablename'=>$this->tablename,
                     'type'=>'insert',
                     'update'=>true,
-                    'data'=>[$record]
+                    'data'=>$input
                 ])
             ]
             );
             $this->db->direct('call dsx_rest_api_set(@request,@result)');
-            $this->db->singleValue('select @result s',[],'s');
-            return true;
+            $this->_warnings = $this->db->getWarnings();
+            $mr = $this->db->moreResults();
+            if (!is_null($mr)){
+                $this->_moreResults = $mr;
+            }
+            return json_decode($this->db->singleValue('select @result s',[],'s'),true);
         }catch(\Exception $e){
             $this->hasError=true;
             $this->errorMessage=$e->getMessage();

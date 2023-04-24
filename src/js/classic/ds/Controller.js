@@ -220,6 +220,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         }catch(e){
             console.error('invalidFields',e);
         }
+        
         if ( !Ext.isEmpty(store.getModifiedRecords()) ){
             model.set('saving',true);
             store.sync({

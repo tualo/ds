@@ -10,7 +10,9 @@ Ext.define('Tualo.DS.Panel', {
             dock: "top",
             layout: 'hbox',
             cls: "x-panel-header-default",
-             
+            bind: {
+                userCls: "{userCls}",
+            },
             items: [
                 {
                     flex: 1,
