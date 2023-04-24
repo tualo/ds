@@ -163,6 +163,14 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                 }
             },this);
         }
+    },
+
+    upload: function(){
+        alert('upload');
+    },
+
+    export: function(){
+        alert('export');
     }
 
 });

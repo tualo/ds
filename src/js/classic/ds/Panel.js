@@ -69,7 +69,7 @@ Ext.define('Tualo.DS.Panel', {
                     tooltip: "Speichern",
                     handler: "save",
                     bind:{
-                        disabled: "{!isModified}",
+                        disabled: "{disableSave}",
                         hidden: "{hideSave}"
                     }
                 },
@@ -110,7 +110,7 @@ Ext.define('Tualo.DS.Panel', {
         
         
                     tooltip: "Importieren",
-                    handler: "import",
+                    handler: "upload",
                     bind: {
                         hidden: "{hideAppend}"
                     }
