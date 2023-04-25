@@ -74,12 +74,17 @@ class DSTable {
 
 
     public function prepareRecord(array $record):array{
-
-        /*
-        $rec = ['__table_name'=>$this->tablename];
+        $rec = [];
         foreach($record as $key=>$value){
+            if (
+                ( strpos($key,'__') === false ) ||
+                ( strpos($key,$this->tablename.'__') === false )
+            ){
                 $rec[$this->tablename.'__'.$key]=$value;
-        }*/
+            }else{
+                $rec[$key]=$value;
+            }
+        }
         return $record;
     }
 
