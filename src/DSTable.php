@@ -85,7 +85,7 @@ class DSTable {
                 $rec[$key]=$value;
             }
         }
-        return $record;
+        return $rec;
     }
 
 
