@@ -72,10 +72,11 @@ class DSTable {
         return $this->get();
     }
 
+    
 
     public function prepareRecords(array $records):array{
 
-        if ( (array) $records !== $records ) {
+        if ( $records !== array_values($records) ) {
             $records = [$records];
         }
         $recs = [];
