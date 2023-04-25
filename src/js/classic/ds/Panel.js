@@ -7,6 +7,20 @@ Ext.define('Tualo.DS.Panel', {
     bind: {
         disabled: "{saving}"
     },
+    "keyMap": {
+        'ctrl+s': {
+            handler: function(event,view) {
+                event.stopEvent();
+                view.getController().save();
+            }
+        },
+        'cmd+s': {
+            handler: function(event,view) {
+                event.stopEvent();
+                view.getController().save();
+            }
+        }
+    },
     dockedItems: [
         {   
             xtype: "toolbar",
