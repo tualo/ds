@@ -230,7 +230,8 @@ Ext.define('Tualo.DS.panel.Controller', {
                     model.set('saving',false);
                 },
                 success: function(c,o){
-                    this.saveSubStores();
+                    //this.saveSubStores();
+                    console.log('save success',arguments);
                     model.set('saving',false);
                     model.set('isNew',false);
                     model.set('isModified',store.getModifiedRecords().length!=0);

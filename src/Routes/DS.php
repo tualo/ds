@@ -70,8 +70,9 @@ class DS implements IRoute{
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db ,$tablename);
                 if(($result = $table->insert($input))!==false){
+                    if (isset($result['data'])) App::result('data', $result['data']);
                     App::result('success', true);
-                    App::result('data', $result);
+                    //App::result('data', $result);
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
                     
