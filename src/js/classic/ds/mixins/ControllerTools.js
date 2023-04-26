@@ -24,11 +24,11 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
             store = this.getStore(),
             record = store.getAt(model.get('lastSelectRecordRecordNumber'));
 
-        if ((record)&&(model.get('isNew'))){
-            model.set('isNew',false);
-            this.getView().getComponent('list').getSelectionModel().select(record);
-        }
-        store.rejectChanges();
+            if(model.get('isNew')){
+                this.refresh();
+            }else{
+                store.rejectChanges();
+            }
     },
     append: function()  {   
         let model = this.getViewModel(),

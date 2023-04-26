@@ -72,7 +72,7 @@ class DSTable {
         return $this->get();
     }
 
-    
+
 
     public function prepareRecords(array $records):array{
 
@@ -99,7 +99,13 @@ class DSTable {
         return $recs;
     }
 
-
+    private function requestData(array $input,array $merge):string{
+        $data = json_encode( array_merge([
+            'tablename'=>$this->tablename,
+            'data'=>$input
+        ],$merge),JSON_UNESCAPED_SLASHES);
+        return $data;
+    }
 
     private function dsx_rest_api_set():mixed{
         $this->db->direct('call dsx_rest_api_set(@request,@result)');
@@ -116,16 +122,7 @@ class DSTable {
     public function delete(mixed $record):mixed{
         try{
             $input=$this->prepareRecords($record);
-            $this->db->direct('set @request = {d}',
-            [
-                'd'=>json_encode([
-                    'tablename'=>$this->tablename,
-                    'type'=>'delete',
-                    'data'=>$input
-                ])
-            ]
-            );
-            
+            $this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'delete']) ]);
             return $this->dsx_rest_api_set();
 
         }catch(\Exception $e){
@@ -140,16 +137,7 @@ class DSTable {
     public function update(mixed $record):mixed{
         try{
             $input=$this->prepareRecords($record);
-
-            $this->db->direct('set @request = {d}',
-            [
-                'd'=>json_encode([
-                    'tablename'=>$this->tablename,
-                    'type'=>'update',
-                    'data'=>$input
-                ])
-            ]
-            );
+            $this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'update']) ]);
             return $this->dsx_rest_api_set();
         }catch(\Exception $e){
             $this->hasError=true;
@@ -161,16 +149,7 @@ class DSTable {
     public function insert(mixed $record):mixed{
         try{
             $input=$this->prepareRecords($record);
-            $this->db->direct('set @request = {d}',
-            [
-                'd'=>json_encode([
-                    'tablename'=>$this->tablename,
-                    'type'=>'insert',
-                    'update'=>true,
-                    'data'=>$input
-                ])
-            ]
-            );
+            $this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'update','update'=>true]) ]);
             return $this->dsx_rest_api_set();
 
         }catch(\Exception $e){

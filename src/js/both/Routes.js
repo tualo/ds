@@ -33,10 +33,12 @@ Ext.define('Tualo.routes.DS', {
         action: function (tablename) {
             let type = 'dsview';
             let tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1);
-            console.log('Tualo.DataSets.' + type + '.' + tablenamecase, arguments);
+            /*console.log('Tualo.DataSets.' + type + '.' + tablenamecase, arguments);
             setTimeout(function () {
-                Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase);
+                
             }, 1000);
+            */
+            Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase);
         },
         before: function (tablename, action) {
             let type = 'dsview';
