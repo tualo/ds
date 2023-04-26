@@ -43,11 +43,6 @@ class DS implements IRoute{
 
                 $input = json_decode(file_get_contents('php://input'),true);
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
-                if (isset( $input['__id'] )){ 
-                    $input = [$input];
-                }
-
-
                 $table = new DSTable($db ,$tablename);
                 if($table->update($input)!==false){
                     App::result('success', true);
@@ -73,10 +68,6 @@ class DS implements IRoute{
 
                 $input = json_decode(file_get_contents('php://input'),true);
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
-                if (isset( $input['__id'] )){ 
-                    $input = [$input];
-                }
-
                 $table = new DSTable($db ,$tablename);
                 if(($result = $table->insert($input))!==false){
                     App::result('success', true);
@@ -109,11 +100,6 @@ class DS implements IRoute{
 
                 $input = json_decode(file_get_contents('php://input'),true);
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
-                if (isset( $input['__id'] )){ 
-                    $input = [$input];
-                }
-
-
                 $table = new DSTable($db ,$tablename);
                 if($table->delete($input)!==false){
                     App::result('success', true);

@@ -103,7 +103,7 @@ class DSTable {
         $data = json_encode( array_merge([
             'tablename'=>$this->tablename,
             'data'=>$input
-        ],$merge),JSON_UNESCAPED_SLASHES);
+        ],$merge),JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return $data;
     }
 
