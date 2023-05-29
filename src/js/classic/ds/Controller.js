@@ -4,6 +4,21 @@ Ext.define('Tualo.DS.panel.Controller', {
     mixins: {
         util: 'Tualo.DS.panel.mixins.ControllerTools'
     },
+    onDropGrid: function(node, data, overModel, dropPosition, eOpts){
+        console.log('dspanelcontroller onDropGrid',node, data, overModel, dropPosition, eOpts);
+    },
+    onRowClass: function(record, rowIndex, rowParams, store){
+        var tn = store.tablename||"";
+        console.log('dspanelcontroller onRowClass',record, rowIndex, rowParams, store);
+        if ((rowIndex%2==0)&&(typeof record.get(tn+"___rowclass_even")=="string")){
+            return record.get(tn+"___rowclass_even");
+        }
+        if ((rowIndex%2==1)&&(typeof record.get(tn+"___rowclass_odd")=="string")){
+            return record.get(tn+"___rowclass_odd");
+        }
+        return "";
+    },
+
     constructor: function(config){
         this.callParent([config]);
     },
@@ -49,6 +64,26 @@ Ext.define('Tualo.DS.panel.Controller', {
        store.load();
     },
     
+    onDropGrid: function(){
+
+        var i,
+            grid = this.getView(),
+            model = this.getViewModel(),
+            store = this.getStore(),
+            records = store.getRange(),
+            min = Number.POSITIVE_INFINITY,
+            fld_name = model.get('table_name') + '__' + model.get('reorderfield');
+
+        if (!Ext.isEmpty(fld_name)){
+            for(i=0;i<records.length;i++){
+                min=Math.min(min,records[i].get(fld_name));
+            }
+            min = 0;
+            for(i=0;i<records.length;i++){
+                records[i].set(fld_name,min+i);
+            }
+        }
+    },
     onDataChanged: function(t,e){
         let me = this,
             model = me.getViewModel(),
@@ -73,6 +108,8 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         } else {
             model.set('selectRecordRecordNumber',0);
+            model.set('record',null);
+            // form.loadRecord(null);
         }
 
         console.log('onListSelectionChange',model.$className);
@@ -223,6 +260,40 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         if ( !Ext.isEmpty(store.getModifiedRecords()) ){
             model.set('saving',true);
+
+            store.on('write',function(store, operation, eOpts){   
+                let response = operation.getResponse();
+                if (response.status==200){
+                    if (response.responseJson){
+                        if (response.responseJson.success==true){
+                            if (response.responseJson.data){
+                                
+
+                                response.responseJson.data.forEach(function(item){
+
+                                    response.request.records.forEach(function(record){
+                                        if (record.get('__id')==item['__id']){
+                                            record.set(item);
+                                            if (item['__newid'])  record.set('__id',item['__newid']);
+                                            
+                                        }
+                                    })
+                                    /*
+                                    let record = store.getById(item[keys[0]]);
+                                    if (record){
+                                        record.set(item);
+                                    }
+                                    */
+                                })
+                            }
+                        }
+                    }
+                }
+                console.info('operation',operation); 
+                console.error('write success',arguments); 
+            },this,{single:true});
+
+
             store.sync({
                 scope: this,
                 failure: function(){
@@ -231,6 +302,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 },
                 success: function(c,o){
                     //this.saveSubStores();
+                    //o.operations.create.forEach(function(item){
                     console.log('save success',arguments);
                     model.set('saving',false);
                     model.set('isNew',false);

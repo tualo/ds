@@ -125,6 +125,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
     },
 
 
+
     delete: function(){
         let model = this.getViewModel(),
             view = this.getView(),
@@ -132,12 +133,53 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
             list = view.getComponent('list'),
             selection =list.getSelectionModel().getSelection(),
             selectionCount = selection.length,
-            questionText = ((selectionCount==1)?'Möchten Sie wirklich den Datensatz löschen?':'Möchten Sie wirklich die Datensätze ('+selectionCount+' Stück) löschen?')
+            questionText = ((selectionCount==1)?'Möchten Sie wirklich den Datensatz löschen?':'Möchten Sie wirklich die Datensätze ('+selectionCount+' Stück) löschen?');
+        
+            console.log('delete',selectionCount,selection);
+
         if (selectionCount>0){
-            Ext.MessageBox.confirm('Löschen?',questionText,function(btn){
+            Ext.MessageBox.confirm('Löschen?',questionText,async function(btn){
                 if (btn=='yes'){
                     this.setViewType('list');
+                    let payload = [];
+                    let fields = store.getModel().getFields();
 
+
+
+                    selection.forEach(function(record){
+                        let o = {};
+                        fields.forEach(function(field){
+                            if (field.critical){
+                                o[field.name]=record.get(field.name);
+                            }
+                        });
+                        payload.push(o);
+                    });
+                    console.log('delete',payload);
+
+                    const response = await fetch('./ds/'+model.get('table_name')+'/delete',{
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+
+                    const jsonData = await response.json();
+
+                    if (jsonData.success){
+                        store.load();
+                    }else{
+                        let msg = jsonData.msg;
+                        if (msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+                        Ext.toast({
+                            html: msg,
+                            title: 'Fehler',
+                            width: 200,
+                            align: 't'
+                        });
+                    }
+                    
+                    console.log(jsonData);
+
+                    /*
                     selection.forEach(function(record){
                         store.remove(record);
                     });
@@ -160,6 +202,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                             }
                         }
                     });
+                    */
                 }
             },this);
         }
