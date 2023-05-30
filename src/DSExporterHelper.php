@@ -192,7 +192,7 @@ class DSExporterHelper
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save($pathName . $dateiname);
-        echo $pathName . $dateiname;
+        //echo $pathName . $dateiname;
     }
 
 
