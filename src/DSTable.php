@@ -17,11 +17,18 @@ class DSTable {
     private array $_warnings = [];
     private array $_moreResults = [];
     
-    
+    public static function init(mixed $db):DSTable{
+        return new DSTable($db,'test');
+    }
 
     function __construct(mixed $db,string $tablename){
         $this->db=$db;
         $this->tablename=$tablename;
+    }
+
+    public function t(string $tablename):DSTable{ 
+        $this->tablename=$tablename;
+        return  $this;
     }
 
     public function f(string $field,string $operator,mixed $value):DSTable{ 
