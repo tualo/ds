@@ -28,6 +28,23 @@ Ext.define('Tualo.routes.Cmp_ds', {
 
 
 Ext.define('Tualo.routes.DS', {
+    statics: {
+        load: async function() {
+            let response = await Tualo.Fetch.post('ds/ds/read',{limit:10000});
+            let list = [];
+            console.log('Tualo.routes.DS', response);
+            if (response.success==true){
+                for(let i=0;i<response.data.length;i++){
+                    if (!Ext.isEmpty(response.data[i].ds__table_name))
+                    list.push({
+                        name: response.data[i].ds__title + ' ('+ '#ds/'+response.data[i].ds__table_name+')',
+                        path: '#ds/'+response.data[i].ds__table_name
+                    });
+                }
+            }
+            return list;
+        }
+    }, 
     url: 'ds/:table',
     handler: {
         action: function (tablename) {
