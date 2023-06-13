@@ -107,6 +107,7 @@ class DSTable {
     }
 
     private function requestData(array $input,array $merge):string{
+        
         $data = json_encode( array_merge([
             'tablename'=>$this->tablename,
             'data'=>$input
