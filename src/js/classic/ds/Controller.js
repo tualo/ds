@@ -4,9 +4,6 @@ Ext.define('Tualo.DS.panel.Controller', {
     mixins: {
         util: 'Tualo.DS.panel.mixins.ControllerTools'
     },
-    onDropGrid: function(node, data, overModel, dropPosition, eOpts){
-        console.log('dspanelcontroller onDropGrid',node, data, overModel, dropPosition, eOpts);
-    },
     onRowClass: function(record, rowIndex, rowParams, store){
         var tn = store.tablename||"";
         console.log('dspanelcontroller onRowClass',record, rowIndex, rowParams, store);
@@ -80,8 +77,10 @@ Ext.define('Tualo.DS.panel.Controller', {
             }
             min = 0;
             for(i=0;i<records.length;i++){
+                console.log('onDropGrid',records[i],fld_name,min+i);
                 records[i].set(fld_name,min+i);
             }
+            console.log('onDropGrid',store.getRange(),store.getModifiedRecords());
         }
     },
     onDataChanged: function(t,e){
