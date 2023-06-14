@@ -51,6 +51,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
     initEvents: function(){
        let c = this;
+
        let store = this.getStore(),
            list = this.getView().getComponent('list');
 
@@ -61,8 +62,12 @@ Ext.define('Tualo.DS.panel.Controller', {
        store.load();
     },
     
+    
     onDropGrid: function(){
-
+        this.numberRows();
+    },
+    
+    numberRows: function(){
         var i,
             grid = this.getView(),
             model = this.getViewModel(),
@@ -70,17 +75,19 @@ Ext.define('Tualo.DS.panel.Controller', {
             records = store.getRange(),
             min = Number.POSITIVE_INFINITY,
             fld_name = model.get('table_name') + '__' + model.get('reorderfield');
-
         if (!Ext.isEmpty(fld_name)){
+            //vc.getView().getComponent('list').getStore().getRange();
+
+
             for(i=0;i<records.length;i++){
                 min=Math.min(min,records[i].get(fld_name));
             }
             min = 0;
+            
             for(i=0;i<records.length;i++){
                 console.log('onDropGrid',records[i],fld_name,min+i);
                 records[i].set(fld_name,min+i);
             }
-            console.log('onDropGrid',store.getRange(),store.getModifiedRecords());
         }
     },
     onDataChanged: function(t,e){
@@ -289,7 +296,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                     }
                 }
                 console.info('operation',operation); 
-                console.error('write success',arguments); 
+                console.debug('write success',arguments); 
             },this,{single:true});
 
 

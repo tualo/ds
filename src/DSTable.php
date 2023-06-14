@@ -119,15 +119,25 @@ class DSTable {
         $this->db->direct('set @log_dsx_commands=1',[],'r');
         // echo $this->db->singleValue('select @request r',[],'r').PHP_EOL;
         $this->db->direct('call dsx_rest_api_set(@request,@result)');
-        $this->_warnings = $this->db->getWarnings();
-        $mr = $this->db->moreResults();
-        if (!is_null($mr)){
-            $this->_moreResults = $mr;
-        }
+        $this->readWarnings();
+        $this->readMoreResults();
         $res = $this->db->singleValue('select @result s',[],'s');
         if ($res===false) return false;
         return json_decode($res,true);
     }
+
+    public function readWarnings():mixed{
+        $this->_warnings = array_merge($this->_warnings,$this->db->getWarnings());
+        return $this->_warnings;
+    }
+    public function readMoreResults():mixed{
+        $mr = $this->db->moreResults();
+        if (!is_null($mr)){
+            $this->_moreResults = array_merge($this->_moreResults,$mr);
+        }
+        return $this->_moreResults;
+    }
+    
 
     public function delete(mixed $record=[], mixed $options=[]):mixed{
         try{
@@ -158,6 +168,10 @@ class DSTable {
                     array_merge(['type'=>'update'],$options)
                 ) 
             ]);
+            TualoApplication::result('o', json_decode($this->requestData(
+                $input,
+                array_merge(['type'=>'update'],$options)
+            ),true ));
             return $this->dsx_rest_api_set();
         }catch(\Exception $e){
             $this->hasError=true;

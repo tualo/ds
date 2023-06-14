@@ -39,6 +39,7 @@ class DS implements IRoute{
 
             $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
+            $table = null;
             try{
 
                 $input = json_decode(file_get_contents('php://input'),true);
@@ -54,11 +55,24 @@ class DS implements IRoute{
                 }else{
                     App::result('success', false);
                     App::result('warnings',  $db->getWarnings());
+                    
+                    if(!is_null($table)){
+                        $table->readMoreResults();
+                        $table->readWarnings();
+                        App::result('warnings', $table->warnings());
+                        App::result('moreResults', $table->moreResults());
+                    }
+
                     App::result('msg', $table->errorMessage());
                 }
                 
             }catch(\Exception $e){
-        
+                if(!is_null($table)){
+                    $table->readMoreResults();
+                    $table->readWarnings();
+                    App::result('warnings', $table->warnings());
+                    App::result('moreResults', $table->moreResults());
+                }
                 App::result('msg', $e->getMessage());
         
             }
@@ -84,6 +98,8 @@ class DS implements IRoute{
                     
                 }else{
                     App::result('success', false);
+                    App::result('warnings', $table->warnings());
+                    App::result('moreResults', $table->moreResults());
                     App::result('msg', $table->errorMessage());
                 }
                 

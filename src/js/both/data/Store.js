@@ -42,6 +42,7 @@ Ext.define("Tualo.DataSets.data.Store",{
                 writer: {
                   type: 'json',
                   writeAllFields: true,
+                  /*
                   transform: {
                     fn: function(data, request) {
                         let result = {}, key;
@@ -58,7 +59,7 @@ Ext.define("Tualo.DataSets.data.Store",{
                       return result;
                     },
                     scope: this
-                }
+                }*/
                 }
             }
         }, config);
