@@ -48,10 +48,12 @@ class DS implements IRoute{
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
+                    App::result('warnings', $table->warnings());
+                    App::result('moreResults', $table->moreResults());
+
                 }else{
                     App::result('success', false);
                     App::result('warnings',  $db->getWarnings());
-
                     App::result('msg', $table->errorMessage());
                 }
                 
