@@ -10,7 +10,7 @@ use Tualo\Office\Basic\PostCheck;
 
 class InstallMainSQLCommandline implements ICommandline{
 
-    public static function getCommandName():string { return 'dsinstallsql';}
+    public static function getCommandName():string { return 'install-sql-ds';}
 
     public static function setup(Cli $cli){
         $cli->command(self::getCommandName())
@@ -43,7 +43,30 @@ class InstallMainSQLCommandline implements ICommandline{
 
     public static function run(Args $args){
 
-        $installSQL = function (){
+        $installSQLCompilerviews = function (){
+            $filename = __DIR__.'/sql/main_compiler.sql';
+            $sql = file_get_contents($filename);
+            $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
+            $sql = preg_replace('#^\s*\-\-.+$#m', '', $sql);
+
+            $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
+            foreach($sinlgeStatements as $commandIndex => $statement){
+                try{
+                    App::get('clientDB')->direct($statement);
+                    App::get('clientDB')->moreResults();
+                }catch(\Exception $e){
+                    echo PHP_EOL;
+                    PostCheck::formatPrintLn(['red'], $e->getMessage().': commandIndex => '.$commandIndex);
+                }
+            }
+        };
+        $clientName = $args->getOpt('client');
+        if( is_null($clientName) ) $clientName = '';
+        self::setupClients("setup main compiler views ",$clientName,$installSQLCompilerviews);
+
+
+
+        $installSQLDSX = function (){
             $filename = __DIR__.'/sql/main_dsx.sql';
             $sql = file_get_contents($filename);
             $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
@@ -62,6 +85,8 @@ class InstallMainSQLCommandline implements ICommandline{
         };
         $clientName = $args->getOpt('client');
         if( is_null($clientName) ) $clientName = '';
-        self::setupClients("setup main report procedures ",$clientName,$installSQL);
+        self::setupClients("setup main report procedures ",$clientName,$installSQLDSX);
+        
+
     }
 }
