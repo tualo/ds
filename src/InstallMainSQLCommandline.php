@@ -1,0 +1,67 @@
+<?php
+namespace Tualo\Office\DS;
+use Garden\Cli\Cli;
+use Garden\Cli\Args;
+use phpseclib3\Math\BigInteger\Engines\PHP;
+use Tualo\Office\Basic\ICommandline;
+use Tualo\Office\ExtJSCompiler\Helper;
+use Tualo\Office\Basic\TualoApplication as App;
+use Tualo\Office\Basic\PostCheck;
+
+class InstallMainSQLCommandline implements ICommandline{
+
+    public static function getCommandName():string { return 'dsinstallsql';}
+
+    public static function setup(Cli $cli){
+        $cli->command(self::getCommandName())
+            ->description('installs needed sql procedures for ds module')
+            ->opt('client', 'only use this client', false, 'string');
+            
+    }
+
+   
+    public static function setupClients(string $msg,string $clientName,callable $callback){
+        $_SERVER['REQUEST_URI']='';
+        $_SERVER['REQUEST_METHOD']='none';
+        App::run();
+
+        $session = App::get('session');
+        $sessiondb = $session->db;
+        $dbs = $sessiondb->direct('select username dbuser, password dbpass, id dbname, host dbhost, port dbport from macc_clients ');
+        foreach($dbs as $db){
+            if (($clientName!='') && ($clientName!=$db['dbname'])){ 
+                continue;
+            }else{
+                App::set('clientDB',$session->newDBByRow($db));
+                PostCheck::formatPrint(['blue'],$msg.'('.$db['dbname'].'):  ');
+                $callback();
+                PostCheck::formatPrintLn(['green'],"\t".' done');
+
+            }
+        }
+    }
+
+    public static function run(Args $args){
+
+        $installSQL = function (){
+            $filename = __DIR__.'/sql/main_dsx.sql';
+            $sql = file_get_contents($filename);
+            $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
+            $sql = preg_replace('#^\s*\-\-.+$#m', '', $sql);
+
+            $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
+            foreach($sinlgeStatements as $commandIndex => $statement){
+                try{
+                    App::get('clientDB')->direct($statement);
+                    App::get('clientDB')->moreResults();
+                }catch(\Exception $e){
+                    echo PHP_EOL;
+                    PostCheck::formatPrintLn(['red'], $e->getMessage().': commandIndex => '.$commandIndex);
+                }
+            }
+        };
+        $clientName = $args->getOpt('client');
+        if( is_null($clientName) ) $clientName = '';
+        self::setupClients("setup main report procedures ",$clientName,$installSQL);
+    }
+}
