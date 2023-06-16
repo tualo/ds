@@ -505,7 +505,6 @@ BEGIN
     IF operator='like' THEN SET result='like'; END IF;
     IF operator='in' THEN SET result='in'; END IF;
     IF operator='not in' THEN SET result='not in'; END IF;
-
     RETURN result;
 END //
 -- SOURCE FILE: ./src//create_or_upgrade_hstr_table.sql 
@@ -700,7 +699,7 @@ BEGIN
     IF JSON_TYPE(filterObject)<>'ARRAY' THEN
       SET filterObject = JSON_VALUE(request,concat('$.','filter'));
     END IF;
-    select request;
+--    select request;
 
 
     select
@@ -1156,10 +1155,8 @@ BEGIN
     DECLARE update_statement_fields LONGTEXT;
     DECLARE use_columns LONGTEXT;
     DECLARE sql_command LONGTEXT;
-    
     DECLARE i integer;
     DECLARE l integer;
-
     IF (JSON_EXISTS(request,'$.tablename')=0) THEN 
         SET msg = 'tablename not found';
         SET result = JSON_OBJECT('error',msg,'success',0);
