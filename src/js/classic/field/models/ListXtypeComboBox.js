@@ -18,7 +18,7 @@ Ext.define('Tualo.DS.fields.models.ListXtypeComboBox', {
       proxy: {
         type: 'ajax',
         api: {
-          read: './dslib/list/xtypes'
+          read: './dslib/column/xtypes'
         },
         writer: {
           type: 'json',

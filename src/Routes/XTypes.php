@@ -14,7 +14,16 @@ class XTypes implements IRoute{
             try{ 
                     
                 TualoApplication::result('success',  true  );
-                TualoApplication::result('data',  []  );
+                TualoApplication::result('data',  
+                    $db->direct('
+                    select classic_type id,concat(name," (",classic_type," - ",vendor,") ") name 
+                    from view_tualo_form_fields 
+                    having classic_type like {filter} 
+                    order by name
+                    ',
+                        array('filter'=>'%'.(isset($_REQUEST['query'])?$_REQUEST['query']:'').'%')
+                    )
+                );
                 TualoApplication::result('total',  0  );
               
             }catch(\Exception $e){
@@ -34,7 +43,19 @@ class XTypes implements IRoute{
             try{ 
                     
                 TualoApplication::result('success',  true  );
-                TualoApplication::result('data',  []  );
+                TualoApplication::result('data',  
+                    $db->direct('
+                    select classic_type id,concat(name," (",classic_type," - ",vendor,") ") name 
+                    from view_tualo_column_types 
+                    having 
+                        classic_type like {filter} 
+                    order by name
+                    ',
+                        [
+                            'filter'=>'%'.(isset($_REQUEST['query'])?$_REQUEST['query']:'').'%'
+                        ]
+                    )
+                );
                 TualoApplication::result('total',  0  );
               
             }catch(\Exception $e){
