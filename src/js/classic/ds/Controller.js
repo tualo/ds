@@ -198,12 +198,16 @@ Ext.define('Tualo.DS.panel.Controller', {
             console.log('onBeforeStoreLoad','listfilter',listfilter)
             console.log('onBeforeStoreLoad','listsorters',listsorters)
         
-            
+        
 
         listsorters.each(function(item){
             sorters.push(item.getConfig());
         });
         
+        listfilter.each(function(item){
+            window.f = item;
+            filters.push(item.getConfig());
+        });
         
         if (Ext.isEmpty(extraParams)){ extraParams = {}; };
         if (view.referencedList===true){

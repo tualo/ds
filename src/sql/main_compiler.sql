@@ -256,8 +256,6 @@ BEGIN
     RETURN res;
 END //
 
--- SOURCE FILE: ./src//100-insert/ds_rest_api.sql 
-
 -- SOURCE FILE: ./src//100-read/001.fn_ds_read_order_ex.sql 
 DELIMITER //
 
@@ -963,6 +961,12 @@ create table if not exists `extjs_base_types` (
     iscolumn tinyint default 0,
     isformfield tinyint default 0
 );
+
+create table if not exists `extjs_base_columnfilter_types`(
+    id varchar(100) primary key,
+    iscolumnfilter tinyint default 0
+);
+
 
 
 
@@ -2022,6 +2026,7 @@ from
         and `ds_column`.`existsreal`=1
 
 union 
+
 -- DS DD Field
 select 
     concat('Tualo.DataSets.combobox.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ) `id`,
@@ -2038,6 +2043,40 @@ select
     'Tualo DS' `vendor`,
     '' `description`,
     1 isformfield,
+    0 iscolumn
+
+from
+    `ds_dropdownfields`
+    join `ds` 
+        on `ds_dropdownfields`.`table_name` = `ds`.`table_name`
+    join `ds_column` 
+        on (`ds_dropdownfields`.`table_name`,`ds_dropdownfields`.`idfield`) = (`ds_column`.`table_name`,`ds_column`.`column_name`)
+        and `ds_column`.`existsreal`=1
+join ( 
+        select `table_name` 
+        from `ds_access` join `view_session_groups` on `ds_access`.`role` = `view_session_groups`.`group` and  `ds_access`.`read`=1 
+        group by  `table_name` 
+    ) `acc` on `acc`.`table_name` = `ds`.`table_name`
+
+
+union 
+
+-- DS columnfilter
+select 
+    concat('Tualo.DataSets.grid.filters.filter.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ) `id`,
+    concat('grid.filter.',lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter'))) `xtype_long_modern`,
+    concat('grid.filter.',lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter'))) `xtype_long_classic`,
+
+    'widget' `modern_typeclass`,
+    lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter')) `modern_type`,
+
+    'widget' `classic_typeclass`,
+    lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter')) `classic_type`,
+
+    concat('DS Columnfilter ',`ds`.`title`,'-',ds_dropdownfields.name,' (',`ds`.`table_name`,' ',lower(ds_dropdownfields.name),')') `name`,
+    'Tualo DS' `vendor`,
+    '' `description`,
+    0 isformfield,
     0 iscolumn
 
 from
@@ -2287,6 +2326,35 @@ where
     `ds_dropdownfields`.`name`<>'' ) x
     on ds_column_list_label.xtype=x.id
 group by ds_column_list_label.table_name;
+-- SOURCE FILE: ./src//500-ui/030-column/030.view_ds_columnfilters.sql 
+create or replace view view_ds_columnfilters as
+select 
+    concat(
+        'Ext.define(',doublequote(concat('Tualo.DataSets.grid.filters.filter.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
+            JSON_OBJECT(
+                "extend",  "Ext.grid.filters.filter.List",
+                "alias", concat('grid.filter.',lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter'))),
+                "tablename", `ds_dropdownfields`.`table_name`,
+                "idField", lower( concat( `ds_dropdownfields`.`table_name`,'__', `ds_dropdownfields`.`idfield` )),
+                "labelField", lower( concat( `ds_dropdownfields`.`table_name`,'__', `ds_dropdownfields`.`displayfield` )),
+                "store", JSON_OBJECT(
+                    "type", concat('ds_',`ds_dropdownfields`.`table_name`),
+                    "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_store'),
+                    "pageSize", 1000000
+                )
+            ),
+        ')',char(59)
+    ) js,
+    `ds_dropdownfields`.`table_name`,
+    `ds_dropdownfields`.`name`
+from
+    `ds_dropdownfields`
+    join `ds_column` 
+        on (`ds_dropdownfields`.`table_name`,`ds_dropdownfields`.`idfield`) = (`ds_column`.`table_name`,`ds_column`.`column_name`)
+        and `ds_column`.`existsreal`=1
+where
+    `ds_dropdownfields`.`name`<>''
+;
 -- SOURCE FILE: ./src//500-ui/040-field/040.display.sql 
 delimiter ;
 
@@ -2323,6 +2391,10 @@ where
 -- select * from view_ds_column;
 -- SOURCE FILE: ./src//500-ui/040-field/041.combobox.sql 
 delimiter ;
+
+
+
+
 
 create or replace view view_ds_combobox as
 select 
@@ -2388,11 +2460,49 @@ select
                         if (types.type is null,'missedxtypefield',ds_column_list_label.editor )
                         
                     ),
-                    'flex', 1, -- ,
-                    -- 'filter', 'string'
-                    'filter', if(ds_column_list_label.listfiltertype <>'',  concat(' {"type":"',ds_column_list_label.listfiltertype,'"}') ,if(ds_column.data_type='date','{"type":"date", "dateFormat": "Y-m-d"}',  if(ds_column.data_type='int','{"type":"number"}', if((ds_column.data_type in ('tinyint','boolean') or ds_column.column_type='bigint(4)' ),'{"type":"boolean", "yesText": "Ja", "noText":"Nein"}','{"type":"string"}') )   ) )
-                    -- 'filter', 'string',
-                    -- 'flex', 1
+                    'flex', 1,
+                    'filter' ,
+                        if ( ds_column_list_label.listfiltertype<>'',
+                        
+                            JSON_OBJECT(
+                                'type',   ds_column_list_label.listfiltertype
+                            ),
+
+                            CASE ds_column.data_type WHEN
+                                'date' THEN JSON_OBJECT(
+                                    'type', 'date',
+                                    'dateFormat', 'Y-m-d'
+                                )
+                                WHEN 'number' THEN JSON_OBJECT(
+                                    'type', 'number'
+                                )
+                                WHEN 'boolean' THEN JSON_OBJECT(
+                                    'type', 'boolean',
+                                    'yesText', 'Ja',
+                                    'noText', 'Nein'
+                                )
+                                WHEN 'tinyint' THEN JSON_OBJECT(
+                                    'type', 'boolean',
+                                    'yesText', 'Ja',
+                                    'noText', 'Nein'
+                                )
+
+                                ELSE 
+                                JSON_OBJECT(
+                                    'type', 'string'  
+                                )
+                            END
+                            
+                         )
+                            /*
+                        
+                        */
+-- ' {"type":"',ds_column_list_label.listfiltertype,'"}') ,if(ds_column.data_type='date','{"type":"date", "dateFormat": "Y-m-d"}', 
+-- if(ds_column.data_type='int','{"type":"number"}',
+-- if((ds_column.data_type in ('tinyint','boolean') or ds_column.column_type='bigint(4)' ),
+-- '{"type":"boolean", "yesText": "Ja", "noText":"Nein"}','{"type":"string"}') )   ) )
+-- 'filter', 'string',
+-- 'flex', 1
                 )
             order by ds_column_list_label.position separator ','),
         ']')
@@ -2417,6 +2527,7 @@ from
         and `ds_column_list_label`.`active` = 1
     left join view_readtable_all_types_classic types on  types.type = `ds_column_list_label`.`xtype`
         and typeclass='widget'
+    
 group by 
     `ds`.`table_name`;
 
