@@ -4,6 +4,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     mixins: {
         util: 'Tualo.DS.panel.mixins.ControllerTools'
     },
+    /*
     onRowClass: function(record, rowIndex, rowParams, store){
         var tn = store.tablename||"";
         console.log('dspanelcontroller onRowClass',record, rowIndex, rowParams, store);
@@ -15,13 +16,14 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
         return "";
     },
+    */
 
     constructor: function(config){
         this.callParent([config]);
     },
     onBoxReady: function(x){
         this.initEvents();
-        //window[this.getView().xtype]=this;
+        window[this.getView().xtype]=this;
         if (this.getView().referencedList===true){
             if (!Ext.isEmpty(this.getReferencedRecord())){
                 this.getReferencedView().getViewModel().bind('{record}', this.onReferencedRecordChange, this);
@@ -203,12 +205,9 @@ Ext.define('Tualo.DS.panel.Controller', {
         listsorters.each(function(item){
             sorters.push(item.getConfig());
         });
-        
         listfilter.each(function(item){
-            window.f = item;
             filters.push(item.getConfig());
         });
-        
         if (Ext.isEmpty(extraParams)){ extraParams = {}; };
         if (view.referencedList===true){
             referencedRecord = this.getReferencedRecord();

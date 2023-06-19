@@ -214,6 +214,56 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
 
     export: function(){
         alert('export');
+        /*
+        var  view = this.getView(),
+            referencedRecord = null, // this.getParentRecord()//model.get('referencedRecord'),
+            reference = {},
+            listfilter = this.getStore().getFilters(),
+            listsorters =this.getStore().getSorters(),
+            filters = [],
+            sorters = [],
+            config = {},
+            extraParams = store.getProxy().getExtraParams();
+
+        listsorters.each(function(item){
+            sorters.push(item.getConfig());
+        });
+        
+        listfilter.each(function(item){
+            filters.push(item.getConfig());
+        });
+        
+        if (Ext.isEmpty(extraParams)){ extraParams = {}; };
+        if (view.referencedList===true){
+            referencedRecord = this.getReferencedRecord();
+
+            console.log('referencedRecord',referencedRecord)
+            if ( (typeof referencedRecord=='undefined')||(referencedRecord==null) ) return false;
+            if (!Ext.isEmpty(referencedRecord)){
+                for(var ref in view.referenced){
+                    if (typeof view.referenced[ref]== 'string')
+                        reference[ref]=referencedRecord.get(view.referenced[ref]);
+                    if (typeof view.referenced[ref]== 'object'){
+                        if (typeof view.referenced[ref].v== 'string')
+                        reference[ref]=referencedRecord.get(view.referenced[ref].v);
+                    }
+                }
+            }
+            extraParams.reference = Ext.JSON.encode(reference);
+        }
+        
+        extraParams.filter = Ext.JSON.encode(filters);
+        extraParams.sort = Ext.JSON.encode(sorters);
+
+        config = {
+            url: './ds/'+tablename+'/export',
+            scope: this,
+            showWait: true,
+            timeout: 300000,
+            params: extraParams
+        };
+        Tualo.Ajax.download(config);
+        */
     }
 
 });

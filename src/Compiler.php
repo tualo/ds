@@ -145,7 +145,7 @@ class Compiler implements ICompiler {
                                 "\n".$item['js'];
                     })
                 );
-    
+
     
                 file_put_contents(
                     TualoApplication::get('tempPath').'/dsviewmodel.js',
@@ -157,6 +157,7 @@ class Compiler implements ICompiler {
                                 "\n".$item['js'];
                     })
                 );
+            
                 file_put_contents(
                     TualoApplication::get('tempPath').'/dsviewcontroller.js',
                     array_reduce(

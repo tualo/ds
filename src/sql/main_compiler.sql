@@ -3357,6 +3357,7 @@ select
                 "disableNext",true,
                 "disablePrev",  true,
                 "isModified",false,
+                "hideList",false,
                 "isNew",false,
                 "table_name",ds.table_name
             )
