@@ -7,7 +7,7 @@ use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSExporterHelper;
 
 
-class Import implements IRoute{
+class Export implements IRoute{
     public static function register(){
         Route::add('/ds/(?P<tablename>\w+)/export',function($matches){
             $tablename = strtolower($matches['tablename']);
