@@ -30,12 +30,16 @@ class Export implements IRoute{
                 $read = DSReadRoute::read($db,$tablename,$_REQUEST);
                 DSExporterHelper::exportDataToXSLX($db,$tablename,$hcolumns,$read['data'],$temporary_folder,$fname,$hcolumns);
                 App::result('file', $fname);
+                App::result('success', true);
+//                App::result('read', $read);
+//                App::result('hcolumns', $hcolumns);
+                
       
             }catch(\Exception $e){
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
                 
-        });
+        },['get','post'],true);
     }
 }

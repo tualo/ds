@@ -80,6 +80,9 @@ class DSExporterHelper
                 $res = $db->singleRow('select phpexporterfilename from ds where table_name={table_name}', array('table_name' => $tablename));
                 if ($res !== false) {
                     $dsrenderer = new DataRenderer($tablename, $db);
+                    if (is_null($res['phpexporterfilename'])||($res['phpexporterfilename']=='')){
+                        $res['phpexporterfilename'] = (Uuid::uuid4())->toString();
+                    }
                     $dateiname = $dsrenderer->renderTemplate($res['phpexporterfilename'], $_REQUEST);
                 }
             } catch (\Exception $e) {
@@ -110,7 +113,9 @@ class DSExporterHelper
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, '"WINDOWS-1255');
         } else {
-            throw new \Exception("No Library defined");
+            $dateiname .= '.csv';
+            DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns);
+//            throw new \Exception("No Library defined");
         }
     }
 
@@ -260,7 +265,6 @@ class DSExporterHelper
             fputcsv($out, $row, $delimiter, '"', "\\");
         }
         fclose($out);
-
         /*
     fputcsv ( resource $handle , array $fields [, string $delimiter = "," [, string $enclosure = '"' [, string $escape_char = "\\" ]]] ) : int
 

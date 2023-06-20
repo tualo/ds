@@ -209,17 +209,18 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
     },
 
     upload: function(){
-        alert('upload');
+        let tablename = this.getViewModel().get('table_name');
+        Ext.getApplication().redirectTo( "dsimport/"+tablename );
     },
 
     export: function(){
-        alert('export');
-        /*
         var  view = this.getView(),
+            store = this.getStore(),
+            tablename = this.getViewModel().get('table_name'),
             referencedRecord = null, // this.getParentRecord()//model.get('referencedRecord'),
             reference = {},
-            listfilter = this.getStore().getFilters(),
-            listsorters =this.getStore().getSorters(),
+            listfilter = store.getFilters(),
+            listsorters =store.getSorters(),
             filters = [],
             sorters = [],
             config = {},
@@ -263,7 +264,6 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
             params: extraParams
         };
         Tualo.Ajax.download(config);
-        */
     }
 
 });
