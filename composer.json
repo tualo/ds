@@ -17,6 +17,8 @@
     },
     "minimum-stability": "dev",
     "require": {
-       "tualo/extjscmplr": "*"
+       "tualo/extjscmplr": "*",
+       "phpoffice/phpspreadsheet": "*",
+       "ramsey/uuid": "*"
     }
 }
