@@ -366,9 +366,9 @@ set @request = '
     ]
 }
 ' //
- select dsx_filter_values(@request,'filter') //
 
 /*
+ select dsx_filter_values(@request,'filter') //
     select
         '' `property`,
         '' `operator`,
@@ -620,8 +620,9 @@ BEGIN
 
 END //
 
-call create_or_upgrade_hstr_table('cron_queries') //
+-- call create_or_upgrade_hstr_table('cron_queries') //
 -- SOURCE FILE: ./src//dsx_read_order.sql 
+
 DELIMITER //
 DROP FUNCTION IF EXISTS dsx_read_order //
 CREATE OR REPLACE FUNCTION `dsx_read_order`( request JSON )
@@ -681,7 +682,7 @@ set @request = '
 }
 ' //
 
-select dsx_read_order(@request) //
+-- select dsx_read_order(@request) //
 -- SOURCE FILE: ./src//dsx_rest_api_get.sql 
 delimiter //
 

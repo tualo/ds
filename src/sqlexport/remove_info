@@ -12,4 +12,6 @@ echo "$1" \
 | grep -v "50001 CREATE ALG" \
 | grep -v "50013 DEFINER"  \
 | sed -e 's/\/\*\!50001 VIEW/CREATE VIEW IF NOT EXISTS/' \
-| sed -e 's/ \*\/;/;/'
+| sed -e 's/ \*\/;/;/' \
+| sed -E 's/CREATE TABLE `/CREATE TABLE IF NOT EXISTS `/' \
+| sed -E 's/DEFINER=`.+`@`[a-zA-Z0-9\-\_\%\.]+`//'

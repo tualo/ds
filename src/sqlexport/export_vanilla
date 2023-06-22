@@ -1,0 +1,19 @@
+#!/bin/bash
+cd -P -- "$(dirname -- "$0")"
+
+echo "DELIMITER ;"
+echo "create view  if not exists view_session_groups as select '' \`group\`;"
+
+echo "DELIMITER //"
+./export_procs $*
+echo "DELIMITER ;"
+
+
+./export_ds $*
+echo "set foreign_key_checks=0;"
+./export_ds_css $*
+echo "set foreign_key_checks=1;"
+
+#echo "insert ignore into vertriebsregion(region,name) values (1,'Standard');"
+#echo "insert ignore into geschaeftsstellen(id,name) values (100,'Standard');"
+#echo "insert ignore into buchungskreise(id,name) values ('0000','Standard');"

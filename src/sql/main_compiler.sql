@@ -945,6 +945,10 @@ insert into custom_types_attributes_string (id,property,val) values
 on duplicate key update id=values(id),val=values(val);
 
 
+
+insert ignore into custom_types (        vendor,        name,        id, xtype_long_classic, extendsxtype_classic,        xtype_long_modern,        extendsxtype_modern    ) values ( "Tualo",  "Ext.tualo.form.field.DSFields", "Ext.tualo.form.field.DSFields", "widget.tualodsfields", "Ext.form.field.ComboBox", "widget.textarea", "Ext.field.Text" ) on duplicate key update    id =values(id), xtype_long_classic = values(xtype_long_classic),    extendsxtype_classic = values(extendsxtype_classic),name = values(name),vendor = values(vendor);
+insert ignore into custom_types (        vendor,        name,        id, xtype_long_classic, extendsxtype_classic,        xtype_long_modern,        extendsxtype_modern    ) values ( "Tualo",  "Ext.tualo.form.field.ListSelection", "Ext.tualo.form.field.ListSelection", "widget.tualolistselection", "Ext.form.field.ComboBox", "widget.textarea", "Ext.field.Text" ) on duplicate key update    id =values(id), xtype_long_classic = values(xtype_long_classic),    extendsxtype_classic = values(extendsxtype_classic),name = values(name),vendor = values(vendor);
+
 -- SOURCE FILE: ./src//500-ui/000-types/000.xtypes.sql 
 delimiter ;
 

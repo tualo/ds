@@ -1,0 +1,99 @@
+#!/bin/bash
+cd -P -- "$(dirname -- "$0")"
+
+PROCS=`cat << EndOfProcs
+addFieldIfNotExists
+canChangeValue
+create__fulltext_index
+create__unique_index
+convertColumnType2DataType
+debug_message
+denumber
+DOUBLEQUOTE
+isFieldExisting
+dsx_get_key_sql
+dsx_get_key_sql_plain
+dsx_rest_api_get
+dsx_rest_api_set
+dsx_rest_api_unescape
+ds_cloneformlabel
+ds_cloneformlabelexport
+FIELDQUOTE
+generateGUID
+german_to_decimal
+getSessionCurrentBKR
+getSessionCurrentOffice
+getSessionDefaultBKR
+getSessionDefaultOffice
+getSessionID
+getSessionUser
+getSessionUserFullName
+getSetup
+mastercopy
+pure_housenumber
+pure_streetname
+replace_null_in_string
+standardize_version
+TSP
+workdays
+check_database_defaults
+correctViewDefiner
+dsx_filter_operator
+dsx_filter_term
+dsx_filter_proc
+dsx_filter_values
+dsx_filter_values_extract
+dsx_filter_values_simple
+dsx_read_order
+ds_ddl_get_json_filter_values
+ds_ddl_get_read_sql
+ds_ddl_get_row_json
+ds_ddl_order_fields_sql
+ds_insert
+ds_rest_api_get
+ds_serial
+ds_update
+FILL_DS
+FILL_DS_REFERENCE_TABLES
+FILL_DS_COLUMN
+isDSOperationAllowed
+levenshtein
+mastercopyData
+mastercopyDDL
+mastercopyDSConfig
+SWITCH_TO_INNODB
+SWITCH_TO_LATIN1
+SWITCH_TO_UTF8
+SWITCH_TO_UTF8MB4
+EndOfProcs`
+
+for i in $PROCS
+do : 
+
+    NAME=$(mysql $* -BNe "select specific_name from information_schema.routines where routine_type='PROCEDURE' and routine_schema = database() and specific_name='$i'")
+    if [[ "" != "$NAME" ]]; then
+        # echo " PROCEDURE $i;"
+        DDL=$(mysql $* -BNe "show create procedure $i\G")
+        L=$(wc -l <<< "${DDL}")
+        L1=$(expr $L - 3)
+        L2=$(expr $L1 - 3)
+        DDL=$(echo "$DDL" | tail -n $L1)
+        DDL=$(echo "$DDL" | head -n $L2)
+        ./remove_info "$DDL//"
+        echo ""
+    fi
+
+    NAME=$(mysql $* -BNe "select specific_name from information_schema.routines where routine_type='FUNCTION' and routine_schema = database() and specific_name='$i'")
+    if [[ "" != "$NAME" ]]; then
+        DDL=$(mysql $* -BNe "show create function $i\G")
+        L=$(wc -l <<< "${DDL}")
+        L1=$(expr $L - 3)
+        L2=$(expr $L1 - 3)
+        DDL=$(echo "$DDL" | tail -n $L1)
+        DDL=$(echo "$DDL" | head -n $L2)
+        ./remove_info "$DDL//"
+        echo ""
+    fi
+
+done
+
