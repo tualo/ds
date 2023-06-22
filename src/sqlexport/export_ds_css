@@ -1,0 +1,20 @@
+#!/bin/bash
+cd -P -- "$(dirname -- "$0")"
+
+TABLES=`cat << EndOfTables
+ds_renderer_stylesheet
+ds_renderer_stylesheet_attributes
+ds_renderer_stylesheet_groups
+EndOfTables`
+
+VIEWS=`cat << EndOfViews
+ds_renderer_stylesheet_attributes_dd
+EndOfViews`
+
+DDL=$(./export_table_definition $* $TABLES)
+./remove_info "$DDL"
+./export_view_definition "$VIEWS" $* 
+
+
+DATA=$(mysqldump --no-create-info --complete-insert --single-transaction --add-drop-table=false --tables $* $TABLES)
+./remove_info "$DATA"

@@ -1,0 +1,6 @@
+#!/bin/bash
+for i in $1
+do : 
+    DDL=$(mysql ${@:2} --skip-column-names --batch -e "select VIEW_DEFINITION from information_schema.views where table_schema = database() and table_name='$i'")
+    echo "create view if not exists $DDL;"
+done

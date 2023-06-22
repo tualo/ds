@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "$1" \
+| grep -v "\-\-" \
+| grep -v "!50001 SET" \
+| grep -v "\/\*!40" \
+| grep -v "SET cha" \
+| grep -v "^SET @sav" \
+| sed -e 's/ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci//' \
+| sed -e 's/ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci//' \
+| sed -e 's/\/\*\!50001 CREATE VIEW/CREATE VIEW IF NOT EXISTS/' \
+| grep -v "50001 DROP VIEW IF EXISTS" \
+| grep -v "50001 CREATE ALG" \
+| grep -v "50013 DEFINER"  \
+| sed -e 's/\/\*\!50001 VIEW/CREATE VIEW IF NOT EXISTS/' \
+| sed -e 's/ \*\/;/;/'

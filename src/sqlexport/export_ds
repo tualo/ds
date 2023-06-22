@@ -1,0 +1,119 @@
+#!/bin/bash
+cd -P -- "$(dirname -- "$0")"
+TABLES=`cat << EndOfTables
+ds
+ds_access
+ds_addcommands
+ds_addcommands_xtypes
+ds_addcommand_locations
+ds_additional_columns
+ds_blg_column
+ds_class
+ds_column
+ds_column_form_label
+ds_column_form_properties
+ds_column_list_export
+ds_column_list_label
+ds_column_tagfields
+ds_column_types
+ds_combined_tables
+ds_contextmenu
+ds_contextmenu_groups
+ds_contextmenu_params
+ds_contextmenu_session_groups
+ds_custom_listview_config
+ds_db_types_fieldtype
+ds_dropdownfields
+ds_export_file_transfer
+ds_form_properties
+ds_import_file_transfer
+ds_nm_tables
+ds_preview_form_label
+ds_pug_templates
+ds_referenced_manual
+ds_referenced_manual_columns
+ds_reference_tables
+ds_renderer
+ds_renderer_stylesheet
+ds_renderer_stylesheet_attributes
+ds_renderer_stylesheet_groups
+ds_renderer_stylesheet_groups_assign
+ds_searchfields
+ds_send_mail
+ds_send_mail_to
+ds_statistics
+ds_sync_data
+ds_trigger
+ds_used_tables
+EndOfTables`
+
+
+DS_CONFIG_TABLES=`cat << EndOfTables
+ds
+ds_access
+ds_addcommands
+ds_addcommands_xtypes
+ds_addcommand_locations
+ds_additional_columns
+ds_blg_column
+ds_class
+ds_column
+ds_column_form_label
+ds_column_form_properties
+ds_column_list_export
+ds_column_list_label
+ds_column_tagfields
+ds_column_types
+ds_combined_tables
+ds_contextmenu
+ds_contextmenu_groups
+ds_contextmenu_params
+ds_contextmenu_session_groups
+ds_custom_listview_config
+ds_db_types_fieldtype
+ds_dropdownfields
+ds_export_file_transfer
+ds_form_properties
+ds_import_file_transfer
+ds_nm_tables
+ds_preview_form_label
+ds_pug_templates
+ds_referenced_manual
+ds_referenced_manual_columns
+ds_reference_tables
+ds_renderer
+ds_renderer_stylesheet
+ds_renderer_stylesheet_attributes
+ds_renderer_stylesheet_groups
+ds_renderer_stylesheet_groups_assign
+ds_searchfields
+ds_send_mail
+ds_send_mail_to
+ds_statistics
+ds_sync_data
+ds_trigger
+ds_used_tables
+EndOfTables`
+
+VIEWS=`cat << EndOfViews
+ds_renderer_stylesheet_attributes_dd
+EndOfViews`
+
+DDL=$(./export_table_definition $* $TABLES)
+./remove_info "$DDL"
+./export_view_definition "$VIEWS" $* 
+
+
+for i in $DS_CONFIG_TABLES
+do : 
+    ./dump_ds_definition $i $*
+done
+
+
+ 
+#DATA=$(mysqldump --no-create-info \
+#--complete-insert \
+#--single-transaction \
+#--add-drop-table=false \
+#--tables $* $TABLES)
+#./remove_info "$DATA"
