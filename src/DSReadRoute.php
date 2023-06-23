@@ -4,6 +4,14 @@ use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\DS\DataRenderer;
 
 class DSReadRoute{
+    public static function readSingleItem($db,$tablename,$request){
+        $res = self::read($db,$tablename,$request);
+        if ($res['total']>=1){
+            return $res['data']['0'];
+        }
+        return false;
+    }
+    
     public static function read($db,$tablename,$request){
         $config = (TualoApplication::get('configuration'));
         if (!isset($request['shortfieldnames'])){ 

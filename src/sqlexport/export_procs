@@ -3,6 +3,7 @@ cd -P -- "$(dirname -- "$0")"
 
 PROCS=`cat << EndOfProcs
 addFieldIfNotExists
+addForeignKeyIfNotExists
 canChangeValue
 create__fulltext_index
 create__unique_index

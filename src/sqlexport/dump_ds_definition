@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd -P -- "$(dirname -- "$0")"
 DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds --where "table_name = '$1'")
 ./remove_info "$DATA"
 DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_column --where "table_name = '$1'")

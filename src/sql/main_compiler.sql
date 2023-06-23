@@ -1912,7 +1912,7 @@ join (
     ) `acc` on `acc`.`table_name` = `ds`.`table_name`
 where `ds`.`title`<>''
 
-union
+union all
 
 
 -- DS List
@@ -1941,7 +1941,7 @@ join (
     ) `acc` on `acc`.`table_name` = `ds`.`table_name`
 where `ds`.`title`<>''
 
-union
+union all
 
 -- DS Form
 select 
@@ -1970,7 +1970,7 @@ join (
 where `ds`.`title`<>''
     
 
-union
+union all
 
 -- DS Column
 select 
@@ -2002,7 +2002,7 @@ from
         from `ds_access` join `view_session_groups` on `ds_access`.`role` = `view_session_groups`.`group` and  `ds_access`.`read`=1 
         group by  `table_name` 
     ) `acc` on `acc`.`table_name` = `ds`.`table_name`
-union 
+union  all
 -- DS Displayfield
 select 
     concat('Tualo.DataSets.displayfield.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ) `id`,
@@ -2029,7 +2029,7 @@ from
         on (`ds_dropdownfields`.`table_name`,`ds_dropdownfields`.`idfield`) = (`ds_column`.`table_name`,`ds_column`.`column_name`)
         and `ds_column`.`existsreal`=1
 
-union 
+union  all
 
 -- DS DD Field
 select 
@@ -2063,7 +2063,7 @@ join (
     ) `acc` on `acc`.`table_name` = `ds`.`table_name`
 
 
-union 
+union  all
 
 -- DS columnfilter
 select 
