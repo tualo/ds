@@ -14,4 +14,5 @@ echo "$1" \
 | sed -e 's/\/\*\!50001 VIEW/CREATE VIEW IF NOT EXISTS/' \
 | sed -e 's/ \*\/;/;/' \
 | sed -E 's/CREATE TABLE `/CREATE TABLE IF NOT EXISTS `/' \
-| sed -E 's/DEFINER=`.+`@`[a-zA-Z0-9\-\_\%\.]+`//'
+| sed -E 's/DEFINER=`.+`@`[a-zA-Z0-9\-\_\%\.]+`//' \
+| grep -v -e '^$'
