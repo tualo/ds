@@ -30,6 +30,35 @@ Ext.define('Tualo.DS.panel.Controller', {
             }
         }
     },
+    toolbarBoxReady: function(toolbar){
+        if (this.getView().additionalTools.length>0){
+            console.log('Tualo.DS.Panel',this,this.additionalTools,toolbar);
+
+            this.getView().additionalTools.forEach(element => {
+                if(!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.'+element.defered))){
+                    if (!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.'+element.defered).glyph)){
+                        element.glyph = Ext.ClassManager.getByAlias('widget.'+element.defered).glyph;
+                    }
+                    toolbar.add({
+                        xtype: "glyphtool",
+                        glyph: element.glyph,
+                        handler: function(){
+                            Ext.getApplication().redirectTo('dscommand/'+this.getViewModel().get('table_name')+'/'+element.defered);
+                        },
+                        tooltip: element.text
+                    });
+                }
+            });
+        }
+    },
+    onAddCommandClick: function(){
+        var me = this,
+
+            view = me.getView(),
+            store = me.getStore()
+            ;
+        console.log('onAddCommandClick',view,store,arguments);
+    },
     onReferencedRecordChange: function(record){
         if (record){
             console.log('referenced record changed',this.$className,record);

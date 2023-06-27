@@ -1,6 +1,9 @@
 Ext.define('Tualo.DS.Panel', {
     extend: "Ext.panel.Panel",
     controller: 'dspanelcontroller',
+    config: {
+        additionalTools: [],
+    },
     viewModel: {
         type:'dspanelmodel',
     },
@@ -21,12 +24,26 @@ Ext.define('Tualo.DS.Panel', {
             }
         }
     },
+    constructor: function(config){
+
+        
+
+        this.callParent([config]);
+
+
+        
+
+    },
+
     dockedItems: [
         {   
             xtype: "toolbar",
             dock: "top",
             layout: 'hbox',
             cls: "x-panel-header-default",
+            listeners: {
+                boxready: 'toolbarBoxReady'
+            },
             bind: {
                 userCls: "{userCls}",
             },

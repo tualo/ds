@@ -2702,7 +2702,7 @@ select
 
 from extjs_base_types where isformfield=1 or iscolumn=1
 
-union 
+union  all
 
 select 
 
@@ -3522,6 +3522,23 @@ SELECT
 FROM ds_renderer 
 ;
 
+
+call addfieldifnotexists('ds_addcommands','iconCls','varchar(255) default "x-fa fa-plus"');
+create or replace view view_ds_dsview_commands as
+select 
+ds_addcommands.table_name,
+ds_addcommands.location,
+ds_addcommands.position,
+JSON_OBJECT(
+    'text', ds_addcommands.label,
+    'iconCls', ifnull(ds_addcommands.iconcls,'x-fa fa-plus'),
+    'defered', ds_addcommands.xtype,
+    'handler', 'onAddCommandClick'
+) js
+
+from ds_addcommands
+where ds_addcommands.location = 'toolbar';
+
 create or replace view view_ds_dsview as
 select 
     concat(
@@ -3561,8 +3578,16 @@ select
             "defaults", JSON_OBJECT(
                 "headerPosition", "left"
             ),
-            
+            "additionalTools", if (
+                view_ds_dsview_commands.js is null, 
+                    json_merge(json_array(),'[]'), 
+                    json_merge(ifnull(JSON_ARRAYAGG(
+                        distinct 
+                        view_ds_dsview_commands.js
+                order by view_ds_dsview_commands.position
+            ),'[]'),'[]')),
             "items", JSON_ARRAYAGG(
+                distinct
                 view_ds_dsview_accordion.js
                 order by view_ds_dsview_accordion.position
             )
@@ -3573,6 +3598,8 @@ from ds
     join view_ds_dsview_accordion 
         on view_ds_dsview_accordion.table_name=ds.table_name
     left join view_ds_column_stores on ds.table_name = view_ds_column_stores.table_name
+    left join view_ds_dsview_commands on ds.table_name = view_ds_dsview_commands.table_name
+        and view_ds_dsview_commands.location = 'toolbar'
 group by ds.table_name
 ;
 
