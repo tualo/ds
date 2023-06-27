@@ -5,7 +5,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSRefreshInformationSchema', {
       tooltip: 'Auffrischen'
     },
     extend: 'Ext.panel.Panel',
-    alias: ['widget.ds_refresh_information_schema_command'],
+    alias: 'widget.ds_refresh_information_schema_command',
     layout: 'fit',
     items: [
       {
@@ -26,29 +26,12 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSRefreshInformationSchema', {
       this.selectedrecords = selectedrecords;
   
     },
-    buttons: [
-      {
-        text: 'Schliessen',
-        handler: function(btn){
-          btn.up('ds_refresh_information_schema_command').fireEvent('cancled');
-        }
-      },
-      {
-        text: 'Aktualisieren',
-        handler: function(btn){
-          var me = btn.up('ds_rmcache_command');
-          var vals = btn.up('ds_refresh_information_schema_command').getComponent('syncform').getForm().getValues();
-          Tualo.Ajax.request({
-            showWait: true,
-            url: './dssetup/ds-update',
-            
-            
-            scope: this,
-            json: function(o){
-              btn.up('ds_refresh_information_schema_command').fireEvent('cancled');
-            }
-          })
-        }
-      }
-    ]
+    getNextText: function(){
+      return 'Aktualisieren';
+    },
+    run: async function(){
+      let res= await Tualo.Fetch.post('./dssetup/ds-update',{
+      });
+      return res;
+    }
   });

@@ -8,6 +8,7 @@ require_once "Routes/DS.php";
 require_once "Routes/Export.php";
 require_once "Routes/Import.php";
 require_once "Routes/JsLoader.php";
+require_once "Routes/DSUpdate.php";
 
 require_once "Routes/File.php";
 require_once "Routes/XTypes.php";

@@ -6,17 +6,17 @@ Ext.define('Tualo.routes.DSDeferedCommand', {
             return list;
         }
     }, 
-    url: 'dscommand/:table/:command',
+    url: 'dscommand/:table/:command/:id',
     handler: {
-        action: function (tablename,command) {
+        action: function (tablename,command,id) {
 
             Ext.getApplication().addView('Tualo.ds.lazy.DeferedCommand',{
                 tablename: tablename,
                 command: command,
-                callee: Ext.getApplication().getCurrentView()
+                calleeId: id
             });
         },
-        before: function (tablename,command, action) {
+        before: function (tablename,command,id, action) {
             action.resume();
         }
     }

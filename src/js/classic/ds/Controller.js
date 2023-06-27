@@ -31,6 +31,8 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
     },
     toolbarBoxReady: function(toolbar){
+        let id = this.getView().getId(),
+            tn = this.getViewModel().get('table_name');
         if (this.getView().additionalTools.length>0){
             console.log('Tualo.DS.Panel',this,this.additionalTools,toolbar);
 
@@ -43,7 +45,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                         xtype: "glyphtool",
                         glyph: element.glyph,
                         handler: function(){
-                            Ext.getApplication().redirectTo('dscommand/'+this.getViewModel().get('table_name')+'/'+element.defered);
+                            Ext.getApplication().redirectTo('dscommand/'+tn+'/'+element.defered+'/'+id);
                         },
                         tooltip: element.text
                     });

@@ -34,7 +34,12 @@ Ext.define('Tualo.DS.Panel', {
         
 
     },
-
+    getStore: function(){
+        return this.getComponent('list').getStore();
+    },
+    getList: function(){
+        return this.getComponent('list');
+    },
     dockedItems: [
         {   
             xtype: "toolbar",

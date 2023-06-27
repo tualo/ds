@@ -3,7 +3,8 @@ Ext.define('Tualo.ds.lazy.models.DeferedCommand', {
     alias: 'viewmodel.lazy_ds_defered_command',
     data:{
         prevButtonText: 'Zurück',
-        nextButtonText: 'Weiter'
+        nextButtonText: 'Weiter',
+        enableNext: false,
     },
     stores: {
         
@@ -13,7 +14,7 @@ Ext.define('Tualo.ds.lazy.models.DeferedCommand', {
             return '...';
         },
         nextDisabled: function(get){
-            return true;
+            return !get('enableNext');
         },
         prevDisabled: function(get){
             return true;
