@@ -12,6 +12,7 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
                 xtype: me.getView().command,
                 tablename: me.getView().tablename,
                 calleeId: me.getView().calleeId,
+                param: me.getView().param
             });
             me.c.loadRecord(record,range,sel);
             me.getView().add(me.c);

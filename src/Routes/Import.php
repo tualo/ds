@@ -503,7 +503,6 @@ class Import implements IRoute
                     $dataset[] = $dataRecord;
                 }
                 $table = DSTable::init($db)->t($tablename);
-
                 // options replace ignore update
                 $table->insert($dataset);
                 $_index += count($dataset);

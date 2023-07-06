@@ -34,11 +34,16 @@ class DSUpdate implements IRoute{
             try{
                 if (isset($_REQUEST['list'])){
                     $list = json_decode($_REQUEST['list'],true);
-                    $proc = $_REQUEST['proc'];
+                    $proc = $matches['proc'];
                     $msgs = [];
+                    $results=[];
+                    $warnings=[];
                     foreach ($list as $id) {
                         set_time_limit(600);
                         $db->direct('call '.$proc.'({id},@result,@msg)',['id'=>$id]);
+                        $results    = array_merge($results,$db->moreResults());
+                        $warnings   = array_merge($warnings,$db->getWarnings());
+                        
                         $r = $db->direct('select @result result,@msg msg');
                         if ($r[0]['result']==1){
                             $msgs[]=$r[0]['msg'];
@@ -49,7 +54,7 @@ class DSUpdate implements IRoute{
                     }
                 }
                 App::result('success', true);
-                App::result('r',$_REQUEST);
+                App::result('results',$results);
             }catch(\Exception $e){
                 App::result('last_sql', $db->last_sql );
                 App::result('msg', $e->getMessage());
