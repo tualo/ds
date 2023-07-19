@@ -39,7 +39,7 @@ Ext.define('Tualo.cmp.cmp_ds.controller.mixins.Save', {
                     let l =  m[1].split('`,`');
                     l.forEach(function(fld){
                         fld = fld.replace(/\`/g,'');
-                        let el = form.down('[name='+view.tablename+'__'+fld+']');
+                        let el = form.down('[name='+ fld+']');
                         el.addCls('panel-shake');
                         //el.labelElement.addCls('label-shake');
                         

@@ -35,10 +35,10 @@ Ext.define('Tualo.routes.DS', {
             console.log('Tualo.routes.DS', response);
             if (response.success==true){
                 for(let i=0;i<response.data.length;i++){
-                    if (!Ext.isEmpty(response.data[i].ds__table_name))
+                    if (!Ext.isEmpty(response.data[i].table_name))
                     list.push({
-                        name: response.data[i].ds__title + ' ('+ '#ds/'+response.data[i].ds__table_name+')',
-                        path: '#ds/'+response.data[i].ds__table_name
+                        name: response.data[i].title + ' ('+ '#ds/'+response.data[i].table_name+')',
+                        path: '#ds/'+response.data[i].table_name
                     });
                 }
             }

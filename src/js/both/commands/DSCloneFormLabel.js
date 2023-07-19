@@ -25,7 +25,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSCloneFormLabel', {
     },
     run: async function(){
         let res= await Tualo.Fetch.post('./dsrun/ds_cloneformlabel',{
-            list: Ext.JSON.encode([this.record.get('ds_column_list_label__table_name')])
+            list: Ext.JSON.encode([this.record.get('table_name')])
         });
         return res;
     },

@@ -7,11 +7,11 @@ Ext.define('Tualo.DataSets.grid.Controller', {
     onRowClass: function(record, rowIndex, rowParams, store){
         var tn = store.tablename||"";
         console.log('onRowClass',record, rowIndex, rowParams, store);
-        if ((rowIndex%2==0)&&(typeof record.get(tn+"___rowclass_even")=="string")){
-            return record.get(tn+"___rowclass_even");
+        if ((rowIndex%2==0)&&(typeof record.get( "_rowclass_even")=="string")){
+            return record.get("_rowclass_even");
         }
-        if ((rowIndex%2==1)&&(typeof record.get(tn+"___rowclass_odd")=="string")){
-            return record.get(tn+"___rowclass_odd");
+        if ((rowIndex%2==1)&&(typeof record.get("_rowclass_odd")=="string")){
+            return record.get("_rowclass_odd");
         }
         return "";
     }

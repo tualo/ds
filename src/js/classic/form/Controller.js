@@ -102,7 +102,7 @@ Ext.define('Tualo.DataSets.form.Controller', {
                     let l =  m[1].split('`,`');
                     l.forEach(function(fld){
                         fld = fld.replace(/\`/g,'');
-                        let el = form.down('[name='+form.tablename+'__'+fld+']');
+                        let el = form.down('[name='+fld+']');
                         el.addCls('panel-shake');
                         //el.labelElement.addCls('label-shake');
                         

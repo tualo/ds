@@ -4,19 +4,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     mixins: {
         util: 'Tualo.DS.panel.mixins.ControllerTools'
     },
-    /*
-    onRowClass: function(record, rowIndex, rowParams, store){
-        var tn = store.tablename||"";
-        console.log('dspanelcontroller onRowClass',record, rowIndex, rowParams, store);
-        if ((rowIndex%2==0)&&(typeof record.get(tn+"___rowclass_even")=="string")){
-            return record.get(tn+"___rowclass_even");
-        }
-        if ((rowIndex%2==1)&&(typeof record.get(tn+"___rowclass_odd")=="string")){
-            return record.get(tn+"___rowclass_odd");
-        }
-        return "";
-    },
-    */
+
 
     constructor: function(config){
         this.callParent([config]);
@@ -107,7 +95,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             store = this.getStore(),
             records = store.getRange(),
             min = Number.POSITIVE_INFINITY,
-            fld_name = model.get('table_name') + '__' + model.get('reorderfield');
+            fld_name =  model.get('reorderfield');
         if (!Ext.isEmpty(fld_name)){
             //vc.getView().getComponent('list').getStore().getRange();
 
@@ -247,6 +235,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             if ( (typeof referencedRecord=='undefined')||(referencedRecord==null) ) return false;
             if (!Ext.isEmpty(referencedRecord)){
                 for(var ref in view.referenced){
+                    if (ref.indexOf(model.get('table_name')+'__')==0){
+                        ref = ref.replace(model.get('table_name')+'__','');
+                    }
                     if (typeof view.referenced[ref]== 'string')
                         reference[ref]=referencedRecord.get(view.referenced[ref]);
                     if (typeof view.referenced[ref]== 'object'){

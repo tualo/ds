@@ -15,7 +15,7 @@ class DSReadRoute{
     public static function read($db,$tablename,$request){
         $config = (TualoApplication::get('configuration'));
         if (!isset($request['shortfieldnames'])){ 
-            $request['shortfieldnames']=0; $request['comibedfieldname']=1;
+            $request['shortfieldnames']=1; $request['comibedfieldname']=0;
         }else{
             $request['comibedfieldname']=($request['shortfieldnames']==1)?0:1;
         }
@@ -64,6 +64,7 @@ class DSReadRoute{
         $request['tablename'] = $tablename;
         $request['nodata'] = 1;
 
+        
         $db->direct('set @request = {request};',['request'=>json_encode($request)]);
         $db->direct('call dsx_rest_api_get(@request,@result);');
         $mysqlresults = [];

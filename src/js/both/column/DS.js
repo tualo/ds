@@ -12,9 +12,9 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS",{
                 store = Ext.data.StoreManager.lookup(storeId),
                 renderRecord = null;
             if (store){
-                renderRecord = store.findRecord( column.tablename+"__"+column.idField , value,0,false,false,true);
+                renderRecord = store.findRecord( column.idField , value,0,false,false,true);
                 if (renderRecord){
-                    value =  renderRecord.get(column.tablename+"__"+column.displayField);
+                    value =  renderRecord.get(column.displayField);
                 }else{
                     metaData.tdStyle = "color: rgb(200,30,30)";
                 }

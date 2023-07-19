@@ -36,7 +36,6 @@ Ext.define('Tualo.DS.Renderer', {
             console.log( list.getSelection() );
   
             this.up('cmp_ds_pdfrendererpanel').loadBulk( list.getSelection() );
-            //this.getComponent('frame').load(  './pugreportpdf/'+this.record.get('__table_name')+'/'+this.template+'/'+id );
   
           }else{
             Ext.toast({

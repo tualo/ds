@@ -33,7 +33,7 @@ Ext.define('Ext.cmp.cmp_ds.views.DsNewKST', {
   run: async function () {
     let parent = Ext.getCmp(this.calleeId);
     var newrecord = parent.getController().cloneRecord();
-    newrecord.set(newrecord.get('__table_name') + '__kostenstelle', -1);
+    newrecord.set('kostenstelle', -1);
     var store = Ext.create(Ext.ClassManager.getName(Ext.ClassManager.getByAlias('store.' + newrecord.get('__table_name') + '_store')), {
       autoLoad: false,
       autoSync: false,
@@ -41,19 +41,19 @@ Ext.define('Ext.cmp.cmp_ds.views.DsNewKST', {
       type: newrecord.get('__table_name') + '_store'
     });
     store.setFilters({
-      property: newrecord.get('__table_name') + '__kundennummer',
+      property:  'kundennummer',
       operator: 'eq',
-      value: newrecord.get(newrecord.get('__table_name') + '__kundennummer')
+      value: 'kundennummer'
     });
     store.load({
       callback: function () {
         var r = store.getRange();
         var m = 0;
         r.forEach(function (element) {
-          m = Math.max(m, element.get(newrecord.get('__table_name') + '__kostenstelle'));
+          m = Math.max(m, element.get( 'kostenstelle'));
         });
         m++;
-        newrecord.set(newrecord.get('__table_name') + '__kostenstelle', m);
+        newrecord.set( 'kostenstelle', m);
       }
     });
     return null;

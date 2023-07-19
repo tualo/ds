@@ -786,6 +786,9 @@ select
 from `custom_types` 
 ;
 
+
+ 
+
 create table if not exists `custom_types_attributes_integer` (
     id varchar(100) not null,
     property varchar(100) not null,
@@ -2122,6 +2125,7 @@ from view_readtable_all_types where  xtype_long_classic is not null
 -- SOURCE FILE: ./src//500-ui/010-model/010.view_ds_model.sql 
 delimiter ;
 
+call addfieldifnotexists('ds','modelbaseclass','varchar(100) default "Tualo.DataSets.model.Basic"');
 
 
 create or replace view view_ds_column_merge as
@@ -2172,6 +2176,9 @@ where ds_column.existsreal = 1
     -- ds_column.data_type in ('date','datetime','time')
 ;
 
+
+call addfieldifnotexists('ds_column','fieldtype','varchar(100) default ""');
+
 create or replace view view_ds_model as
 select 
     concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) name,
@@ -2179,7 +2186,7 @@ select
 
 concat( 'Ext.define(',quote( concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) ) , ', ',
  JSON_OBJECT(
-     'extend', 'Tualo.DataSets.model.Basic',
+     'extend', modelbaseclass,
      'entityName',  ds.table_name,
      'idProperty', '__id',
      'fields',
@@ -2193,8 +2200,12 @@ concat( 'Ext.define(',quote( concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_
             concat('[',group_concat( 
                 JSON_MERGE(
                     JSON_OBJECT(
-                        'name', concat(`ds_column`.`table_name`,'__',`ds_column`.`column_name`),
-                        'type', if(ds_column.column_type='bigint(4)' or ds_column.column_type='int(4)' or ds_column.column_type='tinyint(4)','boolean', ifnull(`ds_column_forcetype`.`fieldtype`, ifnull(`ds_db_types_fieldtype`.`fieldtype`,'string')))
+                        'name', concat(/*`ds_column`.`table_name`,'__',*/`ds_column`.`column_name`),
+                        'type', 
+                        if (ds_column.fieldtype<>'',
+                            ds_column.fieldtype,
+                            if(ds_column.column_type='bigint(4)' or ds_column.column_type='int(4)' or ds_column.column_type='tinyint(4)','boolean', ifnull(`ds_column_forcetype`.`fieldtype`, ifnull(`ds_db_types_fieldtype`.`fieldtype`,'string')))
+                        )
                     ),
                     if(
                         ds_column.default_value='',
@@ -2253,9 +2264,16 @@ select
             "model", concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))),
             "remoteFilter", TRUE is true,
             "autoLoad", FALSE is true,
-            "autoSync", FALSE is true
-        ),')',char(59)) js,
-        table_name
+            "autoSync", FALSE is true,
+            "sorters", JSON_ARRAY(
+                JSON_OBJECT(
+                    "property", if(sortfield<>'',sortfield,'__id'),
+                    "direction", "ASC"
+                )
+            )
+        ),')',char(59)
+    ) js,
+    table_name
 from
     ds
     
@@ -2276,6 +2294,7 @@ create or replace view view_ds_column as
 select 
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.column.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
+            
             JSON_OBJECT(
                 "extend",  "Tualo.cmp.cmp_ds.column.DS",
                 -- "requires", JSON_MERGE('[]',concat('[',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds_dropdownfields.table_name, 1)), lower(SUBSTRING(ds_dropdownfields.table_name, 2)))),']')) ,
@@ -2339,8 +2358,8 @@ select
                 "extend",  "Ext.grid.filters.filter.List",
                 "alias", concat('grid.filter.',lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter'))),
                 "tablename", `ds_dropdownfields`.`table_name`,
-                "idField", lower( concat( `ds_dropdownfields`.`table_name`,'__', `ds_dropdownfields`.`idfield` )),
-                "labelField", lower( concat( `ds_dropdownfields`.`table_name`,'__', `ds_dropdownfields`.`displayfield` )),
+                "idField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`idfield` )),
+                "labelField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`displayfield` )),
                 "store", JSON_OBJECT(
                     "type", concat('ds_',`ds_dropdownfields`.`table_name`),
                     "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_store'),
@@ -2408,8 +2427,8 @@ select
                 "extend",  "Tualo.cmp.cmp_ds.field.ComboBoxDS",
                 -- "requires", JSON_MERGE('[]',concat('[',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds_dropdownfields.table_name, 1)), lower(SUBSTRING(ds_dropdownfields.table_name, 2)))),']')) ,
                 "tablename", `ds_dropdownfields`.`table_name`,
-                "valueField", lower( concat( `ds_dropdownfields`.`table_name`,'__', `ds_dropdownfields`.`idfield` )),
-                "displayField", lower( concat( `ds_dropdownfields`.`table_name`,'__', `ds_dropdownfields`.`displayfield` )),
+                "valueField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`idfield` )),
+                "displayField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`displayfield` )),
                 "store", JSON_OBJECT(
                     "type", concat('ds_',`ds_dropdownfields`.`table_name`),
                     "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_columnstore'),
@@ -2454,10 +2473,14 @@ select
                 JSON_OBJECT(
                     'text', `ds_column_list_label`.`label`,
                     'xtype', if(types.type is null,'gridcolumn', `ds_column_list_label`.`xtype`),
-                    'dataIndex', concat(`ds_column`.`table_name`,'__',`ds_column`.`column_name`),
-                    'summaryFormatter', null,
-                    'hidden', if (`ds_column_list_label`.`hidden`=1,true=true,false=true),
+                    'dataIndex', concat( /*`ds_column`.`table_name`,'__',*/ `ds_column`.`column_name`),
+                    'align', if(ifnull(`ds_column_list_label`.`align`,'')<>'',`ds_column_list_label`.`align`,'start'),
+                    'formatter', if(ifnull(`ds_column_list_label`.`renderer`,'')<>'',`ds_column_list_label`.`renderer`,''),
+                    'summaryType', if(ifnull(`ds_column_list_label`.`summarytype`,'')<>'',`ds_column_list_label`.`summarytype`,null),
                     'summaryRenderer', null,
+                    -- if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
+                    'summaryFormatter', if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
+                    'hidden', if (`ds_column_list_label`.`hidden`=1,true=true,false=true),
                     'editor', if(
                         (ifnull(ds_column_list_label.editor,'')=''   ),
                         null,
@@ -2618,7 +2641,7 @@ select
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.list.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
-            "extend", "Tualo.DataSets.grid.Grid",
+            "extend", if( ifnull(extjs_base_types.id,"")='', 'Tualo.DataSets.grid.Grid', extjs_base_types.id),
             "tablename",  ds.table_name,
             "alias", concat('widget.dslist_',ds.table_name),
             "title", ds.title,
@@ -2626,6 +2649,13 @@ select
             "controller",concat('dsgridcontroller'),
             "stateful",JSON_OBJECT("columns",true),
             
+            "features", JSON_ARRAY(
+                JSON_OBJECT(
+                    "dock", "bottom",
+                    "ftype","summary"
+                )
+            ),
+
             "plugins", 
             JSON_ARRAY(
 
@@ -2671,6 +2701,8 @@ from
     ds
     join view_ds_listcolumn 
         on ds.table_name = view_ds_listcolumn.table_name
+    left join extjs_base_types
+        on extjs_base_types.id = ds.listviewbaseclass
     left join view_ds_list_plugins_grouped
         on view_ds_list_plugins_grouped.table_name = ds.table_name
 
@@ -2792,17 +2824,17 @@ select
                 ),
 
                 'missedXtype', if(view_readtable_all_types_modern.type is null,`ds_column_form_label`.`xtype`,''),
-                /*
-                'triggers', JSON_OBJECT(
-                    "clear", JSON_OBJECT( "type", 'clear')/*,
-                    "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
                 
-                ),
-                */
+                -- 'triggers', JSON_OBJECT(
+                --     "clear", JSON_OBJECT( "type", 'clear')/*,
+                --     "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
+                -- 
+                -- ),
+               
                 'placeholder', `ds_column_form_label`.`label`,
-                'name', concat(`ds_column_form_label`.`table_name`,'__',`ds_column_form_label`.`column_name`),
+                'name', concat( /*`ds_column_form_label`.`table_name`,'__',*/`ds_column_form_label`.`column_name`),
                 'bind', JSON_OBJECT( 
-                    "value",concat('{record.',`ds_column_form_label`.`table_name`,'__',`ds_column_form_label`.`column_name`,'}')
+                    "value",concat('{record.',/*`ds_column_form_label`.`table_name`,'__',*/`ds_column_form_label`.`column_name`,'}')
                 ),
                 'listeners', JSON_OBJECT( 
                     'change', 'onFormFieldChanged'
@@ -2825,17 +2857,15 @@ select
                             -- 'label', `ds_column_form_label`.`label`,
                             'flex', 1,
                             'xtype',  if(view_readtable_all_types_modern.type is null,'displayfield', `ds_column_form_label`.`xtype`),
-                            /*
-                            'triggers', JSON_OBJECT(
-                                "clear", JSON_OBJECT( "type", 'clear')/*,
-                                "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
-                              
-                            ),
-                              */
+                            
+                            -- 'triggers', JSON_OBJECT(
+                            --     "clear", JSON_OBJECT( "type", 'clear')/*,
+                            --     "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
+                            -- ),
                             'emptyText', `ds_column_form_label`.`label`,
-                            'name', concat(`ds_column_form_label`.`table_name`,'__',`ds_column_form_label`.`column_name`),
+                            'name', concat( /*`ds_column_form_label`.`table_name`,'__',*/ `ds_column_form_label`.`column_name`),
                             'bind', JSON_OBJECT( 
-                                "value",concat('{record.',`ds_column_form_label`.`table_name`,'__',`ds_column_form_label`.`column_name`,'}')
+                                "value",concat('{record.',/*`ds_column_form_label`.`table_name`,'__',*/ `ds_column_form_label`.`column_name`,'}')
                             ),
                             'listeners', JSON_OBJECT( 
                                 'change', 'onFormFieldChanged'
@@ -3027,7 +3057,7 @@ select
             ds_reference_tables.reference_table_name
         ),
         "referenced",
-        JSON_MERGE('{}', ds_reference_tables.columnsdef)
+        JSON_MERGE('{}', replace(replace(ds_reference_tables.columnsdef,concat('"',ds_reference_tables.reference_table_name,'__'),'"'),concat('"',ds_reference_tables.table_name,'__'),'"'))
     ) js,
     100 + ds_reference_tables.position
 from
@@ -3044,10 +3074,10 @@ select
         -- "html", concat( 'dsview_', 'view_blg_list_', lower(blg_config.tabellenzusatz) ),
         "referencedList", 1 = 1,
         "referenced", JSON_OBJECT(
-            concat( 'view_blg_list_', lower(blg_config.tabellenzusatz), '__kundennummer' ),
-            concat(adress_bezug, '__', blg_config.bezug_id),
-            concat( 'view_blg_list_', lower(blg_config.tabellenzusatz),'__kostenstelle' ),
-            concat(adress_bezug, '__', bezug_kst)
+            concat( 'kundennummer' ),
+            concat( blg_config.bezug_id),
+            concat( 'kostenstelle' ),
+            concat( bezug_kst)
         )
     ) js,
     9000000+(rank() over (order by blg_config.name)) position

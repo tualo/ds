@@ -86,6 +86,7 @@ class DSTable {
         if ( $records !== array_values($records) ) {
             $records = [$records];
         }
+        /*
         $recs = [];
         foreach($records as $record){
             $rec = [];
@@ -102,8 +103,8 @@ class DSTable {
             }
             $recs[] =$rec;
         }
-        
-        return $recs;
+        */
+        return $records;
     }
 
     private function requestData(array $input,array $merge):string{

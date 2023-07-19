@@ -1,0 +1,99 @@
+delimiter ;
+insert
+    ignore into extjs_base_types (
+        vendor,
+        id,
+        classname,
+
+        xtype_long_classic,
+        baseclass,
+        xtype_long_modern,
+        name,
+        description,
+        iscolumn,
+        isformfield
+    )
+values
+    (
+        "Tualo",
+        "Tualo.DataSets.grid.Grid",
+        "Tualo.DataSets.grid.Grid",
+        
+        "widget.dsgrid",
+        "Ext.grid.Panel",
+        "widget.dsgrid",
+
+        "Tualo.DataSets.grid.Grid",
+        "Basic Tualo Grid",
+        0,
+        0
+    )
+;
+
+
+
+insert
+    ignore into extjs_base_types (
+        vendor,
+        id,
+        classname,
+
+        xtype_long_classic,
+        baseclass,
+        xtype_long_modern,
+        name,
+        description,
+        iscolumn,
+        isformfield
+    )
+values
+    (
+        "Tualo",
+        "Tualo.DataSets.ListView",
+        "Tualo.DataSets.ListView",
+        
+        "widget.dslistview",
+        "Tualo.DataSets.grid.Grid",
+        "widget.dsgrid",
+
+        "Tualo.DataSets.ListView",
+        "Basic Tualo Grid",
+        0,
+        0
+    )
+    
+;
+
+
+
+
+insert
+    ignore into extjs_base_types (
+        vendor,
+        id,
+        classname,
+
+        xtype_long_classic,
+        baseclass,
+        xtype_long_modern,
+        name,
+        description,
+        iscolumn,
+        isformfield
+    )
+values
+    (
+        "Tualo",
+        "Tualo.DataSets.ListViewAutoNew",
+        "Tualo.DataSets.ListViewAutoNew",
+        
+        "widget.dslistviewautonew",
+        "Tualo.DataSets.ListView",
+        "widget.dslistviewautonew",
+
+        "Tualo.DataSets.ListViewAutoNew",
+        "Basic Tualo Grid Auto New",
+        0,
+        0
+    )
+;
