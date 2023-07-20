@@ -5,6 +5,7 @@ Ext.define('Tualo.DS.panel.Model', {
         isNew: false,
         referencedList: false,
         selectRecordRecordNumber: 0,
+        viewTypeOnLoad: 'list',
         isModified: false,
         pagerText: '0/0',
         disableNext: false,

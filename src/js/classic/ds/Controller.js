@@ -169,7 +169,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         let model = this.getViewModel();
         if (model.get('isNew')){
             model.set('isNew',false);
-            this.setViewType('list');
+            this.setViewType(model.get('viewTypeOnLoad'));
         }
         this.updatePager();
     },

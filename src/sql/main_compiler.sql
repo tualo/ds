@@ -2789,13 +2789,17 @@ create or replace view view_ds_formfield_merge as
 select
     `ds_column`.`table_name`, 
     `ds_column`.`column_name`,
-    if (ds_column.data_type in ('varchar'),
+    if (
+        ds_column.data_type in ('varchar')
+        and ds_column_form_label.xtype not like 'combobox_%',
         JSON_OBJECT(
             "maxLength", ds_column.character_maximum_length
         ),
         JSON_OBJECT()
     ) obj
-from ds_column
+from 
+    ds_column
+    join ds_column_form_label on (ds_column.table_name,ds_column.column_name) = (ds_column_form_label.table_name,ds_column_form_label.column_name)
 where ds_column.existsreal = 1
     -- ds_column.data_type in ('date','datetime','time')
 ;
