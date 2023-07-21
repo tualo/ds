@@ -113,7 +113,7 @@ class DSTable {
             'tablename'=>$this->tablename,
             'data'=>$input
         ],$merge),JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        return $data;
+        return str_replace(chr(92).chr(92),chr(92),$data);
     }
 
     private function dsx_rest_api_set():mixed{
