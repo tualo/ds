@@ -17,9 +17,14 @@ class DSTable {
     private array $_warnings = [];
     private array $_moreResults = [];
     
+    public static function instance(string $tablename='test'):DSTable{
+        return new DSTable( TualoApplication::get('session')->getDB(),$tablename);
+    }
+
     public static function init(mixed $db):DSTable{
         return new DSTable($db,'test');
     }
+    
 
     function __construct(mixed $db,string $tablename){
         $this->db=$db;

@@ -12,7 +12,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS",{
                 store = Ext.data.StoreManager.lookup(storeId),
                 renderRecord = null;
             if (store){
-                if (!store.loaded && !store.loading){ 
+                if (store.loadCount==0 && !store.loading){ 
                     store.pageSize = 1000000;
                     store.load({
                         callback: function(){
