@@ -1,0 +1,9 @@
+#!/bin/bash
+cd -P -- "$(dirname -- "$0")"
+
+TABLES=`cat << EndOfTables
+ds_pug_templates
+EndOfTables`
+DATA=$(mysqldump --no-create-info --complete-insert --single-transaction --add-drop-table=false --tables  ${@:2} ds_pug_templates --where "id like '$1%'")
+#./remove_info "$DATA"
+echo -e $DATA
