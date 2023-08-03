@@ -39,6 +39,7 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
                 }
             });
         });
+        form.fireEvent("recordchanged",record[0]);
     },
 
     onPageSizeChanged: function(nv,ov){
