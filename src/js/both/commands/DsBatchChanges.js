@@ -42,16 +42,13 @@ Ext.define('Ext.cmp.cmp_ds.views.DSBatchChanges', {
         }
         return true;
       });
-      
+      this.record.store.sync();
 
-      res = new Promise(resolve => {
-        this.record.store.sync({
-            callback: function( ){
-                resolve( );
-            }
-        });
+      //res = new Promise(resolve => {setTimeout(resolve, ms)});
+
+      let res= await Tualo.Fetch.post('./dashboard/ping',{
+        list: Ext.JSON.encode(this.list)
       });
-
       return res;
     }
   });
