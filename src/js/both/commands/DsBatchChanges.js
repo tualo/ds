@@ -33,15 +33,26 @@ Ext.define('Ext.cmp.cmp_ds.views.DSBatchChanges', {
     run: async function () {
       let parent = Ext.getCmp(this.calleeId);
       
-      this.records.forEach((record)=>{
+      this.record.store.each((record)=>{
         if (record.id != this.record.id){
             for( var key in this.record.modified){
 
                 record.set(key,this.record.get(key));
             }
         }
+        return true;
       });
-      return null;
+      
+
+      res = new Promise(resolve => {
+        this.record.store.sync({
+            callback: function( ){
+                resolve( );
+            }
+        });
+      });
+
+      return res;
     }
   });
   
