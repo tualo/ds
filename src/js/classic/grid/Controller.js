@@ -5,13 +5,18 @@ Ext.define('Tualo.DataSets.grid.Controller', {
         console.log('onDropGrid',node, data, overModel, dropPosition, eOpts);
     },
     onRowClass: function(record, rowIndex, rowParams, store){
-        var tn = store.tablename||"";
-        console.log('onRowClass',record, rowIndex, rowParams, store);
-        if ((rowIndex%2==0)&&(typeof record.get( "_rowclass_even")=="string")){
-            return record.get("_rowclass_even");
-        }
-        if ((rowIndex%2==1)&&(typeof record.get("_rowclass_odd")=="string")){
-            return record.get("_rowclass_odd");
+        try{
+            var tn = store.tablename||"";
+            console.log('onRowClass',record, rowIndex, rowParams, store);
+            if ((rowIndex%2==0)&&(typeof record.get( "_rowclass_even")=="string")){
+                return record.get("_rowclass_even");
+            }
+            if ((rowIndex%2==1)&&(typeof record.get("_rowclass_odd")=="string")){
+                return record.get("_rowclass_odd");
+            }
+    
+        }catch(e){
+            console.error(e);
         }
         return "";
     }

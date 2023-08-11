@@ -5,6 +5,7 @@ Ext.define('Tualo.ds.lazy.models.DeferedCommand', {
         prevButtonText: 'Zurück',
         nextButtonText: 'Weiter',
         enableNext: false,
+        enableCancel: true,
     },
     stores: {
         
@@ -20,7 +21,7 @@ Ext.define('Tualo.ds.lazy.models.DeferedCommand', {
             return true;
         },
         cancelDisabled: function(get){
-            return false;
+            return !get('enableCancel');;
         }
         
         
