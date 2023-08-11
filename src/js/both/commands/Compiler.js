@@ -1,6 +1,6 @@
 Ext.define('Tualo.cmp.cmp_ds.commands.Compiler', {
     statics:{
-      glyph: 'brackets-curly',
+      glyph: 'server',
       title: 'Kompilieren',
       tooltip: 'Kompilieren'
     },
