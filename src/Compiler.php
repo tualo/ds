@@ -10,7 +10,59 @@ class Compiler implements ICompiler {
         return array_merge(CompilerHelper::getFiles(__DIR__,'ds',10003),self::getDynamicFiles());
     }
 
+    public static function extractFiles(string $table_name,string $subpath='',int $priority=1):array{
+        $db = TualoApplication::get('session')->getDB();
+        $list = $db->direct('select * from `'.$table_name.'`' );
+        if ($subpath!='') $subpath = $subpath.'/';
+        foreach($list as $row){
+            if (!isset($row['filename'])){ echo ('Filename not found in '.$table_name); exit(); };
+            $f = [
+                'prio'=>$priority,
+                'subpath'=>$subpath.dirname($row['filename']),
+                'file'=>TualoApplication::get('tempPath').'/'.$row['filename']
+            ];
+            if (!file_exists(dirname($f['file']))) mkdir(dirname($f['file']),0777,true);
+            file_put_contents($f['file'],$row['js']);
+            $files[] = $f;
+        }
+        return $files;
+    }
+
     public static function getDynamicFiles(){
+        $db = TualoApplication::get('session')->getDB();
+        $files = [];
+        if (!is_null($db)){
+            
+
+            $subfiles = [];
+            $subfiles = array_merge($subfiles, self::extractFiles('view_ds_model','',1));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_store','',2));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_column','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_columnfilters','',4));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_combobox','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_displayfield','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_controller','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_list','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_form','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_dsview','',3));
+            $subfiles = array_merge($subfiles,self::extractFiles('view_ds_viewmodel','',3)); 
+
+
+
+
+            
+        }
+
+        $files[] = [
+            'prio'=>'99999999999993',
+            'toolkit'=>'',
+            'modul'=>'dsx',
+            'files'=>$subfiles
+        ];
+        return  $files;
+    }
+
+    public static function getDynamicFilesX(){
             $db = TualoApplication::get('session')->getDB();
             $files = [];
             if (!is_null($db)){
