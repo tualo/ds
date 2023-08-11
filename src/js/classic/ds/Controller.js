@@ -4,22 +4,6 @@ Ext.define('Tualo.DS.panel.Controller', {
     mixins: {
         util: 'Tualo.DS.panel.mixins.ControllerTools'
     },
-    onRowClass: function(record, rowIndex, rowParams, store){
-        try{
-            var tn = store.tablename||"";
-            console.log('onRowClassB',record, rowIndex, rowParams, store);
-            if ((rowIndex%2==0)&&(typeof record.get( "_rowclass_even")=="string")){
-                return record.get("_rowclass_even");
-            }
-            if ((rowIndex%2==1)&&(typeof record.get("_rowclass_odd")=="string")){
-                return record.get("_rowclass_odd");
-            }
-    
-        }catch(e){
-            console.error(e);
-        }
-        return "";
-    },
     constructor: function(config){
         this.callParent([config]);
     },

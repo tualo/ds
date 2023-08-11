@@ -5,6 +5,8 @@ require_once "Checks/StoredProcedures.php";
 require_once "Commandline/DumpDS.php";
 require_once "InstallMainSQLCommandline.php";
 require_once "Routes/DS.php";
+require_once "Middlewares/CSS.php";
+require_once "Routes/CSS.php";
 require_once "Routes/Export.php";
 require_once "Routes/Import.php";
 require_once "Routes/JsLoader.php";

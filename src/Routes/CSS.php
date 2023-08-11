@@ -10,11 +10,16 @@ class CSS implements IRoute{
 
         
 
-        Route::add('/dssytle/shake.css',function($matches){
+        Route::add('/dsstyle/shake.css',function($matches){
             $path = dirname(dirname(__DIR__)).'';
-            $data = file_get_contents( $path."/src/css/shake.css" );
-            TualoApplication::body( $data );
             TualoApplication::contenttype('text/css');
+            TualoApplication::etagFile( $path."/src/css/shake.css");
+        },array('get','post'),false);
+
+        Route::add('/dsstyle/row-colors.css',function($matches){
+            $path = dirname(dirname(__DIR__)).'';
+            TualoApplication::contenttype('text/css');
+            TualoApplication::etagFile( $path."/src/css/row-colors.css");
         },array('get','post'),false);
     }
 }

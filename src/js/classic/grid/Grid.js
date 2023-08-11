@@ -9,6 +9,20 @@ Ext.define('Tualo.DataSets.grid.Grid', {
         }
         console.debug(this.$className,'constructor')
         this.callParent([config]);
+    },
+    initComponent: function(){
+        var me = this;
+        me.callParent(arguments);
+        me.getView().getRowClass = function(record, rowIndex, rowParams, store) {
+            // console.log('getRowClass',record, rowIndex, rowParams, store);
+            if ((rowIndex%2==0)&&(typeof record.get( "_rowclass_even")=="string")){
+                return record.get("_rowclass_even");
+            }else if ((rowIndex%2==1)&&(typeof record.get("_rowclass_odd")=="string")){
+                return record.get("_rowclass_odd");
+            }
+
+            me.fireEvent('rowclass',record, rowIndex, rowParams, store);
+            return '';
+        };
     }
 });
-
