@@ -177,6 +177,10 @@
 .row-color-cyanaqua:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: rgba(0,255,255,0.5);}
 .row-color-cyan2:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: rgba(0,238,238,0.5);}
 .row-color-cyan3:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: rgba(0,205,205,0.5);}
+
+.row-color-ffeded:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: #ffeded;}
+.row-color-ffdede:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: #ffdede;}
+
 .row-color-cyan4darkcyan:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: rgba(0,139,139,0.5);}
 .row-color-teal:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: rgba(0,128,128,0.5);}
 .row-color-mediumturquoise:not(.x-grid-item-selected):not(.x-grid-item-over) .x-grid-cell { background-color: rgba(72,209,204,0.5);}

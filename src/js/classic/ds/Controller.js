@@ -290,6 +290,10 @@ Ext.define('Tualo.DS.panel.Controller', {
         if ( !Ext.isEmpty(store.getModifiedRecords()) ){
             model.set('saving',true);
 
+            store.on({
+                proxyerror:{fn: this.onProxyError, scope: this, single: true}
+            });
+
             store.on('write',function(store, operation, eOpts){   
                 let response = operation.getResponse();
                 if (response.status==200){
@@ -346,6 +350,52 @@ Ext.define('Tualo.DS.panel.Controller', {
         
 
 
+    },
+
+    onProxyError: function(response){
+        let form = this.getView().getComponent('form'),
+            showToast = true;
+        if (response.responseJson){
+            if (response.responseJson.msg.indexOf('foreign key constraint fails ')){
+                m = response.responseJson.msg.match(/FOREIGN\sKEY\s\((.*?)\)/)
+                if (m && m[1]){
+                    
+                    let l =  m[1].split('`,`');
+                    l.forEach(function(fld){
+                        fld = fld.replace(/\`/g,'');
+                        let el = form.down('[name='+ fld+']');
+                        el.addCls('label-shake');
+                        //el.labelElement.addCls('label-shake');
+                        
+                        Ext.defer(()=>{  el.removeCls('label-shake') }, 1000 );
+                        Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden');
+                        showToast = false;
+                    })
+                }
+                m = response.responseJson.msg.match(/Column\s\'(.*?)\'(.*)/);
+                if (m && m[1]){
+                    
+                    let l =  m[1].split('`,`');
+                    l.forEach(function(fld){
+                        fld = fld.replace(/\`/g,'');
+                        let el = form.down('[name='+ fld+']');
+                        el.addCls('label-shake');
+                        //el.labelElement.addCls('label-shake');
+                        
+                        Ext.defer(()=>{  el.removeCls('label-shake') }, 1000 );
+                        Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden');
+                        showToast = false;
+                    })
+                }
+
+                m = response.responseJson.msg.match(/Duplicate\sentry/)
+                if (m){
+                    Ext.toast('Es gibt bereits einen solchen Eintrag');
+                    showToast = false;
+                }
+            }
+            if (showToast) Ext.toast(response.responseJson.msg);
+        }
     },
 
     saveSubStores: function(){

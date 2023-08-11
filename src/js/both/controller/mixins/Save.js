@@ -48,6 +48,22 @@ Ext.define('Tualo.cmp.cmp_ds.controller.mixins.Save', {
                         showToast = false;
                     })
                 }
+                m = response.responseJson.msg.match(/Column\s\'(.*?)\'(.*)/);
+                if (m && m[1]){
+                    
+                    let l =  m[1].split('`,`');
+                    l.forEach(function(fld){
+                        fld = fld.replace(/\`/g,'');
+                        let el = form.down('[name='+ fld+']');
+                        el.addCls('panel-shake');
+                        //el.labelElement.addCls('label-shake');
+                        
+                        Ext.defer(()=>{  el.removeCls('panel-shake') }, 1000 );
+                        Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden');
+                        showToast = false;
+                    })
+                }
+
                 m = response.responseJson.msg.match(/Duplicate\sentry/)
                 if (m){
                     Ext.toast('Es gibt bereits einen solchen Eintrag');

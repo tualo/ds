@@ -23,7 +23,7 @@ Ext.define("Tualo.DataSets.data.Store",{
                     console.log('exception',proxy, response, operation, eOpts);
                     if (response.responseJson){
                       let msg = response.responseJson.msg;
-                      if (msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+                      if (!msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
                       Ext.toast({
                           html: msg,
                           title: 'Fehler',
