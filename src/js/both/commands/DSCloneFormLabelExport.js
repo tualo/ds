@@ -33,6 +33,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSCloneFormLabelExport', {
       let res= await Tualo.Fetch.post('./dsrun/ds_cloneformlabelexport',{
         list: Ext.JSON.encode([this.record.get('table_name')])
       });
+      this.record.store.load();
       return res;
     }
   });

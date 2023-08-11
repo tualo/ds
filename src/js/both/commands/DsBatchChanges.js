@@ -31,8 +31,6 @@ Ext.define('Ext.cmp.cmp_ds.views.DSBatchChanges', {
       return 'Anwenden';
     },
     run: async function () {
-      let parent = Ext.getCmp(this.calleeId);
-      
       this.record.store.each((record)=>{
         if (record.id != this.record.id){
             for( var key in this.record.modified){
@@ -42,14 +40,7 @@ Ext.define('Ext.cmp.cmp_ds.views.DSBatchChanges', {
         }
         return true;
       });
-      this.record.store.sync();
-
-      //res = new Promise(resolve => {setTimeout(resolve, ms)});
-
-      let res= await Tualo.Fetch.post('./dashboard/ping',{
-        list: Ext.JSON.encode(this.list)
-      });
-      return res;
+      return null;
     }
   });
   

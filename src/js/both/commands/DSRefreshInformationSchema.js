@@ -32,6 +32,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSRefreshInformationSchema', {
     run: async function(){
       let res= await Tualo.Fetch.post('./dssetup/ds-update',{
       });
+      this.record.store.load();
       return res;
     }
   });
