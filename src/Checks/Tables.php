@@ -11,7 +11,11 @@ class Tables  extends PostCheck {
     public static function test(array $config){
         // print_r($config);
         $tables = [
-            'ds'=>[],
+            'ds'=>[
+                'columns'=>[
+                    'table_name'=>'varchar(128)'
+                ]
+            ],
             'ds_column'=>[],
             'ds_column_list_label'=>[],
             'ds_column_form_label'=>[]

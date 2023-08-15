@@ -21,7 +21,10 @@ Ext.define('Tualo.DataSets.grid.Grid', {
                 return record.get("_rowclass_odd");
             }
 
-            me.fireEvent('rowclass',record, rowIndex, rowParams, store);
+            let o = {record:record,rowIndex:rowIndex,rowParams:rowParams,store:store,return:''};
+            me.fireEvent('rowclass',o);
+            if (o.return!='') return o.return;
+            
             return '';
         };
     }

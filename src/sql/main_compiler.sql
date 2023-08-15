@@ -2265,6 +2265,7 @@ select
             "remoteFilter", TRUE is true,
             "autoLoad", FALSE is true,
             "autoSync", FALSE is true,
+            "pageSize", ifnull(ds.default_pagesize,1000),
             "sorters", JSON_ARRAY(
                 JSON_OBJECT(
                     "property", if(sortfield<>'',sortfield,'__id'),
@@ -2292,6 +2293,8 @@ delimiter ;
 
 create or replace view view_ds_column as
 select 
+
+    concat(  'Tualo/DataSets/column/',lower(ds_dropdownfields.table_name),'/',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ,'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.column.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
             
@@ -2352,6 +2355,7 @@ group by ds_column_list_label.table_name;
 -- SOURCE FILE: ./src//500-ui/030-column/030.view_ds_columnfilters.sql 
 create or replace view view_ds_columnfilters as
 select 
+    concat(  'Tualo/DataSets/grid/filters/filter/',lower(ds_dropdownfields.table_name),'/',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ,'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.grid.filters.filter.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
             JSON_OBJECT(
@@ -2383,6 +2387,7 @@ delimiter ;
 
 create or replace view view_ds_displayfield as
 select 
+    concat(  'Tualo/DataSets/displayfield/',lower(ds_dropdownfields.table_name),'/',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ,'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.displayfield.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
             JSON_OBJECT(
@@ -2421,6 +2426,7 @@ delimiter ;
 
 create or replace view view_ds_combobox as
 select 
+    concat(  'Tualo/DataSets/combobox/',lower(ds_dropdownfields.table_name),'/',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ,'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.combobox.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
             JSON_OBJECT(
@@ -2638,6 +2644,7 @@ group by table_name
 
 create or replace view view_ds_list as
 select 
+    concat(  'Tualo/DataSets/list/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.list.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
@@ -2648,7 +2655,7 @@ select
             
             "controller",concat('dsgridcontroller'),
             "stateful",JSON_OBJECT("columns",true),
-            
+            "selModel",ds.listselectionmodel,
             "features", JSON_ARRAY(
                 JSON_OBJECT(
                     "dock", "bottom",
@@ -2673,7 +2680,7 @@ select
                 'listeners', JSON_OBJECT(
                     'drop', 'onDropGrid'
                 ),
-                "plugins", ifnull(view_ds_list_plugins_grouped.plugins,JSON_ARRAY())
+                "plugins", ifnull(view_ds_list_plugins_grouped.plugins,JSON_ARRAY()) -- ,
                 -- "getRowClass", "onRowClass"
                 -- "getRowClass", concat('function(record, rowIndex, rowParams, store){ console.log("1");return "";/*return onRowClass(record, rowIndex, rowParams, store, "',ds.table_name,'");*/ }')
 
@@ -3131,6 +3138,7 @@ group by ds_reference_tables.reference_table_name
 
 create or replace view view_ds_form as
 select 
+    concat(  'Tualo/DataSets/form/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.form.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
 
@@ -3362,6 +3370,7 @@ delimiter ;
 
 create or replace view view_ds_controller as
 select 
+    concat(  'Tualo/DataSets/controller/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.controller.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
@@ -3382,6 +3391,7 @@ where
 -- SOURCE FILE: ./src//500-ui/071-model/071.view_ds_viewmodel.sql 
 create or replace view view_ds_viewmodel as
 select 
+    concat(  'Tualo/DataSets/viewmodel/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.viewmodel.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
@@ -3575,6 +3585,7 @@ where ds_addcommands.location = 'toolbar';
 
 create or replace view view_ds_dsview as
 select 
+    concat(  'Tualo/DataSets/dsview/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.dsview.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
