@@ -1,0 +1,24 @@
+
+
+select 
+group_concat(
+concat(quote(table_name),'=>[',v,']') separator ',') x
+from (
+select 
+table_name,
+group_concat(
+concat('',quote(column_name),'=>',quote(column_type)) separator ', '
+) v
+from ds_column where table_name in (
+'mengeneinheiten',
+  'buchungskonten',
+  'warenhauptgruppen',
+  'warengruppen',
+  'bfkonten',
+  'artikelgruppen',
+  'bfkonten_zuordnung',
+  'staffeln',
+  'preiskategorien'
+)
+group by table_name
+  ) s

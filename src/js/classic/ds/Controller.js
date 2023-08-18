@@ -364,10 +364,10 @@ Ext.define('Tualo.DS.panel.Controller', {
                     l.forEach(function(fld){
                         fld = fld.replace(/\`/g,'');
                         let el = form.down('[name='+ fld+']');
+                        if (Ext.isEmpty(el)) return;
                         el.addCls('label-shake');
-                        //el.labelElement.addCls('label-shake');
-                        
                         Ext.defer(()=>{  el.removeCls('label-shake') }, 1000 );
+                    
                         Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden');
                         showToast = false;
                     })
@@ -379,9 +379,8 @@ Ext.define('Tualo.DS.panel.Controller', {
                     l.forEach(function(fld){
                         fld = fld.replace(/\`/g,'');
                         let el = form.down('[name='+ fld+']');
+                        if (Ext.isEmpty(el)) return;
                         el.addCls('label-shake');
-                        //el.labelElement.addCls('label-shake');
-                        
                         Ext.defer(()=>{  el.removeCls('label-shake') }, 1000 );
                         Ext.toast('Für '+el.config.placeholder+' muss ein gültiger Wert angegeben werden');
                         showToast = false;
