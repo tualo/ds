@@ -53,7 +53,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.Compiler', {
       let res= await Tualo.Fetch.post('./compiler',{      });
       if (res.success !== true){
         Ext.toast({
-            html: o.msg,
+            html: res.msg,
             title: 'Fehler',
             align: 't',
             iconCls: 'fa fa-warning'
