@@ -15,7 +15,7 @@ class Compiler implements ICompiler {
         $list = $db->direct('select * from `'.$table_name.'`' );
         if ($subpath!='') $subpath = $subpath.'/';
         foreach($list as $row){
-            if (!isset($row['filename'])){ echo ('Filename not found in '.$table_name); exit(); };
+            if (!isset($row['filename'])){ echo (' columnname filename not found in '.$table_name); exit(); };
             $f = [
                 'prio'=>$priority,
                 'subpath'=>$subpath.dirname($row['filename']),
