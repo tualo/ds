@@ -20,7 +20,7 @@ class InstallMainSQLCommandline implements ICommandline{
     }
 
    
-    public static function setupClients(string $msg,string $clientName,callable $callback){
+    public static function setupClients(string $msg,string $clientName,string $file,callable $callback){
         $_SERVER['REQUEST_URI']='';
         $_SERVER['REQUEST_METHOD']='none';
         App::run();
@@ -34,7 +34,7 @@ class InstallMainSQLCommandline implements ICommandline{
             }else{
                 App::set('clientDB',$session->newDBByRow($db));
                 PostCheck::formatPrint(['blue'],$msg.'('.$db['dbname'].'):  ');
-                $callback();
+                $callback($file);
                 PostCheck::formatPrintLn(['green'],"\t".' done');
 
             }
@@ -42,75 +42,37 @@ class InstallMainSQLCommandline implements ICommandline{
     }
 
     public static function run(Args $args){
+        $files = [
+            'main_compiler' => 'setup main compiler views ',
+            'main_dsx' => 'setup main ds procedures ',
+            'custom_types' => 'setup custom types ',
+            'addcommand' => 'load addcommand '
+        ];
 
-        $installSQLCompilerviews = function (){
-            $filename = __DIR__.'/sql/main_compiler.sql';
-            $sql = file_get_contents($filename);
-            $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
-            $sql = preg_replace('#^\s*\-\-.+$#m', '', $sql);
+        foreach($files as $file=>$msg){
+            $installSQL = function(string $file){
 
-            $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
-            foreach($sinlgeStatements as $commandIndex => $statement){
-                try{
-                    App::get('clientDB')->direct($statement);
-                    App::get('clientDB')->moreResults();
-                }catch(\Exception $e){
-                    echo PHP_EOL;
-                    PostCheck::formatPrintLn(['red'], $e->getMessage().': commandIndex => '.$commandIndex);
+                $filename = __DIR__.'/sql/'.$file.'.sql';
+                $sql = file_get_contents($filename);
+                $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
+                $sql = preg_replace('#^\s*\-\-.+$#m', '', $sql);
+
+                $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
+                foreach($sinlgeStatements as $commandIndex => $statement){
+                    try{
+                        App::get('clientDB')->direct($statement);
+                        App::get('clientDB')->moreResults();
+                    }catch(\Exception $e){
+                        echo PHP_EOL;
+                        PostCheck::formatPrintLn(['red'], $e->getMessage().': commandIndex => '.$commandIndex);
+                    }
                 }
-            }
-        };
-        $clientName = $args->getOpt('client');
-        if( is_null($clientName) ) $clientName = '';
-        self::setupClients("setup main compiler views ",$clientName,$installSQLCompilerviews);
+            };
+            $clientName = $args->getOpt('client');
+            if( is_null($clientName) ) $clientName = '';
+            self::setupClients($msg,$clientName,$file,$installSQL);
+        }
 
-
-
-        $installSQLDSX = function (){
-            $filename = __DIR__.'/sql/main_dsx.sql';
-            $sql = file_get_contents($filename);
-            $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
-            $sql = preg_replace('#^\s*\-\-.+$#m', '', $sql);
-
-            $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
-            foreach($sinlgeStatements as $commandIndex => $statement){
-                try{
-                    App::get('clientDB')->direct($statement);
-                    App::get('clientDB')->moreResults();
-                }catch(\Exception $e){
-                    echo PHP_EOL;
-                    PostCheck::formatPrintLn(['red'], $e->getMessage().': commandIndex => '.$commandIndex);
-                }
-            }
-        };
-        $clientName = $args->getOpt('client');
-        if( is_null($clientName) ) $clientName = '';
-        self::setupClients("setup main report procedures ",$clientName,$installSQLDSX);
-        
-
-
-
-        $installSQLTypes = function (){
-            $filename = __DIR__.'/sql/custom_types.sql';
-            $sql = file_get_contents($filename);
-            $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
-            $sql = preg_replace('#^\s*\-\-.+$#m', '', $sql);
-
-            $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
-            foreach($sinlgeStatements as $commandIndex => $statement){
-                try{
-                    App::get('clientDB')->direct($statement);
-                    App::get('clientDB')->moreResults();
-                }catch(\Exception $e){
-                    echo PHP_EOL;
-                    PostCheck::formatPrintLn(['red'], $e->getMessage().': commandIndex => '.$commandIndex);
-                }
-            }
-        };
-        $clientName = $args->getOpt('client');
-        if( is_null($clientName) ) $clientName = '';
-        self::setupClients("setup custom types ",$clientName,$installSQLTypes);
-        
 
 
     }
