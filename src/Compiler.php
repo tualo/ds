@@ -31,10 +31,10 @@ class Compiler implements ICompiler {
     public static function getDynamicFiles(){
         $db = TualoApplication::get('session')->getDB();
         $files = [];
+        $subfiles = [];
         if (!is_null($db)){
             
 
-            $subfiles = [];
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_model','',1));
             $subfiles = array_merge($subfiles,self::extractFiles('view_ds_store','',2));
             $subfiles = array_merge($subfiles,self::extractFiles('view_ds_column','',3));
