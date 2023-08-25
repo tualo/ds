@@ -32,8 +32,8 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSRefreshInformationSchema', {
             xtype: 'component',
             cls: 'lds-container',
             html: '<div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>'
-            +'<h3>Datenstruktur wird verarbeitet</h3>'
-            +'<h3>Einen Moment bitte ...</h3>'
+            +'<div><h3>Datenstruktur wird verarbeitet</h3>'
+            +'<span>Einen Moment bitte ...</span></div>'
           }
         ]
       }

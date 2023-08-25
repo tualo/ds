@@ -33,8 +33,8 @@ Ext.define('Tualo.cmp.cmp_ds.commands.Compiler', {
             xtype: 'component',
             cls: 'lds-container',
             html: '<div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>'
-            +'<h3>Programmcode wird erstellt</h3>'
-            +'<h3>Einen Moment bitte ...</h3>'
+            +'<div><h3>Programmcode wird erstellt</h3>'
+            +'<span>Einen Moment bitte ...</span></div>'
           }
         ]
       }
