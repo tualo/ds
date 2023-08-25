@@ -18,6 +18,24 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSRefreshInformationSchema', {
             text: 'Durch klicken auf *Aktualisieren*, werden die Metadaten aktualisiert.',
           }
         ]
+      },
+      {
+        hidden: true,
+        xtype: 'panel',
+        itemId: 'waitpanel',
+        layout:{
+          type: 'vbox',
+          align: 'center'
+        },
+        items: [
+          {
+            xtype: 'component',
+            cls: 'lds-container',
+            html: '<div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>'
+            +'<h3>Datenstruktur wird verarbeitet</h3>'
+            +'<h3>Einen Moment bitte ...</h3>'
+          }
+        ]
       }
     ],
     loadRecord: function(record,records,selectedrecords){
@@ -30,6 +48,12 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSRefreshInformationSchema', {
       return 'Aktualisieren';
     },
     run: async function(){
+
+      let me = this;
+      me.getComponent('syncform').hide();
+      me.getComponent('waitpanel').show();
+
+
       let res= await Tualo.Fetch.post('./dssetup/ds-update',{
       });
       this.record.store.load();
