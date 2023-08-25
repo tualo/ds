@@ -366,9 +366,9 @@ set @request = '
     ]
 }
 ' //
+ select dsx_filter_values(@request,'filter') //
 
 /*
- select dsx_filter_values(@request,'filter') //
     select
         '' `property`,
         '' `operator`,
@@ -622,7 +622,6 @@ END //
 
 -- call create_or_upgrade_hstr_table('cron_queries') //
 -- SOURCE FILE: ./src//dsx_read_order.sql 
-
 DELIMITER //
 DROP FUNCTION IF EXISTS dsx_read_order //
 CREATE OR REPLACE FUNCTION `dsx_read_order`( request JSON )
@@ -663,7 +662,7 @@ BEGIN
 
     );
 END //
-
+/*
 set @request = '
 {
     "replaced": 1,
@@ -683,6 +682,7 @@ set @request = '
 ' //
 
 -- select dsx_read_order(@request) //
+*/
 -- SOURCE FILE: ./src//dsx_rest_api_get.sql 
 delimiter //
 
@@ -1170,6 +1170,10 @@ BEGIN
         LEAVE whole_proc;
     END IF;
 
+    if (@log_dsx_commands=1) THEN
+        drop table if exists test_ds_request;
+        create table test_ds_request as select request;
+    END IF;
 
     IF 
         (JSON_VALUE(request,'$.type')='update') 
@@ -1243,7 +1247,7 @@ BEGIN
                     separator ','
                 ) c,
                 group_concat(
-                    concat('`',column_name,'` ',column_type,' path "$.',use_table_name,'__',column_name,'" ',/*if( is_nullable='YES','NULL','ERROR')*/'NULL' ,' ON EMPTY ')
+                    concat('`',column_name,'` ',column_type,' path "$.', column_name,'" ',/*if( is_nullable='YES','NULL','ERROR')*/'NULL' ,' ON EMPTY ')
                     order by column_name
                     separator ','
                 ) x,
@@ -1277,8 +1281,8 @@ BEGIN
             EXECUTE stmt USING request;
             DEALLOCATE PREPARE stmt;
 
-            select sql_command;
-            select temp_dsx_rest_data.* from temp_dsx_rest_data;
+            -- select sql_command;
+            -- select temp_dsx_rest_data.* from temp_dsx_rest_data;
 
             FOR record IN (
                 select 
@@ -1306,7 +1310,7 @@ BEGIN
                 DEALLOCATE PREPARE stmt;
             END FOR;
 
-            select temp_dsx_rest_data.* from temp_dsx_rest_data;
+            -- select temp_dsx_rest_data.* from temp_dsx_rest_data;
 
             if JSON_VALUE(request,'$.type')<>'delete' then
                 FOR record IN (
@@ -1482,7 +1486,7 @@ BEGIN
                     and ds_column.existsreal=1
                     and ds_column.writeable =1
                     and ds_column.column_type <> ''
-                    and JSON_EXISTS(request,concat('$.data[0].',table_name,'__',column_name))=1
+                    and JSON_EXISTS(request,concat('$.data[0].', column_name))=1
                 ;
                 set sql_command = concat('
                     update `',use_table_name,'` 
@@ -1501,7 +1505,7 @@ BEGIN
                     delete from `',use_table_name,'` where ( ',
                         group_concat( 
                             concat('ifnull(',if(
-                                concat(ds_column.table_name,'__',ds_column.column_name)='__id',
+                                concat( ds_column.column_name)='__id',
                                 dsx_get_key_sql( use_table_name),
                                 concat('`',ds_column.column_name,'`')
                             ),',"I AM NULL")') separator ','
@@ -1509,7 +1513,7 @@ BEGIN
                     ' ) in (select ',
                         group_concat( 
                             concat('ifnull(',if(
-                                concat(ds_column.table_name,'__',ds_column.column_name)='__id',
+                                concat( ds_column.column_name)='__id',
                                 '__id',
                                 concat('`',ds_column.column_name,'`')
                             ),',"I AM NULL")') separator ','
@@ -1532,7 +1536,7 @@ BEGIN
                         union 
                             select '' table_name, 'id' column_name 
                         ) ds_column 
-                    on   ( concat(ds_column.table_name,'__',ds_column.column_name) = x.x)
+                    on   ( concat( ds_column.column_name) = x.x)
                     ;
                 -- select ifnull(`xfield`,"I AM NULL") from temp_dsx_rest_data;
                 -- select `xfield` from temp_dsx_rest_data;
@@ -1595,7 +1599,7 @@ BEGIN
                     ' , "__displayfield",',displayfield,' ,',
                     ifnull( group_concat( concat(
                         doublequote(
-                            if(JSON_VALUE(request,'$.comibedfieldname')=1,concat('',JSON_VALUE(request,'$.tablename'),'__',ds_column.column_name,''),ds_column.column_name)
+                            if(JSON_VALUE(request,'$.comibedfieldname')=1,concat('', ds_column.column_name,''),ds_column.column_name)
                         ),',`',column_name,'`'
                     ) separator ', '
                     ),concat( '"_nofields_", 1'  )
