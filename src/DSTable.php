@@ -10,6 +10,7 @@ class DSTable {
     private int $start=0;
     private array $filter=[];
     private array $sorter=[];
+    private array $data=[];
     private bool $isQueried = false;
     private bool $isEmpty = true;
     private bool $hasError = false;
@@ -208,7 +209,7 @@ class DSTable {
         
 
 
-    public function get():array{
+    public function read():DSTable{
         $request = array(
             'start' => $this->start,
             'shortfieldnames'=>1,
@@ -220,12 +221,23 @@ class DSTable {
             $read = DSReadRoute::read($this->db,$this->tablename,$request);
             $this->isQueried=true;
             if (count($read['data'])==0){ $this->isEmpty=true; }else{ $this->isEmpty=false; }
-            return $read['data'];
-        //}
+            $this->data = $read['data'];
         }catch(\Exception $e){
             $this->hasError=true;
             $this->errorMessage=$e->getMessage();
         }
+        return $this;
+    }
+
+
+    public function get():array{
+        $this->read();
+        return $this->data;
+    }
+
+    public function getSingle():array{
+        
+        if (count($this->data)>0){ return $this->data[0];}
         return [];
     }
 }
