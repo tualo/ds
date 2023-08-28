@@ -29,6 +29,8 @@ class Compiler implements ICompiler {
     }
 
     public static function getDynamicFiles(){
+        if (is_null(TualoApplication::get('session'))) return [];
+
         $db = TualoApplication::get('session')->getDB();
         $files = [];
         $subfiles = [];
