@@ -46,7 +46,8 @@ class InstallMainSQLCommandline implements ICommandline{
             'main_compiler' => 'setup main compiler views ',
             'main_dsx' => 'setup main ds procedures ',
             'custom_types' => 'setup custom types ',
-            'addcommand' => 'load addcommand '
+            'addcommand' => 'load addcommand ',
+            'ds_renderer_stylesheet_attributes_ddl' => 'setup ds_renderer_stylesheet_attributes_ddl ',
         ];
 
         foreach($files as $file=>$msg){
