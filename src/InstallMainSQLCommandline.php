@@ -32,6 +32,7 @@ class InstallMainSQLCommandline implements ICommandline{
             if (($clientName!='') && ($clientName!=$db['dbname'])){ 
                 continue;
             }else{
+                
                 App::set('clientDB',$session->newDBByRow($db));
                 PostCheck::formatPrint(['blue'],$msg.'('.$db['dbname'].'):  ');
                 $callback($file);
