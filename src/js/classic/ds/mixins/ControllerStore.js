@@ -62,6 +62,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerStore', {
     onStoreClear: function(store, eOpts){
         console.debug(this.$className,'onStoreClear',store,eOpts);
     },
+    
     onListSelectionChange: function(selModel, selected, eOpts){
         console.debug(this.$className,'onStoreSelectionChange',selModel,selected,eOpts);
         let me = this,
