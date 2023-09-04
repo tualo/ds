@@ -3,6 +3,7 @@ namespace Tualo\Office\DS;
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\DS\DataRenderer;
 
+
 class DSTable {
     private mixed $db;
     private string $tablename;
