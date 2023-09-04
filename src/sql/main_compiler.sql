@@ -2680,10 +2680,8 @@ select
                 'listeners', JSON_OBJECT(
                     'drop', 'onDropGrid'
                 ),
-                "plugins", ifnull(view_ds_list_plugins_grouped.plugins,JSON_ARRAY()) -- ,
-                -- "getRowClass", "onRowClass"
-                -- "getRowClass", concat('function(record, rowIndex, rowParams, store){ console.log("1");return "";/*return onRowClass(record, rowIndex, rowParams, store, "',ds.table_name,'");*/ }')
-
+                "plugins", ifnull(view_ds_list_plugins_grouped.plugins,JSON_ARRAY())
+                
             ),
             "store", concat('ds_',ds.table_name),
             /* JSON_OBJECT( 
@@ -3396,9 +3394,11 @@ select
         'Ext.define(',doublequote(concat('Tualo.DataSets.viewmodel.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
             "extend", "Tualo.DS.panel.Model",
+
             "alias", concat('viewmodel.dsview_',ds.table_name),
             "data", JSON_OBJECT(
                 "record", null,
+                "title", ds.title,
                 "pagerText","",
                 "selectRecordRecordNumber",0,
                 "reorderfield",ds.reorderfield,
@@ -3531,7 +3531,8 @@ select
         "bind", JSON_OBJECT(
                 -- "store", "{list}",
                 "disabled", "{!record}",
-                "title", ifnull(concat('Formular (',ds.title,') {record.__displayfield}'),"Formular")
+                "title", "{currentTitle}"
+                -- ifnull(concat('Formular (',ds.title,') {record.__displayfield}'),"Formular")
                 -- "selection", "{record}"
         ),
         "xtype", 
