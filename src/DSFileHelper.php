@@ -173,7 +173,7 @@ class DSFileHelper{
                 if ( $config['key']=='PRI' ){
                     $key[] = $config['field'];
                     $upd[] = '`'.$config['field'].'`={'.$config['field'].'}';
-                    $keyHash[$config['field']]=$request[$tablename.'__'.$config['field']];
+                    $keyHash[$config['field']]=$request[/*$tablename.'__'.*/$config['field']];
                 }
             }
     
@@ -199,7 +199,7 @@ class DSFileHelper{
 
             $sql1 = "insert into " . $writetable . "_doc(`".implode('`,`',$key)."`) values ({".implode('},{',$key)."});";
             $sql2 = "insert into " . $writetable . "_docdata(doc_id,page,data) values ({doc_id},{page},{data});";
-            $sql3 = "update " . $writetable . " set " . substr($request['fieldName'],strlen($tablename.'__')) . "={doc_id} where ".implode(' and ',$upd).";";
+            $sql3 = "update " . $writetable . " set " . $request['fieldName'] . "={doc_id} where ".implode(' and ',$upd).";";
 
 
             $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
@@ -215,7 +215,7 @@ class DSFileHelper{
             $keyHash['ext'] = $ext;
             $keyHash['original_filename'] = $originalname;
             $id = $keyHash['doc_id'];
-            $keyHash['column_name'] = substr($request['fieldName'],strlen($tablename.'__'));
+            $keyHash['column_name'] = $request['fieldName'];
             $keyHash['page'] = 0;
             $keyHash['data'] = base64_encode(file_get_contents( $file ) );
             $db->direct($sql1,$keyHash);
