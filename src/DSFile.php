@@ -12,16 +12,17 @@ class DSFile {
         $this->db=$db;
         $this->tablename=$tablename;
     }
-    public function getBase64(string $fieldName,$fieldValue){
+    public function getBase64(string $fieldName,string $fieldValue,string $docfieldName=''):string{
         $table = DSTable::instance($this->tablename)
                     ->filter($fieldName,'=',$fieldValue)
                     ->limit(1)
                     ->read();
+        if ($docfieldName=='') $docfieldName = $fieldName;
         if ($table->empty()) return '';
         $data = $table->getSingle();
-        $sql = "select data from `" . $this->tablename . "_docdata` where `doc_id`=" . (isset($data[$fieldName])?$data[$fieldName]:-1) . " order by page";
+        $sql = "select data from `" . $this->tablename . "_docdata` where `doc_id`=" . (isset($data[$docfieldName])?$data[$docfieldName]:-1) . " order by page";
         return $this->db->singleValue($sql,[],'data');
     }
 
-    
+
 }
