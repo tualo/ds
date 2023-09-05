@@ -22,4 +22,6 @@ class DSFile {
         $sql = "select data from `" . $this->tablename . "_docdata` where `doc_id`=" . (isset($data[$fieldName])?$data[$fieldName]:-1) . " order by page";
         return $this->db->singleValue($sql,[],'data');
     }
+
+    
 }

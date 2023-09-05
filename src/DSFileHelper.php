@@ -173,6 +173,7 @@ class DSFileHelper{
                 if ( $config['key']=='PRI' ){
                     $key[] = $config['field'];
                     $upd[] = '`'.$config['field'].'`={'.$config['field'].'}';
+                    if (isset($request[/*$tablename.'__'.*/$config['field']])  ) 
                     $keyHash[$config['field']]=$request[/*$tablename.'__'.*/$config['field']];
                 }
             }
