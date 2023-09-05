@@ -20,7 +20,7 @@ class DSFile {
         if ($docfieldName=='') $docfieldName = $fieldName;
         if ($table->empty()) return '';
         $data = $table->getSingle();
-        $sql_mime = "select mime from `" . $this->tablename . "_doc` where `doc_id`=" . (isset($data[$docfieldName])?$data[$docfieldName]:-1) . " order by page";
+        $sql_mime = "select mime from `" . $this->tablename . "_doc` where `doc_id`=" . (isset($data[$docfieldName])?$data[$docfieldName]:-1) . "  ";
         $sql = "select data from `" . $this->tablename . "_docdata` where `doc_id`=" . (isset($data[$docfieldName])?$data[$docfieldName]:-1) . " order by page";
         return "data:".$this->db->singleValue($sql_mime,[],'mime').";base64, ".$this->db->singleValue($sql,[],'data');
     }
