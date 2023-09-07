@@ -485,17 +485,17 @@ class Import implements IRoute
                     foreach ($config as $key => $value) {
                         if (strpos($value, 'COLINDEX') !== false) {
                             $fieldindex = intval(str_replace('COLINDEX', '', $value));
-                            $dataRecord[$tablename . '__' . $key] = $data_row[$fieldindex];
+                            $dataRecord[/* $tablename . '__' . */ $key] = $data_row[$fieldindex];
                         } else {
                             if (($value != '') && ($value != '{#serial}')) {
-                                $dataRecord[$tablename . '__' . $key] = $value;
+                                $dataRecord[/* $tablename . '__' . */ $key] = $value;
                             }
                         }
                         if ((isset($columns[$key])) && ($columns[$key]['data_type'] == 'date')) {
-                            if (isset($dataRecord[$tablename . '__' . $key])) $dataRecord[$tablename . '__' . $key] = self::makeISODate($dataRecord[$tablename . '__' . $key]);
+                            if (isset($dataRecord[/* $tablename . '__' . */ $key])) $dataRecord[/* $tablename . '__' . */ $key] = self::makeISODate($dataRecord[/* $tablename . '__' . */ $key]);
                         }
                         if ((isset($columns[$key])) && ($columns[$key]['data_type'] == 'datetime')) {
-                            if (isset($dataRecord[$tablename . '__' . $key])) $dataRecord[$tablename . '__' . $key] = self::makeISODate($dataRecord[$tablename . '__' . $key]);
+                            if (isset($dataRecord[/* $tablename . '__' . */ $key])) $dataRecord[/* $tablename . '__' . */ $key] = self::makeISODate($dataRecord[/* $tablename . '__' . */ $key]);
                         }
                     }
                     
