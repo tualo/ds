@@ -473,6 +473,24 @@ BEGIN
     );
 END //
 
+
+CREATE OR REPLACE FUNCTION `dsx_get_key_sql_prefix`(in_prefix varchar(255),in_table_name varchar(64)
+) RETURNS longtext
+    DETERMINISTIC
+BEGIN 
+    RETURN ( 
+        select 
+            ifnull(concat('concat(',group_concat(concat(in_prefix,'.', FIELDQUOTE(ds_column.column_name),'') order by column_name separator ',\'|\','),')'),'null')
+        from 
+            ds_column
+        where 
+            ds_column.table_name = in_table_name
+            and ds_column.existsreal = 1
+            and ds_column.is_primary = 1
+            
+    );
+END //
+
 CREATE OR REPLACE FUNCTION `dsx_get_key_sql_plain`(in_prefix varchar(255),in_table_name varchar(64)
 ) RETURNS longtext
     DETERMINISTIC
@@ -1392,16 +1410,15 @@ BEGIN
 
                 ) DO
 
+                    set sql_command = record.s;
                     if (@log_dsx_commands=1) THEN
                         drop table if exists test_ds_cmd;
                         create table test_ds_cmd as select sql_command;
                     END IF;
-                    set sql_command = record.s;
                     PREPARE stmt FROM sql_command;
                     EXECUTE stmt;
                     DEALLOCATE PREPARE stmt;
                 END FOR;
-
                 FOR record IN (
                         select
                             concat('update temp_dsx_rest_data set `',column_name,'`= @serial + _rownumber where  `',column_name,'` is null  ') s,
@@ -1495,6 +1512,15 @@ BEGIN
                         (',dsx_get_key_sql_plain('temp_dsx_rest_data',use_table_name),')
                     set ',update_statement_fields,'
                 ');
+
+                set sql_command = concat('
+                    update `',use_table_name,'` 
+                    join temp_dsx_rest_data on 
+                        (',dsx_get_key_sql_prefix(use_table_name,use_table_name),') =
+                        (', 'temp_dsx_rest_data.__id',')
+                    set ',update_statement_fields,'
+                ');
+                select sql_command;
             ELSEIF
                 JSON_VALUE(request,'$.type')='delete' THEN
                 set sql_command = concat('
@@ -1541,7 +1567,7 @@ BEGIN
                 -- select ifnull(`xfield`,"I AM NULL") from temp_dsx_rest_data;
                 -- select `xfield` from temp_dsx_rest_data;
                 -- select * from `test` where `xfield` in (select `xfield` from temp_dsx_rest_data) ;
-                select sql_command;
+                
                 IF sql_command is null THEN
                  SIGNAL SQLSTATE '01000' SET MESSAGE_TEXT = 'no fields match for deletion', MYSQL_ERRNO = 1000;
                  LEAVE whole_proc;
