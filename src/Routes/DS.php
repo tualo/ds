@@ -93,8 +93,10 @@ class DS implements IRoute{
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     $k = $db->singleValue( "select dsx_get_key_sql({tablename}) k",['tablename'=>$tablename],'k');
-                    $db->direct('select ',$k,' from temp_dsx_rest_data');
-                    App::result('data', $k);
+                    
+                    App::result('ids', $db->direct('select ',$k,' __id from temp_dsx_rest_data'));
+                    App::result('data', $db->direct('select * from temp_dsx_rest_data'));
+                    
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
                     

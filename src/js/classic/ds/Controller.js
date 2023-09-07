@@ -370,6 +370,13 @@ Ext.define('Tualo.DS.panel.Controller', {
                     //this.saveSubStores();
                     //o.operations.create.forEach(function(item){
                     console.log('save success',arguments);
+                    if (o && o.operations && o.operations.create){
+                        o.operations.create.forEach(function(item){
+                            console.log('save success',item);
+                        });
+                    }
+
+                    
                     model.set('saving',false);
                     model.set('isNew',false);
                     model.set('isModified',store.getModifiedRecords().length!=0);
