@@ -1,7 +1,3 @@
-
-
-
--- SOURCE FILE: ./src//000.dsx_filter_values.sql 
 DELIMITER //
 
 CREATE OR REPLACE FUNCTION `dsx_filter_term`(tablename varchar(128), filter_object JSON ) 
