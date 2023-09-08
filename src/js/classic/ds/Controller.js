@@ -234,6 +234,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
 
     onDeferedStoreLoad: function(){
+        this.getStore().load();
     },
 
     onBeforeStoreLoad: function(store){
