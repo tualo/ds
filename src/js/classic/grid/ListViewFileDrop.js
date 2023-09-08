@@ -78,7 +78,7 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
               console.log("drop",files);
               
               Array.from(files).forEach((file) => {
-                fileHandler(file, file.name, file.type);
+                me.fileHandler(file, file.name, file.type);
               });
               
             },
