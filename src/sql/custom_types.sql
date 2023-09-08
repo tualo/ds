@@ -97,3 +97,36 @@ values
         0
     )
 ;
+
+
+
+insert
+    ignore into extjs_base_types (
+        vendor,
+        id,
+        classname,
+
+        xtype_long_classic,
+        baseclass,
+        xtype_long_modern,
+        name,
+        description,
+        iscolumn,
+        isformfield
+    )
+values
+    (
+        "Tualo",
+        "Tualo.DataSets.ListViewFileDrop",
+        "Tualo.DataSets.ListViewFileDrop",
+        
+        "widget.dslistviewfiledrop",
+        "Tualo.DataSets.ListView",
+        "widget.dslistviewfiledrop",
+
+        "Tualo.DataSets.ListViewFileDrop",
+        "Tualo Grid FileDrop",
+        0,
+        0
+    )
+;
