@@ -3,39 +3,7 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
     extend: 'Tualo.DataSets.ListView',
     alias: 'widget.dslistviewfiledrop',
 
-    listeners: {
-
-        drop: {
-            element: 'el',
-            fn: 'onDrop'
-        },
-
-        dragstart: {
-            element: 'el',
-            fn: 'addDropZone'
-        },
-
-        dragenter: {
-            element: 'el',
-            fn: 'addDropZone'
-        },
-
-        dragover: {
-            element: 'el',
-            fn: 'addDropZone'
-        },
-
-        dragleave: {
-            element: 'el',
-            fn: 'removeDropZone'
-        },
-
-        dragexit: {
-            element: 'el',
-            fn: 'removeDropZone'
-        },
-
-    },
+    
 
     plugins: [
         {
@@ -63,6 +31,40 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
     ],
     initComponent: function(){
         this.callParent(arguments);
+        let controller = this.getController();
+        this.on({
+
+            drop: {
+                element: 'el',
+                fn: controller.onDrop
+            },
+    
+            dragstart: {
+                element: 'el',
+                fn: controller.addDropZone
+            },
+    
+            dragenter: {
+                element: 'el',
+                fn: controller.addDropZone
+            },
+    
+            dragover: {
+                element: 'el',
+                fn: controller.addDropZone
+            },
+    
+            dragleave: {
+                element: 'el',
+                fn: controller.removeDropZone
+            },
+    
+            dragexit: {
+                element: 'el',
+                fn: controller.removeDropZone
+            },
+    
+        });
         Ext.defer(this.checkAutoNewRow,100,this);
     },
     checkAutoNewRow: function(rowIndex){
