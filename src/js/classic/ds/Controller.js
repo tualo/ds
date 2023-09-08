@@ -250,7 +250,10 @@ Ext.define('Tualo.DS.panel.Controller', {
             console.log('onBeforeStoreLoad','listfilter',listfilter)
             console.log('onBeforeStoreLoad','listsorters',listsorters)
         
-        
+        if (view.isVisible(true)==false){ 
+            console.debug(this.$className,'onBeforeStoreLoad','view.isVisible(true)==false');
+            return false;
+        }
 
         listsorters.each(function(item){
             sorters.push(item.getConfig());
