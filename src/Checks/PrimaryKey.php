@@ -6,6 +6,7 @@ use Tualo\Office\Basic\PostCheck;
 use Tualo\Office\Basic\TualoApplication as App;
 
 
+
 class PrimaryKey  extends PostCheck {
     
     public static function test(array $config){
@@ -13,7 +14,7 @@ class PrimaryKey  extends PostCheck {
         if (is_null($clientdb)) return;
 
         $data = $clientdb->direct(
-            'select ds_column.table_name,ds.writeable ,max(ds_column.is_primary) has_is_primary from ds_column join ds on ds_column.table_name=ds.table_name group by ds_column.table_name having has_is_primary=0'
+            'select ds_column.table_name,1 writeable ,max(ds_column.is_primary) has_is_primary from ds_column join ds on ds_column.table_name=ds.table_name group by ds_column.table_name having has_is_primary=0'
         );
         foreach($data as $row){
             if ($row['writeable']==1){
