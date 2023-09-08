@@ -20,7 +20,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         let id = this.getView().getId(),
             tn = this.getViewModel().get('table_name');
         if (this.getView().additionalTools.length>0){
-            console.log('Tualo.DS.Panel',this,this.additionalTools,toolbar);
+            if(Ext.getApplication().getDebug()===true) console.log('Tualo.DS.Panel',this,this.additionalTools,toolbar);
 
             this.getView().additionalTools.forEach(element => {
                 if(!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.'+element.defered))){
@@ -45,17 +45,17 @@ Ext.define('Tualo.DS.panel.Controller', {
             view = me.getView(),
             store = me.getStore()
             ;
-        console.log('onAddCommandClick',view,store,arguments);
+            if(Ext.getApplication().getDebug()===true) console.log('onAddCommandClick',view,store,arguments);
     },
     onReferencedRecordChange: function(record){
         if (record){
-            console.log('referenced record changed',this.$className,record);
+            if(Ext.getApplication().getDebug()===true) console.log('referenced record changed',this.$className,record);
             this.getStore().load();
         }
     },
     getReferencedView: function(){
         let view = this.getView().up().up().up();
-        console.log('getReferencedView',this.getView().referencedList,view);
+        if(Ext.getApplication().getDebug()===true) console.log('getReferencedView',this.getView().referencedList,view);
         return view;
     },
     getReferencedRecord: function(){
@@ -66,7 +66,6 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
         return null;
-        //return this.getReferencedView().getComponent('list').getSelectionModel().getSelection()[0];
     },
     initEvents: function(){
        let c = this;
@@ -272,7 +271,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (view.referencedList===true){
             referencedRecord = this.getReferencedRecord();
 
-            console.log('referencedRecord',referencedRecord)
+            if(Ext.getApplication().getDebug()===true) console.log('referencedRecord',referencedRecord)
             if ( (typeof referencedRecord=='undefined')||(referencedRecord==null) ) return false;
             if (!Ext.isEmpty(referencedRecord)){
                 for(var ref in view.referenced){
@@ -365,32 +364,29 @@ Ext.define('Tualo.DS.panel.Controller', {
                         }
                     }
                 }
-                console.info('operation',operation); 
-                console.debug('write success',arguments); 
+                if(Ext.getApplication().getDebug()===true) console.info('operation',operation); 
+                if(Ext.getApplication().getDebug()===true) console.debug('write success',arguments); 
             },this,{single:true});
 
 
             store.sync({
                 scope: this,
                 failure: function(){
-                    console.error('save failure',arguments);
+                    if(Ext.getApplication().getDebug()===true) console.error('save failure',arguments);
                     model.set('saving',false);
                 },
                 success: function(c,o){
                     //this.saveSubStores();
                     //o.operations.create.forEach(function(item){
-                    console.log('save success',arguments);
+                        if(Ext.getApplication().getDebug()===true) console.log('save success',arguments);
                     if (o && o.operations && o.operations.create){
                         o.operations.create.forEach(function(item){
                             console.log('save success',item);
                         });
                     }
-
-                    
                     model.set('saving',false);
                     model.set('isNew',false);
                     model.set('isModified',store.getModifiedRecords().length!=0);
-                    // if (typeof cb=='function') cb(c,o);
                 }
             });
         }else{
