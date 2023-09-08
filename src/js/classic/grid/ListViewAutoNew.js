@@ -31,7 +31,7 @@ Ext.define('Tualo.DataSets.ListViewAutoNew',  {
         Ext.defer(this.checkAutoNewRow,100,this);
     },
     checkAutoNewRow: function(rowIndex){
-        console.log('checkAutoNewRow',rowIndex);
+        if(Ext.getApplication().getDebug()===true) console.log('checkAutoNewRow',rowIndex);
         let doNotAdd = false;
         let store = this.getStore();
         if (typeof rowIndex=='undefined') rowIndex=-1;
