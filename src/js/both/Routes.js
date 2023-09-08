@@ -49,9 +49,22 @@ Ext.define('Tualo.routes.DS', {
     handler: {
         action: function (tablename) {
             let type = 'dsview';
+            let mainView = Ext.getApplication().getMainView();
+
             let tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1);
-            if(!Ext.isEmpty( Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').down(type+'_'+tablename.toLowerCase()))){
-                Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').setActiveItem(Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').down(type+'_'+tablename.toLowerCase()));
+            let stage = mainView.getComponent('dashboard_dashboard').getComponent('stage');
+            
+            let component = null;
+            
+            //stage.down(type+'_'+tablename.toLowerCase());
+            stage.items.each(function(item){
+                if (item.xtype==type+'_'+tablename.toLowerCase()){
+                    component = item;
+                }
+            });
+
+            if(!Ext.isEmpty( component )){
+                stage.setActiveItem(component);
             }else{
                 Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase);
             }

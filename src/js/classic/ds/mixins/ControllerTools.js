@@ -47,12 +47,15 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
         }
         console.log('append',values,'fields',fields);
         if (referencedList==true){
-            for(var ref in view.referenced){
-                if (typeof this.view.referenced[ref]== 'string')
-                    values[ref.toLowerCase()]=referencedRecord.get(this.view.referenced[ref].toLowerCase());
-                if (typeof this.view.referenced[ref]== 'object'){
-                    if (typeof this.view.referenced[ref].v== 'string')
-                        values[ref.toLowerCase()]=this.view.referenced[ref].v;
+            if(Ext.isEmpty(referencedRecord)){
+            }else{
+                for(var ref in view.referenced){
+                    if (typeof view.referenced[ref]== 'string')
+                        values[ref.toLowerCase()]=referencedRecord.get(view.referenced[ref].toLowerCase());
+                    if (typeof view.referenced[ref]== 'object'){
+                        if (typeof view.referenced[ref].v== 'string')
+                            values[ref.toLowerCase()]=view.referenced[ref].v;
+                    }
                 }
             }
         }

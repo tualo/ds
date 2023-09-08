@@ -45,7 +45,7 @@ class DS implements IRoute{
                 $input = json_decode(file_get_contents('php://input'),true);
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db ,$tablename);
-                $table->insert($input,['ignore'=>true]);
+                
                 if(($result = $table->update($input,[ /*'useInsertUpdate'=>true*/ ]))!==false){
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
