@@ -29,42 +29,70 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
             ptype:'tualoclipboard'
         }
     ],
+    fileZoneActiveClass: 'tualo_filedrop_active',
+    createFileDropZone: function(){
+        let me = this;
+        container.addEventListener(
+            "dragenter",
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("dragenter");
+              container.classList.add(me.fileZoneActiveClass);
+            },
+            false
+          );
+          
+          container.addEventListener(
+            "dragleave",
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("dragleave");
+              container.classList.remove(me.fileZoneActiveClass);
+            },
+            false
+          );
+          
+          container.addEventListener(
+            "dragover",
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("dragover");
+              container.classList.add(me.fileZoneActiveClass);
+            },
+            false
+          );
+          
+          container.addEventListener(
+            "drop",
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+          
+              console.log("drop");
+              container.classList.remove(me.fileZoneActiveClass);
+              let draggedData = e.dataTransfer;
+              let files = draggedData.files;
+              console.log("drop",files);
+              /*
+              imageDisplay.innerHTML = "";
+              Array.from(files).forEach((file) => {
+                fileHandler(file, file.name, file.type);
+              });
+              */
+            },
+            false
+          );
+          
+    },
+    onShow: function(){
+        this.callParent(arguments);
+        this.createFileDropZone();
+    },
     initComponent: function(){
         this.callParent(arguments);
-        let controller = this.getController();
-        this.on({
-
-            drop: {
-                element: 'el',
-                fn: controller.onDrop
-            },
-    
-            dragstart: {
-                element: 'el',
-                fn: controller.addDropZone
-            },
-    
-            dragenter: {
-                element: 'el',
-                fn: controller.addDropZone
-            },
-    
-            dragover: {
-                element: 'el',
-                fn: controller.addDropZone
-            },
-    
-            dragleave: {
-                element: 'el',
-                fn: controller.removeDropZone
-            },
-    
-            dragexit: {
-                element: 'el',
-                fn: controller.removeDropZone
-            },
-    
-        });
         Ext.defer(this.checkAutoNewRow,100,this);
     },
     checkAutoNewRow: function(rowIndex){
