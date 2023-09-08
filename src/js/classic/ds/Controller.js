@@ -233,7 +233,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             */
     },
 
-            
+    onDeferedStoreLoad: function(){
+    },
+
     onBeforeStoreLoad: function(store){
         var model = this.getViewModel(),
             view = this.getView(),
@@ -246,12 +248,16 @@ Ext.define('Tualo.DS.panel.Controller', {
             filters = [],
             sorters = [],
             extraParams = store.getProxy().getExtraParams();
-            
+        
+        if(Ext.getApplication().getDebug()===true){
             console.log('onBeforeStoreLoad','listfilter',listfilter)
             console.log('onBeforeStoreLoad','listsorters',listsorters)
-        
+        }
         if (view.isVisible(true)==false){ 
             console.debug(this.$className,'onBeforeStoreLoad','view.isVisible(true)==false');
+            view.un('show',this.onDeferedStoreLoad,);
+            view.on({ show: {fn: this.onDeferedStoreLoad, scope: this, single: true} });
+
             return false;
         }
 
