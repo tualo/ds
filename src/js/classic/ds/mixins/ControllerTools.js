@@ -63,6 +63,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
         var record = Ext.create('Tualo.DataSets.model.'+tablenamecase,values);
         if (this.showSpecialAppend()){ return; }
         this.appendRecord(record);
+        return record;
     },
 
 

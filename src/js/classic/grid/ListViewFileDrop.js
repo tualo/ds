@@ -76,16 +76,29 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
               let draggedData = e.dataTransfer;
               let files = draggedData.files;
               console.log("drop",files);
-              /*
-              imageDisplay.innerHTML = "";
+              
               Array.from(files).forEach((file) => {
                 fileHandler(file, file.name, file.type);
               });
-              */
+              
             },
             false
           );
           
+    },
+    fileHandler: function (file, name, type) {
+        let reader = new FileReader();
+        let store = this.getStore();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            console.log(reader.result);
+            
+            let record = container.up().up().getController().append();
+            record.set('__file_data',reader.result);
+            record.set('__file_size',file.size);
+            record.set('__file_name',file.name);
+            record.set('__file_type',file.type);
+        };
     },
     onShow: function(){
         this.callParent(arguments);
