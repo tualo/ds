@@ -31,7 +31,7 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
     ],
     fileZoneActiveClass: 'tualo_filedrop_active',
     createFileDropZone: function(){
-        let me = this;
+        let me = this,container = this.getEl().dom;
         container.addEventListener(
             "dragenter",
             (e) => {
