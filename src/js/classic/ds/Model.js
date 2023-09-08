@@ -14,9 +14,11 @@ Ext.define('Tualo.DS.panel.Model', {
     },
     formulas: {
         currentTitle: function(get){
-            if (!Ext.isEmpty(get('record'))){
-                return get('title')+" | Formular: "+get('record').get('__displayfield');
-            }
+            try{
+                if (!Ext.isEmpty(get('record'))){
+                    return get('title')+" | Formular: "+get('record').get('__displayfield');
+                }
+            }catch(e){}
             return "Formular";
         },
         disableSave: function(get){
