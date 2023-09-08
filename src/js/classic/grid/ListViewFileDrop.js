@@ -78,7 +78,7 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
               console.log("drop",files);
               
               Array.from(files).forEach((file) => {
-                me.fileHandler(file, file.name, file.type);
+                me.fileHandler(file, file.name, file.type,container);
               });
               
             },
@@ -86,7 +86,7 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
           );
           
     },
-    fileHandler: function (file, name, type) {
+    fileHandler: function (file, name, type,container) {
         let reader = new FileReader();
         let store = this.getStore();
         reader.readAsDataURL(file);
