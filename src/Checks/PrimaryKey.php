@@ -13,10 +13,14 @@ class PrimaryKey  extends PostCheck {
         if (is_null($clientdb)) return;
 
         $data = $clientdb->direct(
-            'select table_name,max(is_primary) has_is_primary from ds_column group by table_name having has_is_primary=0'
+            'select ds_column.table_name,ds.writeable ,max(ds_column.is_primary) has_is_primary from ds_column join ds on ds_column.table_name=ds.table_name group by ds_column.table_name having has_is_primary=0'
         );
         foreach($data as $row){
-            self::formatPrintLn(['red'], 'table '.$clientdb->dbname.'.'.$row['table_name'].' has no primary key');
+            if ($row['writeable']==1){
+                self::formatPrintLn(['red'], $row['table_name'].'table '.$clientdb->dbname.'.'.$row['table_name'].' has no primary key');
+            }else{
+                self::formatPrintLn(['yellow'], $row['table_name'].'view '.$clientdb->dbname.'.'.$row['table_name'].' has no primary ');
+            }
         }
         
 
