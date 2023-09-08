@@ -94,6 +94,7 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
     initComponent: function(){
         this.callParent(arguments);
         Ext.defer(this.checkAutoNewRow,100,this);
+        this.createFileDropZone();
     },
     checkAutoNewRow: function(rowIndex){
         if(Ext.getApplication().getDebug()===true) console.log('checkAutoNewRow',rowIndex);
