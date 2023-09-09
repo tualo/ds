@@ -92,8 +92,8 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
         reader.readAsDataURL(file);
         reader.onloadend = () => {
             console.log(reader.result);
-            
-            let record = container.up().up().getController().append();
+            window.d = container;
+            let record = container.up().getController().append();
             record.set('__file_data',reader.result);
             record.set('__file_size',file.size);
             record.set('__file_name',file.name);
