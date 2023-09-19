@@ -23,7 +23,7 @@ class Files implements IRoute{
                 if ($table->empty()) throw new Exception('File not found!');
 
 
-                if (($mime = $db->singleValue("select type from ds_files where file_id = {file_id} and tablename= {table_name}",$match,'type'))===false){
+                if (($mime = $db->singleValue("select type from ds_files where file_id = {file_id} and table_name= {tablename}",$match,'type'))===false){
                     throw new Exception('File not found!');
                 }
                 if (($dbcontent = $db->singleValue("select data from ds_files_data where file_id = {file_id}  ",$match,'data'))===false){
