@@ -17,5 +17,6 @@ require_once "Routes/RegisterClient.php";
 
 
 require_once "Routes/File.php";
+require_once "Routes/Files.php";
 require_once "Routes/XTypes.php";
 
