@@ -18,21 +18,22 @@ class Files implements IRoute{
             $session = App::get('session');
             try {
                 $table = new DSTable($db ,$match['tablename']);
-                $table->filter('file_id','=',$match['file_id']);
+                $table->filter('__file_id','=',$match['file_id']);
                 $table->read();
                 if ($table->empty()) throw new Exception('File not found!');
 
 
-                if (($mime = $db->singleValue("select type from ds_file where file_id = {file_id} and table_name= {table_name}",[$match],'type'))===false){
+                if (($mime = $db->singleValue("select type from ds_file where file_id = {file_id} and table_name= {table_name}",$match,'type'))===false){
                     throw new Exception('File not found!');
                 }
-                if (($dbcontent = $db->singleValue("select data from ds_file_data where file_id = {file_id}  ",[$match],'data'))===false){
+                if (($dbcontent = $db->singleValue("select data from ds_file_data where file_id = {file_id}  ",$match,'data'))===false){
                     throw new Exception('File not found!');
                 }
                 list($dataprefix,$content) = explode(',',$dbcontent);
 
                 App::contenttype($mime);
                 App::body(base64_decode($content));
+                Route::$finished=true;
 
             }catch(Exception $e){
                 App::result('msg', $e->getMessage());
