@@ -22,7 +22,12 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS",{
                 }
                 renderRecord = store.findRecord( column.idField , value,0,false,false,true);
                 if (renderRecord){
-                    value =  renderRecord.get(column.displayField);
+                    if (!Ext.isEmpty(renderRecord.get('color')) && (!Ext.isEmpty(renderRecord.get('icon')))){
+                        value = '<i class="'+renderRecord.get('icon')+'" style="color:'+renderRecord.get('color')+'; text-shadow: 0 0 5px black;"> '+'</i> ';
+                        value +=  renderRecord.get(column.displayField);
+                    }else{
+                        value =  renderRecord.get(column.displayField);
+                    }
                 }else{
                     metaData.tdStyle = "color: rgb(200,30,30)";
                 }
