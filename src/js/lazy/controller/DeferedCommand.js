@@ -12,8 +12,18 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
                 xtype: me.getView().command,
                 tablename: me.getView().tablename,
                 calleeId: me.getView().calleeId,
-                param: me.getView().param
+                param: me.getView().param,
+                listeners: {
+                    enableNext: function(){
+                        me.getViewModel().set('enableNext',true);
+                    },
+                    disableNext: function(){
+                        me.getViewModel().set('enableNext',false);
+                    }
+                }
+
             });
+
             me.c.loadRecord(record,range,sel);
             me.getView().add(me.c);
             me.getView().setActiveItem(me.c);
