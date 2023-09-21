@@ -14,14 +14,8 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
                 calleeId: me.getView().calleeId,
                 param: me.getView().param,
                 listeners: {
-                    enableNext: function(){
-                        console.log('enableNext');
-                        me.getViewModel().set('enableNext',true);
-                    },
-                    disableNext: function(){
-                        console.log('disableNext');
-                        me.getViewModel().set('enableNext',false);
-                    }
+                    enableNext: me.enableNext,
+                    disableNext: me.disableNext
                 }
 
             });
@@ -37,6 +31,14 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
             console.log(e);
             window.history.back();
         }
+    },
+    enableNext: function(){
+        console.log('enableNext');
+        this.getViewModel().set('enableNext',true);
+    },
+    disableNext: function(){
+        console.log('disableNext');
+        this.getViewModel().set('enableNext',false);
     },
     cancel: function(){
         console.log('cancel');
