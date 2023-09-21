@@ -15,9 +15,11 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
                 param: me.getView().param,
                 listeners: {
                     enableNext: function(){
+                        console.log('enableNext');
                         me.getViewModel().set('enableNext',true);
                     },
                     disableNext: function(){
+                        console.log('disableNext');
                         me.getViewModel().set('enableNext',false);
                     }
                 }
