@@ -202,8 +202,37 @@ Ext.define('Tualo.DS.panel.Controller', {
             this.setViewType(model.get('viewTypeOnLoad'));
         }
         this.updatePager();
+        this.preserveSelection();
+        window.ctrl =this;
+
     },
     
+    preserveSelection: function(){
+        let me = this,
+            model = me.getViewModel(),
+            sels = [],
+            selIndex=0,
+            keys = model.get('oldSelection');
+        if (Ext.isEmpty(keys)) return;
+        keys.forEach(function(key){
+            let record = me.getStore().getById(key);
+            if (record){ 
+                sels.push(record);
+                selIndex++;
+            }
+        });
+        if (me.getView().getComponent('list').getSelectionModel().type =="rowmodel") me.getView().getComponent('list').getSelectionModel().select(sels);
+        if (me.getView().getComponent('list').getSelectionModel().type =="cellmodel") me.getView().getComponent('list').view.bufferedRenderer.scrollTo(selIndex, true);
+    },
+
+    preserveSelectionBeforeLoad: function(){
+        let me = this,
+            model = me.getViewModel(),
+            sels = me.getView().getComponent('list').getSelection(),
+            keys = sels.map((item)=>{ return item.getId() });
+        model.set('oldSelection', keys);
+    },
+
 
     updatePager: function(){
         
@@ -249,6 +278,8 @@ Ext.define('Tualo.DS.panel.Controller', {
             sorters = [],
             extraParams = store.getProxy().getExtraParams();
         
+        this.preserveSelectionBeforeLoad();
+
         if(Ext.getApplication().getDebug()===true){
             console.log('onBeforeStoreLoad','listfilter',listfilter)
             console.log('onBeforeStoreLoad','listsorters',listsorters)

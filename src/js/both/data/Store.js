@@ -37,7 +37,8 @@ Ext.define("Tualo.DataSets.data.Store",{
                 reader: {
                     type: 'json',
                     rootProperty: 'data',
-                    idProperty: '__id'
+                    idProperty: '__id',
+                    clientIdProperty: '__clientid',
                 },
                 writer: {
                   type: 'json',

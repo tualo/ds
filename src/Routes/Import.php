@@ -506,7 +506,7 @@ class Import implements IRoute
                 // options replace ignore update
                 $table->insert($dataset);
                 $_index += count($dataset);
-                App::result('index', $_index);
+                App::result('index', $_index + 1);
                 App::result('count', $d['count']);
                 App::result('offset', $offset);
                 $table->readMoreResults();
