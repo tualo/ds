@@ -362,6 +362,7 @@ class Import implements IRoute
 
                                 // $ds->getConfig(false,false); // not extended, do not clean the config
                                 $spalten = array();
+                                $defaults = array();
                                 $txtspalten = array();
                                 $viewtxtspalten = array();
 
@@ -393,10 +394,11 @@ class Import implements IRoute
                                 foreach ($dsconfig['ds_column'] as $v) {
                                     if (isset($spalten[$v['column_name']]) && ($v['default_value'] != '')) {
                                         $spalten[$v['column_name']] = $v['default_value'];
+                                        $defaults[$v['column_name']] = $v['default_value'];
                                     }
                                 }
 
-
+                                
                                 $idx = 0;
                                 foreach ($d['header'][1] as $d) {
                                     if (is_null($d)) $d = '*NOT SET*';
@@ -425,6 +427,7 @@ class Import implements IRoute
                                         'text' => (isset($viewtxtspalten[$k]) ? $viewtxtspalten[$k] : $k), //$spalten_config[$k]['list_label'],
                                         'position' => 1, //$spalten_config[$k]['list_position'],
                                         'name' => is_null($v) ? "" : $v,
+                                        'default' => isset($defaults[$k]) ? $defaults[$k] : '',
                                         'dataindex' => $k
                                     );
                                 }

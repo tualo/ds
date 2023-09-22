@@ -168,6 +168,7 @@ Ext.define('Tualo.ds.lazy.controller.ImportPanel', {
           for (var i = 0; i < range.length; i++) {
             var name = range[i].get('id');
             var value = range[i].get('name');
+            if(value!=range[i].get('default'))
             r[name] = value;
           }
           result = Ext.JSON.encode(r);
