@@ -203,13 +203,13 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
         this.updatePager();
         this.preserveSelection();
-        window.ctrl =this;
-
+        this.setViewType('list');
     },
     
     preserveSelection: function(){
         let me = this,
             model = me.getViewModel(),
+            store = me.getStore(),
             sels = [],
             selIndex=0,
             keys = model.get('oldSelection');
@@ -218,11 +218,28 @@ Ext.define('Tualo.DS.panel.Controller', {
             let record = me.getStore().getById(key);
             if (record){ 
                 sels.push(record);
-                selIndex++;
+            }else{
+                if (sels.length==0) selIndex++;
             }
+
         });
-        if (me.getView().getComponent('list').getSelectionModel().type =="rowmodel") me.getView().getComponent('list').getSelectionModel().select(sels);
-        if (me.getView().getComponent('list').getSelectionModel().type =="cellmodel") me.getView().getComponent('list').view.bufferedRenderer.scrollTo(selIndex, true);
+        if (sels.length==0) return;
+        if (me.getView().getComponent('list').getSelectionModel().type =="rowmodel"){ 
+            me.getView().getComponent('list').getSelectionModel().select(sels);
+            me.getView().getComponent('form').loadRecord(model.get('record'));
+        }
+        if (me.getView().getComponent('list').getSelectionModel().type =="cellmodel"){
+            selIndex = store.find('__id',keys[0]);
+            console.log('selIndex',selIndex);
+            setTimeout(()=>{
+                me.getView().getComponent('list').view.bufferedRenderer.scrollTo(0, true);
+            },100);
+            setTimeout(()=>{
+                me.getView().getComponent('list').view.bufferedRenderer.scrollTo(selIndex, true);
+            },300);
+            me.getView().getComponent('form').loadRecord(model.get('record'));
+        }
+
     },
 
     preserveSelectionBeforeLoad: function(){

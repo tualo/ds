@@ -24,6 +24,9 @@ Ext.define('Tualo.DS.panel.Model', {
         disableSave: function(get){
             return !get('isModified');
         },
+        disableRefresh: function(get){
+            return get('isModified');
+        },
         userCls: function(get){
             console.log('userCls',get('isNew'));
             return get("isNew")?"new_cmp_ds":"";
