@@ -189,6 +189,10 @@ Ext.define('Tualo.ds.lazy.controller.ImportPanel', {
                 this.getViewModel().set('importing',true);
                 this.cancel();
             }
+        }else{
+            this.getViewModel().set('importing',false);
+            this.cancel();
+            Ext.MessageBox.alert('Achtung',res.msg);
         }
     }
 });
