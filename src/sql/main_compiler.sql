@@ -2189,6 +2189,7 @@ concat( 'Ext.define(',quote( concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_
      'extend', modelbaseclass,
      'entityName',  ds.table_name,
      'idProperty', '__id',
+     'clientIdProperty', '__clientid',
      'fields',
         JSON_MERGE(
             concat('[',
@@ -2692,7 +2693,7 @@ select
 
             
 
-            "columns",JSON_MERGE('[]', view_ds_listcolumn.js)
+            "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
             /*,
             "requires", JSON_MERGE(
                 concat('[',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),']'), 
@@ -3074,6 +3075,7 @@ from
     join ds on ds.table_name = ds_reference_tables.table_name
 where
     ds_reference_tables.active = 1
+    and ds.title <> ''
 union
 select
     adress_bezug table_name,

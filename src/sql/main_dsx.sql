@@ -1,3 +1,7 @@
+
+
+
+-- SOURCE FILE: ./src//000.dsx_filter_values.sql 
 DELIMITER //
 
 CREATE OR REPLACE FUNCTION `dsx_filter_term`(tablename varchar(128), filter_object JSON ) 
@@ -1284,7 +1288,23 @@ BEGIN
             ;
 
             drop table if exists temp_dsx_rest_data;
-            set sql_command = concat( 'create temporary table `temp_dsx_rest_data` as select _rownumber,`__id`,',use_fields,' from json_table(?, "$.data[*]" columns(_rownumber for ordinality, `__id` varchar(255) path "$.__id", ',use_columns,')) as jt');
+            set sql_command = concat( 
+                'create temporary table `temp_dsx_rest_data` as ',
+                'select _rownumber,`__id`,',
+                
+                '`__file_data`,`__file_name`,`__file_id`,`__file_type`',
+
+                ',',use_fields,' ',
+                'from json_table(?, "$.data[*]" columns(_rownumber for ordinality, ',
+                
+                '`__id` varchar(255) path "$.__id", ',
+
+                '`__file_data` longtext path "$.__file_data", ',
+                '`__file_name` varchar(255) path "$.__file_name", ',
+                '`__file_id` varchar(36) path "$.__file_id", ',
+                '`__file_type` varchar(255) path "$.__file_type", ',
+                
+                ' ',use_columns,')) as jt');
             if (@log_dsx_commands=1) THEN
                 drop table if exists test_ds_cmd;
                 create table test_ds_cmd as select sql_command;
@@ -1486,6 +1506,8 @@ BEGIN
                 on duplicate key update 
                     ',update_fields,'            ');
             */
+
+
             IF JSON_VALUE(request,'$.type')='update' THEN
 
                 select
@@ -1501,13 +1523,15 @@ BEGIN
                     and ds_column.column_type <> ''
                     and JSON_EXISTS(request,concat('$.data[0].', column_name))=1
                 ;
-                set sql_command = concat('
-                    update `',use_table_name,'` 
-                    join temp_dsx_rest_data on 
-                        (',dsx_get_key_sql_plain(use_table_name,use_table_name),') =
-                        (',dsx_get_key_sql_plain('temp_dsx_rest_data',use_table_name),')
-                    set ',update_statement_fields,'
-                ');
+                
+
+                set sql_command = concat(
+                         'insert ignore into ',
+                        '`',use_table_name,'` (',use_fields,') select ',use_fields,' from temp_dsx_rest_data',
+                        '            ');
+                PREPARE stmt FROM sql_command;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
 
                 set sql_command = concat('
                     update `',use_table_name,'` 
@@ -1517,6 +1541,7 @@ BEGIN
                     set ',update_statement_fields,'
                 ');
                 select sql_command;
+
             ELSEIF
                 JSON_VALUE(request,'$.type')='delete' THEN
                 set sql_command = concat('
@@ -1613,7 +1638,20 @@ BEGIN
             DEALLOCATE PREPARE stmt;
             
 
+            alter table temp_dsx_rest_data add __clientId text;
+            set sql_command = concat('update temp_dsx_rest_data set __clientid = __id');
+            PREPARE stmt FROM sql_command;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
+
+            set sql_command = concat('update temp_dsx_rest_data set __id = ',dsx_get_key_sql( use_table_name ));
+            PREPARE stmt FROM sql_command;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+
+
+/*
             select 
                 concat('JSON_OBJECT( "__table_name", ',doublequote(JSON_VALUE(request,'$.tablename')),
                     ' ,  "__newid", ',dsx_get_key_sql( use_table_name ),'',
@@ -1642,43 +1680,79 @@ BEGIN
                         JSON_SEARCH(JSON_EXTRACT(request,'$.returnfields'), 'one', column_name)!="NULL"  -- is not null
                     ,true)
                 ;
+*/
+            SET result = JSON_OBJECT('success',1,'message','OK');
 
-        /*
-        set @result_query = concat( 'select JSON_ARRAYAGG(s) into @data from (select ',@row,' s  from temp_dsx_rest_data) A ' ) ;
+            if JSON_VALUE(request,'$.type')<>'delete' then
 
-        if (@log_dsx_commands=1) THEN
-            drop table if exists test_ds_cmd;
-            create table test_ds_cmd as select @result_query;
-        END IF;
+                if JSON_EXISTS(request,'$.data[0].__file_data') and JSON_EXISTS(request,'$.data[0].__file_name') then
+                    
+                    for rec in (
+                        select 
+                            __file_data,
+                            __file_name,
+                            if(ifnull(__file_id,'')='',uuid(),__file_id) __file_id,
+                            __file_type
+                        from 
+                            temp_dsx_rest_data 
+                        where __file_data is not null
+                    ) do
+                    
+                        insert into ds_files    
+                        (
+                            file_id,
+                            table_name,
+                            name,
+                            path,
+                            size,
+                            mtime,
+                            ctime,
+                            type,
+                            hash,
+                            login
+                        ) values
+                        (
+                            rec.__file_id,
+                            use_table_name,
+                            rec.__file_name,
+                            concat('files/',rec.__file_id),
+                            length(rec.__file_data),
+                            now(),
+                            now(),
+                            rec.__file_type,
+                            md5(rec.__file_data),
+                            @sessionuser
+                        ) on duplicate key update
+                            mtime=now(),
+                            size=length(rec.__file_data),
+                            hash=md5(rec.__file_data),
+                            login=@sessionuser;
+                        
+                        insert into ds_files_data
+                        (
+                            file_id,
+                            data
+                        ) values
+                        (
+                            rec.__file_id,
+                            rec.__file_data
+                        ) on duplicate key update
+                            data=rec.__file_data;
+
+                        set sql_command = concat('update `',use_table_name,'` set file_id=',quote(rec.__file_id),'  where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data)');
+                        PREPARE stmt FROM sql_command;
+                        EXECUTE stmt;
+                        DEALLOCATE PREPARE stmt;
+
+                        call ds_files_cleanup(use_table_name);
+                    end for;
 
 
-        call dsx_rest_api_get(
-            json_object(
-                'tablename',    use_table_name,
-                'nodata',   0 -- ,
-                -- 'extendedwhere', concat('(',dsx_get_key_sql_plain(use_table_name,use_table_name),')',' in (select ',dsx_get_key_sql_plain('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data)')
-            ),@result
-        );
+                end if;
+                
+            end if;
 
-        SET @result_query = JSON_EXTRACT(@result,'$.query');
-        PREPARE stmt FROM @result_query;
-        EXECUTE stmt;
-        DEALLOCATE PREPARE stmt;
-        */
-        SET result = JSON_OBJECT('success',1,'message','OK');
-        -- SET result =JSON_SET(result,'$.data',JSON_MERGE('[]',@data));
-        select result;
-        /*
-    select @row;
-select * from temp_dsx_rest_data;
-            call dsx_rest_api_get(
-                json_object(
-                    'tablename',    use_table_name,
-                    'nodata',   0,
-                    'extendedwhere', concat('(',dsx_get_key_sql_plain(use_table_name,use_table_name),')',' in (select ',dsx_get_key_sql_plain('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data)')
-                ),result
-            );
-        */
+
         ELSE
 
             SIGNAL SQLSTATE '01000' SET MESSAGE_TEXT = 'Tablename not given', MYSQL_ERRNO = 1000;
@@ -1692,4 +1766,7 @@ select * from temp_dsx_rest_data;
     END IF;
 
 END //
+
+
+
 
