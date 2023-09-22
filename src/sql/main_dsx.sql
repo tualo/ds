@@ -1689,6 +1689,7 @@ BEGIN
                     
                     for rec in (
                         select 
+                            __id,
                             __file_data,
                             __file_name,
                             if(ifnull(__file_id,'')='',uuid(),__file_id) __file_id,
@@ -1739,7 +1740,10 @@ BEGIN
                         ) on duplicate key update
                             data=rec.__file_data;
 
-                        set sql_command = concat('update `',use_table_name,'` set file_id=',quote(rec.__file_id),'  where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data)');
+                        set sql_command = concat('
+                            update `',use_table_name,'` 
+                            set file_id=',quote(rec.__file_id),'  
+                            where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data where __id=',quote(rec.__id),')');
                         PREPARE stmt FROM sql_command;
                         EXECUTE stmt;
                         DEALLOCATE PREPARE stmt;

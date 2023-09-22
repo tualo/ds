@@ -47,6 +47,10 @@ class DS implements IRoute{
                 $table = new DSTable($db ,$tablename);
                 
                 if(($result = $table->update($input,[ /*'useInsertUpdate'=>true*/ ]))!==false){
+                    if ($table->error()){ 
+                        throw new \Exception( $table->errorMessage());
+                    }
+
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
@@ -59,6 +63,7 @@ class DS implements IRoute{
                     App::result('warnings',  $db->getWarnings());
                     
                     if(!is_null($table)){
+                        
                         $table->readMoreResults();
                         $table->readWarnings();
                         App::result('warnings', $table->warnings());
@@ -92,13 +97,16 @@ class DS implements IRoute{
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db ,$tablename);
                 if(($result = $table->insert($input))!==false){
+                    if ($table->error()){ 
+                        throw new \Exception( $table->errorMessage());
+                    }
+                    App::result('warnings', $table->warnings());
+                    App::result('moreResults', $table->moreResults());
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     $k = $db->singleValue( "select dsx_get_key_sql({tablename}) k",['tablename'=>$tablename],'k');
                     App::result('ids', $db->direct('select '.$k.' __id from temp_dsx_rest_data'));
                     App::result('data', $db->direct('select * from temp_dsx_rest_data'));
-                    App::result('warnings', $table->warnings());
-                    App::result('moreResults', $table->moreResults());
                     
                 }else{
                     App::result('success', false);
@@ -129,6 +137,9 @@ class DS implements IRoute{
                 if (is_null( $input )) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db ,$tablename);
                 if($table->delete($input)!==false){
+                    if ($table->error()){ 
+                        throw new \Exception( $table->errorMessage());
+                    }
                     App::result('success', true);
                 }else{
                     App::result('success', false);
