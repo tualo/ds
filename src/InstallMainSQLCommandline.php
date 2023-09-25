@@ -48,6 +48,7 @@ class InstallMainSQLCommandline implements ICommandline{
             'main_dsx' => 'setup main ds procedures ',
             'custom_types' => 'setup custom types ',
             'addcommand' => 'load addcommand ',
+            'ds_files' => 'add ds files ',
             'ds_renderer_stylesheet_attributes_ddl' => 'setup ds_renderer_stylesheet_attributes_ddl ',
         ];
 
