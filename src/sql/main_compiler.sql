@@ -2571,7 +2571,6 @@ delimiter ;
 
 call addfieldifnotexists('ds_listplugins','placement','varchar(50) default "view"');
 
-
 create or replace view view_ds_list_plugins as
 
 
@@ -2635,12 +2634,13 @@ create or replace view view_ds_list_plugins_grouped as
 
 select
 table_name,
+placement,
 json_arrayagg(
         fld
 ) plugins
 from 
 view_ds_list_plugins
-group by table_name
+group by table_name,placement
 ;
 
 create or replace view view_ds_list as
@@ -2664,7 +2664,8 @@ select
                 )
             ),
 
-            "plugins", 
+            "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),
+            /*
             JSON_ARRAY(
 
                 JSON_OBJECT(
@@ -2676,12 +2677,12 @@ select
                     'ptype', 'gridfilters'
                 )
             ),
-            
+            */
             "viewConfig",JSON_OBJECT(
                 'listeners', JSON_OBJECT(
                     'drop', 'onDropGrid'
                 ),
-                "plugins", ifnull(view_ds_list_plugins_grouped.plugins,JSON_ARRAY())
+                "plugins", ifnull(viewConfigPlugins.plugins,JSON_ARRAY())
                 
             ),
             "store", concat('ds_',ds.table_name),
@@ -2709,11 +2710,16 @@ from
         on ds.table_name = view_ds_listcolumn.table_name
     left join extjs_base_types
         on extjs_base_types.id = ds.listviewbaseclass
-    left join view_ds_list_plugins_grouped
-        on view_ds_list_plugins_grouped.table_name = ds.table_name
+    left join view_ds_list_plugins_grouped viewConfigPlugins
+        on viewConfigPlugins.table_name = ds.table_name
+        and viewConfigPlugins.placement = 'viewConfig'
+    left join view_ds_list_plugins_grouped viewPlugins
+        on viewPlugins.table_name = ds.table_name
+        and viewPlugins.placement = 'view'
 
 where
     /*`ds`.`title`<>''*/ true;
+
 -- SOURCE FILE: ./src//500-ui/050-list/view_dd_column.sql 
 delimiter ;
 
@@ -3424,75 +3430,6 @@ where
     `ds`.`title`<>'';
 -- SOURCE FILE: ./src//500-ui/080-dsview/080.view_ds_dsview.sql 
 delimiter ;
-
-/*
-    SELECT 
-
-        group_concat( F order by position SEPARATOR ',')
-    INTO 
-        rendererList
-    FROM 
-    (
-        SELECT
-        concat('{
-            "xtype": "cmp_ds_pdfrendererpanel",
-            "bind": {
-                "record": "{record}"
-            },
-            "border": false,
-            style: {
-                paddingTop: "1px"
-            },
-
-            "title": ',DOUBLEQUOTE(`label`),',
-            "template": ',DOUBLEQUOTE(`pug_template`),',
-            "useremote": ',useremote,'
-        }
-        ') F,
-        0 position
-        FROM (
-
-            select
-              pug_template,
-              label,
-              if(useremote=1,'true','false') useremote
-            from
-              ds_renderer
-            where
-              table_name = in_table_name
-            order by label
-            
-        ) RENDERER
-
-        UNION
-
-        SELECT 
-
-            concat(
-                '
-                {
-                    "title": ',DOUBLEQUOTE(`name`),',
-                    "xtype": "',lower(`xtype`),'",
-                    "bind": {
-                        "record": "{record}"
-                    },
-                    "border": false,
-                    "collapsible": false
-                }
-                '
-            ) F,
-        1900000+position position
-
-        FROM 
-            ds_extended_panels
-        WHERE 
-            table_name = in_table_name
-      
-            and active = 1 
-
-    ) A;
-*/
-
 
 create or replace view view_ds_dsview_accordion as
 select 

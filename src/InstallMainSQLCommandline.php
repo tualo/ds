@@ -50,6 +50,7 @@ class InstallMainSQLCommandline implements ICommandline{
             'addcommand' => 'load addcommand ',
             'ds_files' => 'add ds files ',
             'ds_renderer_stylesheet_attributes_ddl' => 'setup ds_renderer_stylesheet_attributes_ddl ',
+            'ds_listplugin'=> 'setup ds_listplugin ',
         ];
 
         foreach($files as $file=>$msg){
