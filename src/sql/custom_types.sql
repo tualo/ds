@@ -1,4 +1,5 @@
-delimiter ;
+DELIMITER ;
+
 insert
     ignore into extjs_base_types (
         vendor,

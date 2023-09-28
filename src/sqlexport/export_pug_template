@@ -1,9 +1,14 @@
 #!/bin/bash
 cd -P -- "$(dirname -- "$0")"
 
-TABLES=`cat << EndOfTables
-ds_pug_templates
-EndOfTables`
-DATA=$(mysqldump --no-create-info --complete-insert --single-transaction --add-drop-table=false --tables  ${@:2} ds_pug_templates --where "id like '$1%'")
+# TABLES=`cat << EndOfTables
+# ds_pug_templates
+# EndOfTables`
+# DATA=$(mysqldump --no-create-info --complete-insert --single-transaction --add-drop-table=false --tables  ${@:2} ds_pug_templates --where "id like '$1%'")
+
+
+SQL="select concat( 'insert ignore into ds_pug_templates (name,id,note,template) values (', quote(name),',', quote(id),',from_base64(',quote(to_base64(name)),'),from_base64( ',quote(to_base64(template)),') )',char(59),char(10) ) a from ds_pug_templates where id like '$1%'" 
+# echo $SQL;
+DATA=$(mysql -A ${@:2} -BNe "$SQL")
 #./remove_info "$DATA"
 echo -e $DATA
