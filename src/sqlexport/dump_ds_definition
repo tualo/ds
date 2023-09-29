@@ -1,18 +1,21 @@
 #!/bin/bash
 cd -P -- "$(dirname -- "$0")"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds --where "table_name = '$1'")
+DS_DATA=$(mysqldump --compact --complete-insert --no-create-info --tables ${@:2} ds --where "table_name = '$1'")
+DATA=$(echo $DS_DATA | sed -e 's/;/ ON DUPLICATE KEY UPDATE title=VALUES(title), reorderfield=VALUES(reorderfield), use_history=VALUES(use_history), searchfield=VALUES(searchfield), displayfield=VALUES(displayfield), sortfield=VALUES(sortfield), searchany=VALUES(searchany), hint=VALUES(hint), overview_tpl=VALUES(overview_tpl), sync_table=VALUES(sync_table), writetable=VALUES(writetable), globalsearch=VALUES(globalsearch), listselectionmodel=VALUES(listselectionmodel), sync_view=VALUES(sync_view), syncable=VALUES(syncable), cssstyle=VALUES(cssstyle), alternativeformxtype=VALUES(alternativeformxtype), read_table=   VALUES(read_table), class_name=VALUES(class_name), special_add_panel=VALUES(special_add_panel), existsreal=VALUES(existsreal), character_set_name=VALUES(character_set_name), read_filter=VALUES(read_filter), listxtypeprefix=VALUES(listxtypeprefix), phpexporter=VALUES(phpexporter), phpexporterfilename=VALUES(phpexporterfilename), combined=VALUES(combined), default_pagesize=VALUES(default_pagesize), allowForm=VALUES(allowForm), listviewbaseclass=VALUES(listviewbaseclass), showactionbtn=VALUES(showactionbtn), modelbaseclass=VALUES(modelbaseclass);/' )
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_column --where "table_name = '$1'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_column --where "table_name = '$1'")
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_column_list_label --where "table_name = '$1'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_column_list_label --where "table_name = '$1'")
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_column_form_label --where "table_name = '$1'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_column_form_label --where "table_name = '$1'")
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_dropdownfields --where "table_name = '$1'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_dropdownfields --where "table_name = '$1'")
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_reference_tables --where "table_name = '$1'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_reference_tables --where "table_name = '$1'")
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_addcommands --where "table_name = '$1'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_addcommands --where "table_name = '$1'")
 ./remove_info "$DATA"
-DATA=$(mysqldump --complete-insert --no-create-info --tables ${@:2} ds_access --where "table_name = '$1' and \`role\`='administration'")
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_access --where "table_name = '$1' and \`role\` in ('administration','_default_')")
+./remove_info "$DATA"
+DATA=$(mysqldump --insert-ignore --compact --complete-insert --no-create-info --tables ${@:2} ds_renderer --where "table_name = '$1' ")
 ./remove_info "$DATA"
