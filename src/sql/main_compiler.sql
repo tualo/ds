@@ -2665,19 +2665,7 @@ select
             ),
 
             "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),
-            /*
-            JSON_ARRAY(
-
-                JSON_OBJECT(
-                    'ptype', 'cellediting',
-                    'clicksToEdit', 1,
-                    'pluginId', concat(LOWER(ds.table_name),'_cellediting')
-                ),
-                JSON_OBJECT(
-                    'ptype', 'gridfilters'
-                )
-            ),
-            */
+             
             "viewConfig",JSON_OBJECT(
                 'listeners', JSON_OBJECT(
                     'drop', 'onDropGrid'
@@ -2686,20 +2674,12 @@ select
                 
             ),
             "store", concat('ds_',ds.table_name),
-            /* JSON_OBJECT( 
-                'type', concat('ds_',ds.table_name),
-                'autoLoad', FALSE is true
-            ),*/
-            
+             
 
             
 
             "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
-            /*,
-            "requires", JSON_MERGE(
-                concat('[',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),']'), 
-                view_ds_listcolumn.requiresJS
-            )*/
+             
         ),
     ')',char(59)) js,
     view_ds_listcolumn.js jsx,
@@ -2790,6 +2770,8 @@ call fill_ds_column('view_tualo_column_types');
 
 -- SOURCE FILE: ./src//500-ui/060-form/064.view_ds_formfieldgroups.sql 
 delimiter ;
+
+
 call addfieldifnotexists('ds_column_form_label','fieldgroup','varchar(50) default ""');
 call addfieldifnotexists('ds_column_form_label','flex','decimal(5,2) default 1');
 call addfieldifnotexists('ds_reference_tables','tabtitle','varchar(50) default ""');
@@ -2841,12 +2823,7 @@ select
 
                 'missedXtype', if(view_readtable_all_types_modern.type is null,`ds_column_form_label`.`xtype`,''),
                 
-                -- 'triggers', JSON_OBJECT(
-                --     "clear", JSON_OBJECT( "type", 'clear')/*,
-                --     "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
-                -- 
-                -- ),
-               
+
                 'placeholder', `ds_column_form_label`.`label`,
                 'name', concat( /*`ds_column_form_label`.`table_name`,'__',*/`ds_column_form_label`.`column_name`),
                 'bind', JSON_OBJECT( 
@@ -3163,30 +3140,9 @@ select
             JSON_OBJECT(
                 "xtype", "tabpanel",
                 "flex", 1,
-                /*
-                "tabBar", JSON_OBJECT(
-                    "layout", JSON_OBJECT(
-                        "pack", 'start',
-                        "overflow", 'scroller'
-                    )
-                ),
-                */
-                -- "layout", JSON_OBJECT( 'type', 'card','animation' , JSON_OBJECT('type','slide') ),
-                "items",  JSON_MERGE('[]',ifnull(  view_ds_formtabs_pertable.js, '[]' ))
-                /*,
-                "requires", 
-
                 
-                JSON_MERGE('[]', 
-                        JSON_MERGE('[]',  
-                            if( suppressRequires(),  '[]',  
-                                ifnull( req.requiresJS, '[]')
-                            ) 
-                        ) -- ,  
-                        -- ifnull( view_ds_form_requires.requires, '[]') 
-                )
-                */
-                            -- if( suppressRequires()=1,  '[]',   req.requiresJS) )
+                "items",  JSON_MERGE('[]',ifnull(  view_ds_formtabs_pertable.js, '[]' ))
+                
             )
         ),
     ')',char(59)) js,
@@ -3265,13 +3221,7 @@ select
                 ),
 
                 'missedXtype', if(view_readtable_all_types_modern.type is null,`ds_column_form_label`.`xtype`,''),
-                /*
-                'triggers', JSON_OBJECT(
-                    "clear", JSON_OBJECT( "type", 'clear')/*,
-                    "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
-                
-                ),
-                */
+                 
                 'placeholder', `ds_column_form_label`.`label`,
                 'name', `ds_column_form_label`.`column_name`,
                 'bind', JSON_OBJECT( 
@@ -3298,13 +3248,7 @@ select
                             -- 'label', `ds_column_form_label`.`label`,
                             'flex', 1,
                             'xtype',  if(view_readtable_all_types_modern.type is null,'displayfield', `ds_column_form_label`.`xtype`),
-                            /*
-                            'triggers', JSON_OBJECT(
-                                "clear", JSON_OBJECT( "type", 'clear')/*,
-                                "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
-                              
-                            ),
-                              */
+                            
                             'emptyText', `ds_column_form_label`.`label`,
                             'name', concat(`ds_column_form_label`.`column_name`),
                             'bind', JSON_OBJECT( 
@@ -3395,6 +3339,8 @@ from
 where
     `ds`.`title`<>''; 
 -- SOURCE FILE: ./src//500-ui/071-model/071.view_ds_viewmodel.sql 
+delimiter ;
+
 create or replace view view_ds_viewmodel as
 select 
     concat(  'Tualo/DataSets/viewmodel/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
