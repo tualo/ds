@@ -64,6 +64,7 @@ class InstallMainSQLCommandline implements ICommandline{
                 $sinlgeStatements = App::get('clientDB')->explode_by_delimiter($sql);
                 foreach($sinlgeStatements as $commandIndex => $statement){
                     try{
+                        App::get('session')->db->direct('select database()'); // keep connection alive
                         App::get('clientDB')->direct($statement);
                         App::get('clientDB')->moreResults();
                     }catch(\Exception $e){
