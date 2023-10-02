@@ -71,7 +71,7 @@ class InstallMainSQLCommandline implements ICommandline{
                                 // PostCheck::formatPrintLn(['blue'], $statement .': commandIndex => '.$commandIndex);
                             }
                         } 
-                        App::get('clientDB')->direct($statement);
+                        App::get('clientDB')->execute($statement);
                         App::get('clientDB')->moreResults();
                     }catch(\Exception $e){
                         echo PHP_EOL;
