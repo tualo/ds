@@ -68,7 +68,7 @@ class InstallMainSQLCommandline implements ICommandline{
                         App::get('session')->db->direct('select database()'); // keep connection alive
                         if ($file=='main_compiler'){
                             if (strpos($statement,'view_ds_dsview_accordion')!==false){
-                                PostCheck::formatPrintLn(['blue'], $statement .': commandIndex => '.$commandIndex);
+                                // PostCheck::formatPrintLn(['blue'], $statement .': commandIndex => '.$commandIndex);
                             }
                         } 
                         App::get('clientDB')->direct($statement);
