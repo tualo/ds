@@ -1148,8 +1148,6 @@ END IF;
 END //
 
 -- SOURCE FILE: ./src//dsx_rest_api_set.sql 
-
-
 DELIMITER //
 
 
@@ -1394,6 +1392,22 @@ BEGIN
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                    /*
+                    union 
+                        select
+                            concat('update temp_dsx_rest_data set `',column_name,'`=dsx_get_key_sql(',use_table_name,') where `',column_name,'` is null   ') s,
+                            column_name,
+                            SUBSTRING(ds_column.default_value,3,length(ds_column.default_value)-3) fn,
+                            default_value
+                        from 
+                            ds_column
+                        where 
+                            ds_column.table_name = use_table_name
+                            and default_value='{RIDX}'
+                            and ds_column.existsreal=1
+                            and ds_column.writeable =1
+                            and ds_column.column_type <> ''
+                    */
                     union 
                         select
                             concat('update temp_dsx_rest_data set `',column_name,'`=curtime() where `',column_name,'` is null   ') s,
