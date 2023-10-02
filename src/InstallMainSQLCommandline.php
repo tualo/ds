@@ -49,7 +49,8 @@ class InstallMainSQLCommandline implements ICommandline{
             'custom_types' => 'setup custom types ',
             'addcommand' => 'load addcommand ',
             'ds_files' => 'add ds files ',
-            'ds_renderer_stylesheet_attributes_ddl' => 'setup ds_renderer_stylesheet_attributes_ddl ',
+            'ds_renderer_stylesheet_attributes_dd' => 'setup ds_renderer_stylesheet_attributes_dd  ',
+            'ds_renderer_stylesheet_attributes_dd.ds' => 'setup ds_renderer_stylesheet_attributes_dd  ds ',
             'ds_listplugin'=> 'setup ds_listplugin ',
         ];
 
