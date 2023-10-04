@@ -53,6 +53,8 @@ class InstallMainSQLCommandline implements ICommandline{
             'ds_renderer_stylesheet_attributes_dd.ds' => 'setup ds_renderer_stylesheet_attributes_dd  ds ',
             'ds_listplugin'=> 'setup ds_listplugin ',
             'fix_primary_ds_reference_tables'=> 'setup fix_primary_ds_reference_tables ',
+            'install/ds_preview_form_label'=> 'setup ds_preview_form_label ',
+            'install/ds_preview_form_label.ds'=> 'setup ds_preview_form_label.ds ',
         ];
 
         foreach($files as $file=>$msg){
