@@ -2584,7 +2584,7 @@ create or replace view view_ds_list_plugins as
         'view' placement
     FROM 
         ds 
-    where false
+    where true
 
     union
 
