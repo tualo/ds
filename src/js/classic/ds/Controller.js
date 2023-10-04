@@ -138,7 +138,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         } else {
             model.set('selectRecordRecordNumber',0);
             model.set('record',null);
-            //form.loadRecord(null);
+            //form.load   Record(null);
         }
         model.set('disablePrev',model.get('selectRecordRecordNumber')<=1);
         model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
@@ -162,6 +162,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             model.set('record',record);
             form.loadRecord(record);
             */
+            form.loadRecord(record);
         } else {
             model.set('selectRecordRecordNumber',0);
             model.set('record',null);
@@ -224,6 +225,8 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         });
         if (sels.length==0) return;
+        if (Ex.isEmpty(model.get('record'))) return;
+        
         if (me.getView().getComponent('list').getSelectionModel().type =="rowmodel"){ 
             me.getView().getComponent('list').getSelectionModel().select(sels);
             me.getView().getComponent('form').loadRecord(model.get('record'));
