@@ -1,0 +1,7 @@
+#!/bin/sh
+mkdir -p $3/src/sql/install/
+echo "DELIMITER ;"  > $3/src/sql/install/$1.sql
+echo "DELIMITER ;"  > $3/src/sql/install/$1.ds.sql
+ds/src/sqlexport/dump_ds_definition $1 $2 >> $3/src/sql/install/$1.ds.sql
+ds/src/sqlexport/export_table_definition $1 $2 >> $3/src/sql/install/$1.sql  
+ds/src/sqlexport/export_view_definition $1 $2 | sed -e 's/create view if not exists/create or replace view/' >> $3/src/sql/install/$1.sql  
