@@ -225,8 +225,8 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         });
         if (sels.length==0) return;
-        if (Ex.isEmpty(model.get('record'))) return;
-        
+        if (Ext.isEmpty(model.get('record'))) return;
+
         if (me.getView().getComponent('list').getSelectionModel().type =="rowmodel"){ 
             me.getView().getComponent('list').getSelectionModel().select(sels);
             me.getView().getComponent('form').loadRecord(model.get('record'));
