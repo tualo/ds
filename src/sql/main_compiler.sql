@@ -3334,6 +3334,13 @@ CREATE TABLE IF NOT EXISTS `ds_preview_form_label` (
 );
 
 
+call addFieldIfNotExists(
+    "ds_preview_form_label",
+    "dockposition",
+    "varchar(20) DEFAULT 'left'"
+);
+
+
 create or replace view view_ds_preview as
 
 select 
