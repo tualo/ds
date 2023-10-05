@@ -1670,6 +1670,7 @@ into use_table_name
                     WHERE
                         REFERENCED_TABLE_SCHEMA = database()  
                         AND TABLE_NAME = use_table_name
+                    group by CONSTRAINT_NAME
                 ) DO 
 
                     set @error_row = null;
