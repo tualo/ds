@@ -1172,6 +1172,7 @@ BEGIN
     DECLARE update_statement_fields LONGTEXT;
     DECLARE use_columns LONGTEXT;
     DECLARE sql_command LONGTEXT;
+    DECLARE ref_sql_command LONGTEXT;
     DECLARE i integer;
     DECLARE l integer;
     IF (JSON_EXISTS(request,'$.tablename')=0) THEN 
@@ -1253,8 +1254,15 @@ BEGIN
 
     IF JSON_TYPE(JSON_EXTRACT(request,'$.data'))='ARRAY' THEN 
         SET use_table_name = JSON_VALUE(request,'$.tablename');
+
+select 
+if(ifnull(writetable,'') = '',use_table_name,writetable) 
+into use_table_name
+ from ds where table_name = use_table_name;
+
         IF use_table_name is not null THEN 
             -- select JSON_EXTRACT(request,'$.data');
+
 
             select 
                 group_concat(
@@ -1647,6 +1655,38 @@ BEGIN
             END IF;
 
 
+            if (JSON_VALUE(request,'$.check_foreign_key')=1) THEN
+                FOR ref in (
+                    SELECT 
+                        TABLE_NAME,
+                        CONSTRAINT_NAME,
+                        REFERENCED_TABLE_NAME,
+                            group_concat( concat('`',COLUMN_NAME,'`') separator ',') COLUMN_NAMES,
+                            group_concat( concat('`',REFERENCED_COLUMN_NAME,'`') separator ',') REFERENCED_COLUMN_NAMES,
+
+                             count(*) c
+                    FROM
+                        INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                    WHERE
+                        REFERENCED_TABLE_SCHEMA = database()  
+                        AND TABLE_NAME = use_table_name
+                ) DO 
+
+                    set @error_row = null;
+                    set ref_sql_command = concat('select min(_rownumber) into @error_row from temp_dsx_rest_data where (',ref.COLUMN_NAMES,') not in (select ',ref.REFERENCED_COLUMN_NAMES,' from `',ref.REFERENCED_TABLE_NAME,'`)');
+                    PREPARE stmt FROM ref_sql_command;
+                    EXECUTE stmt;
+                    DEALLOCATE PREPARE stmt;
+                    if @error_row is not null then
+                        set @msg = concat('Referenzfehler in Zeile ',@error_row,' für ',ref.COLUMN_NAMES,' in ',ref.REFERENCED_TABLE_NAME, '(',ref.REFERENCED_COLUMN_NAMES,')');
+                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg, MYSQL_ERRNO = 1000;
+                        LEAVE whole_proc;
+                    end if;
+
+                END FOR;
+            end if;
+
+
             PREPARE stmt FROM sql_command;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
@@ -1663,8 +1703,6 @@ BEGIN
             PREPARE stmt FROM sql_command;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
-
-
 /*
             select 
                 concat('JSON_OBJECT( "__table_name", ',doublequote(JSON_VALUE(request,'$.tablename')),

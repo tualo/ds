@@ -507,7 +507,7 @@ class Import implements IRoute
                 }
                 $table = DSTable::init($db)->t($tablename);
                 // options replace ignore update
-                $table->insert($dataset);
+                $table->insert($dataset,['check_foreign_key'=>1]);
                 if ($table->error()){ 
                     throw new \Exception( $table->errorMessage());
                 }
