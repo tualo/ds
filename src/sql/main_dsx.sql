@@ -1675,13 +1675,15 @@ into use_table_name
 
                     set @error_row = null;
                     set ref_sql_command = concat('select min(_rownumber) into @error_row from temp_dsx_rest_data where (',ref.COLUMN_NAMES,') not in (select ',ref.REFERENCED_COLUMN_NAMES,' from `',ref.REFERENCED_TABLE_NAME,'`)');
-                    PREPARE stmt FROM ref_sql_command;
-                    EXECUTE stmt;
-                    DEALLOCATE PREPARE stmt;
-                    if @error_row is not null then
-                        set @msg = concat('Referenzfehler in Zeile ',@error_row,' für ',ref.COLUMN_NAMES,' in ',ref.REFERENCED_TABLE_NAME, '(',ref.REFERENCED_COLUMN_NAMES,')');
-                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg, MYSQL_ERRNO = 1000;
-                        LEAVE whole_proc;
+                    if (ref_sql_command is not null) then
+                        PREPARE stmt FROM ref_sql_command;
+                        EXECUTE stmt;
+                        DEALLOCATE PREPARE stmt;
+                        if @error_row is not null then
+                            set @msg = concat('Referenzfehler in Zeile ',@error_row,' für ',ref.COLUMN_NAMES,' in ',ref.REFERENCED_TABLE_NAME, '(',ref.REFERENCED_COLUMN_NAMES,')');
+                            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg, MYSQL_ERRNO = 1000;
+                            LEAVE whole_proc;
+                        end if;
                     end if;
 
                 END FOR;
