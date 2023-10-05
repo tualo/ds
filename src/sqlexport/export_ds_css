@@ -16,5 +16,5 @@ DDL=$(./export_table_definition $* $TABLES)
 ./export_view_definition "$VIEWS" $* 
 
 
-DATA=$(mysqldump --compact --no-create-info --complete-insert --single-transaction --add-drop-table=false --tables $* $TABLES)
+DATA=$(mysqldump --compact --no-create-info --complete-insert --single-transaction --add-drop-table=false --databases $1 --tables ${@:2} $TABLES)
 ./remove_info "$DATA"
