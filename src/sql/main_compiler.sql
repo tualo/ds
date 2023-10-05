@@ -2118,6 +2118,7 @@ from view_readtable_all_types where  xtype_long_modern is not null
 create or replace view view_readtable_all_types_classic as
 select `id`,`xtype_long_classic` `xtype`,`classic_typeclass` `typeclass`,`classic_type` `type`,`name`,`vendor`,`description`
 from view_readtable_all_types where  xtype_long_classic is not null  
+group by `classic_type`
 ;
 
 
