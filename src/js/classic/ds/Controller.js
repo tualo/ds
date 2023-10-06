@@ -144,6 +144,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
         model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
         
+        Ext.getApplication().updateWindowTitle();
     },
 
     onListSelectionChange: function(selModel, selected, eOpts){

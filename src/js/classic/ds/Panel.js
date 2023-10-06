@@ -7,6 +7,9 @@ Ext.define('Tualo.DS.Panel', {
     viewModel: {
         type:'dspanelmodel',
     },
+    getWindowTitle: function(){
+        return this.getViewModel().get('currentWindowTitle');
+    },
     bind: {
         disabled: "{saving}"
     },
