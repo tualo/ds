@@ -127,7 +127,7 @@ class DS implements IRoute
 
 
                     App::result('ids', $db->direct('select ' . $k . ' __id from temp_dsx_rest_data'));
-
+                    /*
                     $fld = [];
                     $fld[] = 'temp_dsx_rest_data.__clientid';
                     if (!isset($input[0])) $input = [$input];
@@ -136,7 +136,8 @@ class DS implements IRoute
                             if ($key != '__table_name')
                                 $fld[] = 'temp_dsx_rest_data.' . $key;
                     }
-                    App::result('data', $db->direct('select ' . implode(',', $fld) . ' from temp_dsx_rest_data'));
+                    */
+                    App::result('data', $db->direct('select * from temp_dsx_rest_data'));
 
                 } else {
                     App::result('success', false);
