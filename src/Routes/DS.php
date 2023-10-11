@@ -57,7 +57,26 @@ class DS implements IRoute
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
-                    App::result('data', $db->direct('select * from temp_dsx_rest_data'));
+
+                    $k = $db->singleValue("select dsx_get_key_sql({tablename}) k", ['tablename' => $tablename], 'k');
+
+//                    App::result('data', $db->direct('select * from temp_dsx_rest_data'));
+
+
+
+                    App::result('ids', $db->direct('select ' . $k . ' __id from temp_dsx_rest_data'));
+
+                    $fld = [];
+                    $fld[] = 'temp_dsx_rest_data.__clientid';
+                    if (!isset($input[0])) $input = [$input];
+                    foreach ($input[0] as $key => $c) {
+                        if ($key != '__rownumber')
+                            if ($key != '__table_name')
+                                $fld[] = 'temp_dsx_rest_data.' . $key;
+                    }
+                    App::result('data', $db->direct('select ' . implode(',', $fld) . ' from temp_dsx_rest_data'));
+                    
+
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
                 } else {
@@ -118,7 +137,7 @@ class DS implements IRoute
                                 $fld[] = 'temp_dsx_rest_data.' . $key;
                     }
                     App::result('data', $db->direct('select ' . implode(',', $fld) . ' from temp_dsx_rest_data'));
-                    
+
                 } else {
                     App::result('success', false);
                     App::result('warnings', $table->warnings());
