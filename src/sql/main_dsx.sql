@@ -1457,9 +1457,19 @@ into use_table_name
                     EXECUTE stmt;
                     DEALLOCATE PREPARE stmt;
                 END FOR;
+
+
                 FOR record IN (
                         select
-                            concat('update temp_dsx_rest_data set `',column_name,'`= @serial + _rownumber where  `',column_name,'` is null  ') s,
+                            concat(
+                                'update temp_dsx_rest_data set `',column_name,'`= @serial + _rownumber ',
+                                
+                                if( 
+                                    ( (data_type='int' or data_type='bigint') and ( JSON_VALUE(request,'$.type')='insert')  ),
+                                    concat('where  `',column_name,'` < 0 '),
+                                    concat('where  `',column_name,'` is null ')
+                                )
+                            ) s,
                             column_name,
                             SUBSTRING(ds_column.default_value,3,length(ds_column.default_value)-3) fn,
                             default_value

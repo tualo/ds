@@ -2179,75 +2179,145 @@ where ds_column.existsreal = 1
 
 
 call addfieldifnotexists('ds_column','fieldtype','varchar(100) default ""');
-
-create or replace view view_ds_model as
-select 
-    concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) name,
-    concat('Tualo/DataSets/model/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
-
-concat( 'Ext.define(',quote( concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) ) , ', ',
- JSON_OBJECT(
-     'extend', modelbaseclass,
-     'entityName',  ds.table_name,
-     'idProperty', '__id',
-     'clientIdProperty', '__clientid',
-     'fields',
-        JSON_MERGE(
-            concat('[',
-                '{"name": "__table_name", "defaultValue": "',ds.table_name,'","critical": true,"type":"string"},',
-                '{"name": "__id", "critical": true, "type":"string"},',
-                '{"name": "__rownumber", "critical": true, "type":"number"}',
-            ']'),
-            ifnull(
-            concat('[',group_concat( 
-                JSON_MERGE(
-                    JSON_OBJECT(
-                        'name', concat(/*`ds_column`.`table_name`,'__',*/`ds_column`.`column_name`),
-                        'type', 
-                        if (ds_column.fieldtype<>'',
-                            ds_column.fieldtype,
-                            if(ds_column.column_type='bigint(4)' or ds_column.column_type='int(4)' or ds_column.column_type='tinyint(4)','boolean', ifnull(`ds_column_forcetype`.`fieldtype`, ifnull(`ds_db_types_fieldtype`.`fieldtype`,'string')))
-                        )
+CREATE
+OR REPLACE VIEW `view_ds_model` AS
+select
+    concat(
+        'Tualo.DataSets.model.',
+        ucase(left(`ds`.`table_name`, 1)),
+        lcase(substr(`ds`.`table_name`, 2))
+    ) AS `name`,
+    concat(
+        'Tualo/DataSets/model/',
+        ucase(left(`ds`.`table_name`, 1)),
+        lcase(substr(`ds`.`table_name`, 2)),
+        '.js'
+    ) AS `filename`,
+    concat(
+        'Ext.define(',
+        quote(
+            concat(
+                'Tualo.DataSets.model.',
+                ucase(left(`ds`.`table_name`, 1)),
+                lcase(substr(`ds`.`table_name`, 2))
+            )
+        ),
+        ', ',
+        json_object(
+            'extend',
+            `ds`.`modelbaseclass`,
+            'entityName',
+            `ds`.`table_name`,
+            'idProperty',
+            '__id',
+            'clientIdProperty',
+            '__clientid',
+            'fields',
+            json_merge_preserve(
+                concat(
+                    '[',
+                    '{"name": "__table_name", "defaultValue": "',
+                    `ds`.`table_name`,
+                    '","critical": true,"type":"string"},',
+                    '{"name": "__id", "critical": true, "type":"string"},',
+                    '{"name": "__rownumber", "critical": true, "type":"number"}',
+                    ']'
+                ),
+                ifnull(
+                    concat(
+                        '[',
+                        group_concat(
+                            json_merge_preserve(
+                                json_object(
+                                    'name',
+                                    concat(`ds_column`.`column_name`),
+                                    'type',
+                                    if(
+                                        `ds_column`.`fieldtype` <> '',
+                                        `ds_column`.`fieldtype`,
+                                        if(
+                                            `ds_column`.`column_type` = 'bigint(4)'
+                                            or `ds_column`.`column_type` = 'int(4)'
+                                            or `ds_column`.`column_type` = 'tinyint(4)',
+                                            'boolean',
+                                            ifnull(
+                                                `ds_column_forcetype`.`fieldtype`,
+                                                ifnull(`ds_db_types_fieldtype`.`fieldtype`, 'string')
+                                            )
+                                        )
+                                    )
+                                ),
+                                if(
+                                    (ifnull( `ds_column`.`default_value`,'' ) = '') or 
+                                    (
+                                        ( substr(`ds_column`.`default_value`, 1, 1) = '{')
+                                        and 
+                                        ( `ds_column`.`default_value` <> '{#serial}')
+                                    )
+                                    ,
+                                    '{}',
+                                    json_object(
+                                        'defaultValue',
+                                        if (
+                                             ( `ds_column`.`default_value` <> '{#serial}'),
+                                                `ds_column`.`default_value`,
+                                                -1
+                                        )
+                                        
+                                    )
+                                ),
+                                if(
+                                    `ds_column`.`is_primary` = 1,
+                                    '{"critical": true}',
+                                    '{}'
+                                ),
+                                `view_ds_column_merge`.`obj`
+                            )
+                            order by
+                                `ds_column`.`column_name` ASC separator ','
+                        ),
+                        ']'
                     ),
-                    if(
-                        ds_column.default_value='',
-                        '{}',
-                        JSON_OBJECT(
-                            'defaultValue', if( substring(ds_column.default_value,1,1)='{',null,ds_column.default_value )
-                        )
-                    ),
-                    if(
-                        ds_column.is_primary=1,
-                        '{"critical": true}',
-                        '{}'
-                    )
-                    ,
-                    view_ds_column_merge.obj
+                    '[]'
                 )
-                  order by ds_column.column_name separator ','),']'
-            ),'[]')
-        )
- ),')',char(59)) js,
- ds.table_name
+            )
+        ),
+        ')',
+        char(59)
+    ) AS `js`,
+    `ds`.`table_name` AS `table_name`
 from
-    ds
-    join ds_column 
-        on ds.table_name = ds_column.table_name
-        and `ds_column`.`existsreal`=1 
-        -- and `ds`.`title`<>''
-        -- and (`ds_column`.table_name, `ds_column`.column_name) in (select table_name, column_name from ds_column_list_label where active=1)
-    join view_ds_column_merge
-        on view_ds_column_merge.table_name = `ds_column`.`table_name`
-        and view_ds_column_merge.column_name = `ds_column`.`column_name`
-    
-    left join `ds_db_types_fieldtype` on `ds_column`.`data_type` = `ds_db_types_fieldtype`.`dbtype`
-    left join `ds_column_forcetype` 
-        on (`ds_column`.`table_name`,`ds_column`.`column_name`) =  (`ds_column_forcetype`.`table_name`,`ds_column_forcetype`.`column_name`)
--- where ds.table_name='adressen'       
-      
-group by ds.table_name
-;
-
+    (
+        (
+            (
+                (
+                    `ds`
+                    join `ds_column` on(
+                        `ds`.`table_name` = `ds_column`.`table_name`
+                        and `ds_column`.`existsreal` = 1
+                    )
+                )
+                join `view_ds_column_merge` on(
+                    `view_ds_column_merge`.`table_name` = `ds_column`.`table_name`
+                    and `view_ds_column_merge`.`column_name` = `ds_column`.`column_name`
+                )
+            )
+            left join `ds_db_types_fieldtype` on(
+                `ds_column`.`data_type` = `ds_db_types_fieldtype`.`dbtype`
+            )
+        )
+        left join `ds_column_forcetype` on(
+            (
+                `ds_column`.`table_name`,
+                `ds_column`.`column_name`
+            ) = (
+                `ds_column_forcetype`.`table_name`,
+                `ds_column_forcetype`.`column_name`
+            )
+        )
+    )
+group by
+    `ds`.`table_name`;
 -- SOURCE FILE: ./src//500-ui/020-store/020.view_ds_store.sql 
 delimiter ;
 
