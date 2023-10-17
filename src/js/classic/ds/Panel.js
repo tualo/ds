@@ -4,6 +4,9 @@ Ext.define('Tualo.DS.Panel', {
     config: {
         additionalTools: [],
     },
+    requires: [
+        'Tualo.ds.data.field.PropertyValue',
+    ],
     viewModel: {
         type:'dspanelmodel',
     },

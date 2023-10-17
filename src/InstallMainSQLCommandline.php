@@ -55,6 +55,12 @@ class InstallMainSQLCommandline implements ICommandline{
             'fix_primary_ds_reference_tables'=> 'setup fix_primary_ds_reference_tables ',
             'install/ds_preview_form_label'=> 'setup ds_preview_form_label ',
             'install/ds_preview_form_label.ds'=> 'setup ds_preview_form_label.ds ',
+
+            'install/properties_template'=> 'setup properties_template ',
+            'install/ds_property_types'=> 'setup ds_property_types ',
+            'install/ds_property_types.ds'=> 'setup ds_property_types.ds ',
+            'install/ds_property_definition'=> 'setup ds_property_definition ',
+            'install/ds_property_definition.ds'=> 'setup ds_property_definition.ds ',
         ];
 
         foreach($files as $file=>$msg){
