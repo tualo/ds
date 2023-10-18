@@ -162,7 +162,7 @@ Ext.define('Tualo.routes.DsByID', {
     url: 'ds/:table/:id',
     handler: {
         action: function (values, action) {
-            type = 'dsview';
+            let type = 'dsview';
             let tablename = values.table;
             let tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1);
             console.log('Tualo.DataSets.' + type + '.' + tablenamecase, arguments);

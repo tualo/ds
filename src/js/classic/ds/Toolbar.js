@@ -13,6 +13,7 @@ Ext.define('Tualo.DS.Toolbar', {
     items: [
         {
             flex: 1,
+            itemId: "dssearchfield",
             xtype: "dssearchfield"
         },
         {

@@ -2668,9 +2668,10 @@ create or replace view view_ds_list_plugins as
         'view' placement
     FROM 
         ds 
-    where false
+    -- where false
 
     union 
+
     SELECT
         table_name,
         JSON_OBJECT(
@@ -2719,38 +2720,54 @@ select
     concat(  'Tualo/DataSets/list/',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)),'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.list.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
-        JSON_OBJECT(
-            "extend", if( ifnull(extjs_base_types.id,"")='', 'Tualo.DataSets.grid.Grid', extjs_base_types.id),
-            "tablename",  ds.table_name,
-            "alias", concat('widget.dslist_',ds.table_name),
-            "title", ds.title,
-            
-            "controller",concat('dsgridcontroller'),
-            "stateful",JSON_OBJECT("columns",true),
-            "selModel",ds.listselectionmodel,
-            "features", JSON_ARRAY(
-                JSON_OBJECT(
-                    "dock", "bottom",
-                    "ftype","summary"
-                )
-            ),
 
-            "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),
-             
-            "viewConfig",JSON_OBJECT(
-                'listeners', JSON_OBJECT(
-                    'drop', 'onDropGrid'
+        if( extjs_base_types.id<>'Ext.grid.property.Grid',
+
+            JSON_OBJECT(
+                "extend", if( ifnull(extjs_base_types.id,"")='', 'Tualo.DataSets.grid.Grid', extjs_base_types.id),
+                "tablename",  ds.table_name,
+                "alias", concat('widget.dslist_',ds.table_name),
+                "title", ds.title,
+                
+                "controller",concat('dsgridcontroller'),
+                "stateful",JSON_OBJECT("columns",true),
+                "selModel",ds.listselectionmodel,
+                "features", JSON_ARRAY(
+                    JSON_OBJECT(
+                        "dock", "bottom",
+                        "ftype","summary"
+                    )
                 ),
-                "plugins", ifnull(viewConfigPlugins.plugins,JSON_ARRAY())
+
+                "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),
+                
+                "viewConfig",JSON_OBJECT(
+                    'listeners', JSON_OBJECT(
+                        'drop', 'onDropGrid'
+                    ),
+                    "plugins", ifnull(viewConfigPlugins.plugins,JSON_ARRAY())
+                    
+                ),
+                "store", concat('ds_',ds.table_name),
+                
+
+                
+
+                "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
                 
             ),
-            "store", concat('ds_',ds.table_name),
-             
-
-            
-
-            "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
-             
+            JSON_OBJECT(
+                "extend", 'Ext.grid.property.Grid',
+                "tablename",  ds.table_name,
+                "alias", concat('widget.dslist_',ds.table_name),
+                "title", ds.title,
+                "store", concat('ds_',ds.table_name),
+                "source", JSON_OBJECT("data",true,"time",'x'),
+                "controller",concat('dsgridcontroller'),
+                "stateful",JSON_OBJECT("columns",true),
+                "selModel",ds.listselectionmodel
+                
+            )
         ),
     ')',char(59)) js,
     view_ds_listcolumn.js jsx,
