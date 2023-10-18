@@ -75,7 +75,7 @@ class InstallMainSQLCommandline implements ICommandline{
                 foreach($sinlgeStatements as $commandIndex => $statement){
                     try{
                         App::get('session')->db->direct('select database()'); // keep connection alive
-                        if ( $args->getOpt('showcmd') ){
+                        if ( $args->getOpt('debug') ){
                             PostCheck::formatPrintLn(['blue'], $commandIndex.': '.substr(preg_replace("/\\n/m","",$statement),0,60));
                         }
                         App::get('clientDB')->execute($statement);
