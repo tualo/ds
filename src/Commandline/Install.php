@@ -4,8 +4,8 @@ use Tualo\Office\Basic\ICommandline;
 use Tualo\Office\Basic\CommandLineInstallSQL;
 
 class Install extends CommandLineInstallSQL  implements ICommandline{
+    public static function getDir():string {   return dirname(__DIR__,1); }
     public static $shortName  = 'ds';
-    public static $dir  = __DIR__;
     public static $files = [
         'main_compiler' => 'setup main compiler views ',
         'main_dsx' => 'setup main ds procedures ',
