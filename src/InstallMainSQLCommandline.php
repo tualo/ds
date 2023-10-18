@@ -15,8 +15,8 @@ class InstallMainSQLCommandline implements ICommandline{
     public static function setup(Cli $cli){
         $cli->command(self::getCommandName())
             ->description('installs needed sql procedures for ds module')
-            ->opt('client', 'only use this client', true, 'string');
-            
+            ->opt('client', 'only use this client', true, 'string')
+            ->opt('debug', 'show command index', false, 'boolean');
     }
 
    
@@ -65,7 +65,7 @@ class InstallMainSQLCommandline implements ICommandline{
 
         foreach($files as $file=>$msg){
             $installSQL = function(string $file){
-
+                global $args;
                 $filename = __DIR__.'/sql/'.$file.'.sql';
                 $sql = file_get_contents($filename);
                 $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
@@ -75,11 +75,9 @@ class InstallMainSQLCommandline implements ICommandline{
                 foreach($sinlgeStatements as $commandIndex => $statement){
                     try{
                         App::get('session')->db->direct('select database()'); // keep connection alive
-                        if ($file=='main_compiler'){
-                            if (strpos($statement,'view_ds_dsview_accordion')!==false){
-                                // PostCheck::formatPrintLn(['blue'], $statement .': commandIndex => '.$commandIndex);
-                            }
-                        } 
+                        if ( $args->getOpt('showcmd') ){
+                            PostCheck::formatPrintLn(['blue'], $commandIndex.': '.substr(preg_replace("/\\n/m","",$statement),0,60));
+                        }
                         App::get('clientDB')->execute($statement);
                         App::get('clientDB')->moreResults();
                     }catch(\Exception $e){
