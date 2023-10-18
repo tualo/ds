@@ -24,7 +24,7 @@ class StoredProcedures extends PostCheck {
             'dsx_filter_term'=>'54352cc2aef440d4d30e111106907d51',
             'dsx_filter_values_extract'=>'302f4d9815bb7b237bf32afb75c522db',
             'dsx_rest_api_get'=>'c79762e9ebdf6cd607e61086cfa681bc',
-            'dsx_rest_api_set'=>'ca174e2930c4a982ca2b078906877e89'
+            'dsx_rest_api_set'=>'880d3319f56937dceda8c6fc8346d297'
         ];
         self::procedureCheck(
             'ds',
