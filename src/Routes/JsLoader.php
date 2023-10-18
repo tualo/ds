@@ -10,10 +10,12 @@ class JsLoader implements IRoute{
         BasicRoute::add('/jsds/(?P<file>[\w.\/\-]+).js',function($matches){
 
             if (file_exists(  dirname(__DIR__,1).'/js/lazy/'.$matches['file'].'.js' ) ){
+                App::contenttype('application/javascript');
                 App::etagFile( dirname(__DIR__,1).'/js/lazy/'.$matches['file'].'.js' , true);
                 BasicRoute::$finished = true;
                 http_response_code(200);
             }
+            
             
         },['get'],false);
 
