@@ -214,7 +214,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
 
     upload: function(){
         let tablename = this.getViewModel().get('table_name');
-        Ext.getApplication().redirectTo( "dsimport/"+tablename );
+        Ext.getApplication().redirectTo( "dsimport/"+tablename  );
     },
 
     export: function(){
