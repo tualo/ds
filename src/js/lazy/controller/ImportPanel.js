@@ -19,9 +19,11 @@ Ext.define('Tualo.ds.lazy.controller.ImportPanel', {
     alias: 'controller.lazy_ds_import_panel',
     boxready: function(){
         var me = this;
-        console.log('boxready');
+        console.log('boxready',me);
         me.getFileSize();
-
+        me.getViewModel().set('tablename',me.getView().tablename);
+        console.log('#####',this.getView(),arguments.callee.caller);
+        console.log('#####',this.getView().tablename);
     },
     getFileSize: async function(){
         let res= await Tualo.Fetch.post('/dsimport/maxfilesize',{});
@@ -173,6 +175,9 @@ Ext.define('Tualo.ds.lazy.controller.ImportPanel', {
           }
           result = Ext.JSON.encode(r);
 
+          console.log('-----',result);
+          console.log('#####',this.getView());
+        
         let res= await Tualo.Fetch.post('/dsimport/import',{
             tbl: this.getViewModel().get('currentSheetIndex'),
             config: result,

@@ -1,8 +1,6 @@
 Ext.define('Tualo.ds.lazy.DeferedCommand',{
     extend: "Ext.panel.Panel",
     layout: 'card',
-
-    
     requires:[
         'Tualo.ds.lazy.controller.DeferedCommand',
         'Tualo.ds.lazy.models.DeferedCommand'
@@ -15,8 +13,6 @@ Ext.define('Tualo.ds.lazy.DeferedCommand',{
 	viewModel: {
 		type: 'lazy_ds_defered_command'
 	},
-    
-    
     items: [
         { 
             xtype: 'panel',
@@ -27,7 +23,7 @@ Ext.define('Tualo.ds.lazy.DeferedCommand',{
                     html: '{deferedCommandHtml}'
                 }
             }],
-         }
+        }
     ],
     bodyPadding: 10,
     bbar: [

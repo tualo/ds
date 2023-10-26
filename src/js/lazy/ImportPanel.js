@@ -1,7 +1,7 @@
-Ext.define('Tualo.ds.lazy.ImportPanel',{
+Ext.define('Tualo.ds.lazy.ImportPanel', {
     extend: "Ext.panel.Panel",
     layout: 'card',
-    requires:[
+    requires: [
         'Tualo.ds.lazy.controller.ImportPanel',
         'Tualo.ds.lazy.models.ImportPanel'
     ],
@@ -10,13 +10,13 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
         boxReady: 'boxready'
     },
     controller: 'lazy_ds_import_panel',
-	viewModel: {
-		type: 'lazy_ds_import_panel'
-	},
-    
-    
+    viewModel: {
+        type: 'lazy_ds_import_panel'
+    },
+
+
     items: [
-        { 
+        {
             xtype: 'form',
             bodyPadding: 10,
             items: [{
@@ -24,7 +24,7 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                 bind: {
                     html: '{uploadFormHtml}'
                 }
-            },{
+            }, {
                 xtype: 'filefield',
                 name: 'userfile',
                 fieldLabel: 'Datei',
@@ -34,11 +34,11 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                 anchor: '100%',
                 buttonText: 'Datei auswählen...'
             }],
-         },
-         { 
+        },
+        {
             xtype: 'form',
             bodyPadding: 10,
-            listeners:{
+            listeners: {
                 show: 'onCheckShow'
             },
             items: [{
@@ -46,7 +46,7 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                 bind: {
                     html: '{checkformFormHtml}'
                 }
-            },{
+            }, {
                 fieldLabel: 'Tabellenblatt',
                 itemId: 'sheets',
                 xtype: 'combobox',
@@ -60,11 +60,11 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                 displayField: 'name',
                 valueField: 'id'
             }],
-         },
-         { 
+        },
+        {
             xtype: 'form',
             bodyPadding: 10,
-            listeners:{
+            listeners: {
                 show: 'onExtractShow'
             },
             items: [{
@@ -73,13 +73,15 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                     html: '{extractHtml}'
                 }
             }],
-         },
-         {
+        },
+        {
+            //flex: 1,
+            //border: true,
             xtype: 'grid',
             bind: {
                 store: '{source}'
             },
-            listeners:{
+            listeners: {
                 show: 'onSourceShow'
             },
             selType: 'cellmodel',
@@ -90,50 +92,65 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                 }
             ],
             columns: [{
-              header: 'Feld',
-              dataIndex: 'text',
-              width: 300
-            },{
-              header: 'interne Bezeichnung',
-              dataIndex: 'dataindex',
-              width: 100
+                header: 'Feld',
+                dataIndex: 'text',
+                width: 300
             }, {
-              header: 'Zuordnung',
-              dataIndex: 'name',
-              renderer: 'renderNameColumn',
-              field: {
-                xtype: 'combobox',
-                allowBlank: true,
-                bind: {
-                    store: '{fields}'
+                header: 'interne Bezeichnung',
+                dataIndex: 'dataindex',
+                width: 100
+            }, {
+                header: 'Zuordnung',
+                dataIndex: 'name',
+                renderer: 'renderNameColumn',
+                field: {
+                    xtype: 'combobox',
+                    allowBlank: true,
+                    bind: {
+                        store: '{fields}'
+                    },
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id'
                 },
-                queryMode: 'local',
-                displayField: 'name',
-                valueField: 'id'
-              },
-              flex: 1,
-              
+                flex: 1,
+
             }]
-          },
-          { 
-             xtype: 'form',
-             bodyPadding: 10,
-             listeners:{
-                 show: 'onImportShow'
-             },
-             items: [{
-                 xtype: 'panel',
-                 bind: {
-                     html: '{importHtml}'
-                 }
-             },{
+        }/*
+        {
+            xtype: 'panel',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'panel',
+                bind: {
+                    html: '{sourceGridHtml}'
+                }
+            },
+            
+            ]
+        }*/,
+        {
+            xtype: 'form',
+            bodyPadding: 10,
+            listeners: {
+                show: 'onImportShow'
+            },
+            items: [{
+                xtype: 'panel',
+                bind: {
+                    html: '{importHtml}'
+                }
+            }, {
                 xtype: 'progressbar',
                 bind: {
                     value: '{importProgress}'
                 },
                 width: '100%'
-             }],
-          }
+            }],
+        }
     ],
     bodyPadding: 10,
     bbar: [
@@ -153,6 +170,6 @@ Ext.define('Tualo.ds.lazy.ImportPanel',{
                 text: '{nextButtonText}'
             },
             handler: 'next'
-        }   
+        }
     ]
 });

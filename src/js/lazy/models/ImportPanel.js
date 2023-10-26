@@ -3,6 +3,7 @@ Ext.define('Tualo.ds.lazy.models.ImportPanel', {
     alias: 'viewmodel.lazy_ds_import_panel',
     data:{
         filesize: 1024,
+        tablename: '???',
         currentSheetIndex: 0,
         importIndex: 0,
         importOffset:0,
@@ -56,8 +57,11 @@ Ext.define('Tualo.ds.lazy.models.ImportPanel', {
                 return 'Klicken Sie auf "Importieren" um den Import von '+get('rows')+' Datensätzen zu starten.';
             return '';
         },
+        sourceGridHtml: function(get){
+            return '<h3>Daten in '+get('tablename')+' importieren</h3>';
+        },
         uploadFormHtml: function(get){
-            return 'Bitte wählen Sie eine Datei aus, die importiert werden soll. Die Datei darf nicht größer als '+
+            return '<h3>Daten in '+get('tablename')+' importieren</h3><br>Bitte wählen Sie eine Datei aus, die importiert werden soll. Die Datei darf nicht größer als '+
             Tualo.ds.lazy.util.Format.formatSizeUnits(get('filesize'))+' sein.';
         },
         checkformHtml: function(get){
