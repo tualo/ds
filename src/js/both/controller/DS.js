@@ -115,12 +115,9 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
             reference = {},
             listfilter = [],//this.lookup('list').getStore().getFilters(),
             listsorters =this.lookup('list').getStore().getSorters(),
-            
-
             filters = [],
             sorters = [],
             extraParams = store.getProxy().getExtraParams();
-            
             //console.log('onBeforeQuicksearchStoreLoad','listfilter',listfilter)
             //console.log('onBeforeQuicksearchStoreLoad','listsorters',listsorters)
         /*

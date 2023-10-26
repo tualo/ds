@@ -18,3 +18,25 @@ Ext.define('Tualo.routes.DSImport', {
         }
     }
 });
+
+
+Ext.define('Tualo.routes.DSImport', {
+    statics: {
+        load: async function() {
+            let list = [];
+            return list;
+        }
+    }, 
+    url: 'dsimport/:table/:cmpId',
+    handler: {
+        action: function (tablename,cmpId) {
+            Ext.getApplication().addView('Tualo.ds.lazy.ImportPanel',{
+                tablename: tablename,
+                cmpId: cmpId
+            });
+        },
+        before: function (tablename,cmpId, action) {
+            action.resume();
+        }
+    }
+});
