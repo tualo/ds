@@ -18,9 +18,9 @@ class PrimaryKey  extends PostCheck {
         );
         foreach($data as $row){
             if ($row['writeable']==1){
-                self::formatPrintLn(['red'], $row['table_name'].'table '.$clientdb->dbname.'.'.$row['table_name'].' has no primary key');
+                self::formatPrintLn(['red'], $row['table_name'].' table '.$clientdb->dbname.'.'.$row['table_name'].' has no primary key');
             }else{
-                self::formatPrintLn(['yellow'], $row['table_name'].'view '.$clientdb->dbname.'.'.$row['table_name'].' has no primary ');
+                self::formatPrintLn(['yellow'], $row['table_name'].' view '.$clientdb->dbname.'.'.$row['table_name'].' has no primary ');
             }
         }
         
