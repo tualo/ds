@@ -41,6 +41,7 @@ class DS implements IRoute
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
+            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             $table = null;
             try {
@@ -109,6 +110,7 @@ class DS implements IRoute
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
+            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             try {
 
@@ -157,6 +159,7 @@ class DS implements IRoute
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
+            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             try {
 

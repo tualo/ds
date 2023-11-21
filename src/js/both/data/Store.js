@@ -67,7 +67,7 @@ Ext.define("Tualo.DataSets.data.Store",{
   
         this.callParent([config]);
         
-        this.proxy.setTimeout(60000);
+        this.proxy.setTimeout(6000000);
         this.proxy.tablename = this.tablename;
         this.getProxy().setApi({
           read: './ds/'+this.tablename+'/read',
