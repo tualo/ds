@@ -21,5 +21,11 @@ class CSS implements IRoute{
             TualoApplication::contenttype('text/css');
             TualoApplication::etagFile( $path."/src/css/row-colors.css");
         },array('get','post'),false);
+
+        Route::add('/dsstyle/font-colors.css',function($matches){
+            $path = dirname(dirname(__DIR__)).'';
+            TualoApplication::contenttype('text/css');
+            TualoApplication::etagFile( $path."/src/css/font-colors.css");
+        },array('get','post'),false);
     }
 }

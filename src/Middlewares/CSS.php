@@ -10,6 +10,7 @@ class CSS implements IMiddleware{
             try{
                 TualoApplication::stylesheet("./dsstyle/shake.css" ,100000);
                 TualoApplication::stylesheet("./dsstyle/row-colors.css" ,100000);
+                TualoApplication::stylesheet("./dsstyle/font-colors.css" ,100000);
             }catch(\Exception $e){
                 TualoApplication::set('maintanceMode','on');
                 TualoApplication::addError($e->getMessage());

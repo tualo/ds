@@ -26,12 +26,18 @@ class Files implements IRoute{
                 if (($mime = $db->singleValue("select type from ds_files where file_id = {file_id} and table_name= {tablename}",$match,'type'))===false){
                     throw new Exception('File not found!');
                 }
+                if (($name = $db->singleValue("select name from ds_files where file_id = {file_id} and table_name= {tablename}",$match,'name'))===false){
+                    throw new Exception('File not found!');
+                }
+
                 if (($dbcontent = $db->singleValue("select data from ds_files_data where file_id = {file_id}  ",$match,'data'))===false){
                     throw new Exception('File not found!');
                 }
                 list($dataprefix,$content) = explode(',',$dbcontent);
 
                 App::contenttype($mime);
+                header('Content-Disposition: attachment; filename="'.$name.'"');
+
                 App::body(base64_decode($content));
                 Route::$finished=true;
 
