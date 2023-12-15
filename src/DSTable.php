@@ -120,6 +120,7 @@ class DSTable {
             'tablename'=>$this->tablename,
             'data'=>$input
         ],$merge),JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        //if(strlen($data)>1000000) throw new \Exception('Request data too long');
         return str_replace(chr(92).chr(92),chr(92),$data);
     }
 
