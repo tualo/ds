@@ -42,7 +42,7 @@ Ext.define("Tualo.DataSets.data.Store",{
                 },
                 writer: {
                   type: 'json',
-                  writeAllFields: false,
+                  writeAllFields: true,
                   /*
                   transform: {
                     fn: function(data, request) {
