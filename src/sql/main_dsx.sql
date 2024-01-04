@@ -650,7 +650,7 @@ BEGIN
 
     RETURN (
         select 
-            group_concat( concat('`',property,'` ',direction) separator ',' ) X
+            group_concat( concat(/*'`',JSON_VALUE(request,'$.tablename')'`','.',*/  '`',property,'` ',direction) separator ',' ) X
         from 
         (
         SELECT
@@ -955,7 +955,7 @@ BEGIN
         SET MESSAGE_TEXT = @msg, MYSQL_ERRNO = 1001;
     end if;
 
-    SELECT concat( getDSKeySQL(ds.table_name) ,' '), concat('`',ds.displayfield,'` '), if( ifnull(ds.read_table,'')='',ds.table_name,ds.read_table ),ds.searchany 
+    SELECT concat( dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),ds.table_name) ,' '), concat('`',JSON_VALUE(userequest,'$.tablename'),'`.','`',ds.displayfield,'` '), if( ifnull(ds.read_table,'')='',ds.table_name,ds.read_table ),ds.searchany 
     INTO idfield,displayfield,readtable,searchany FROM ds WHERE  ds.table_name = JSON_VALUE(userequest,'$.tablename');
 
 
@@ -1029,9 +1029,27 @@ END IF;
         'SELECT ',
        doublequote(JSON_VALUE(userequest,'$.tablename')),' __table_name,' ,
        idfield,' __id,',
-       displayfield,' __displayfield,',
+       '',displayfield,' __displayfield,',
+
+if(
+    JSON_EXISTS(userequest,'$.concat_set_table') = 1,
+    '__clientid, ',
+    ''
+),
+
          ' `',JSON_VALUE(userequest,'$.tablename'),'`.* ',
         'FROM `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` ',
+
+        if(
+            JSON_EXISTS(userequest,'$.concat_set_table') = 1,
+            concat(
+                ' join temp_dsx_rest_data on ',
+                dsx_get_key_sql_prefix('temp_dsx_rest_data',JSON_VALUE(userequest,'$.tablename')),'=',
+                dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),JSON_VALUE(userequest,'$.tablename'))
+            ),
+            ''
+        ),
+
         if(wherefilter<>'',concat('WHERE ',wherefilter,' '),''),
         
 
@@ -1263,7 +1281,6 @@ into use_table_name
         IF use_table_name is not null THEN 
             -- select JSON_EXTRACT(request,'$.data');
 
-
             select 
                 group_concat(
                     concat('`',column_name,'`')
@@ -1291,6 +1308,7 @@ into use_table_name
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
                 and column_type <> ''
+               
             ;
 
             drop table if exists temp_dsx_rest_data;
@@ -1339,6 +1357,7 @@ into use_table_name
                     and ds_column.writeable =1
                     and ds_column.data_type in ('char','longtext','varchar')
                     and ds_column.column_type <> ''
+                   
             ) DO
 
                 if (@log_dsx_commands=1) THEN
@@ -1371,6 +1390,7 @@ into use_table_name
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                     union 
 
                         select
@@ -1386,6 +1406,7 @@ into use_table_name
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                     union 
                         select
                             concat('update temp_dsx_rest_data set `',column_name,'`=curdate() where `',column_name,'` is null   ') s,
@@ -1400,6 +1421,7 @@ into use_table_name
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                     /*
                     union 
                         select
@@ -1430,6 +1452,7 @@ into use_table_name
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                     union 
                         select
                             concat('update temp_dsx_rest_data set `',column_name,'`=uuid() where `',column_name,'` is null or `',column_name,'`="" ') s,
@@ -1481,6 +1504,7 @@ into use_table_name
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                 ) DO
                     
 
@@ -1517,6 +1541,7 @@ into use_table_name
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                 ) DO
 
                     set sql_command = record.s;
@@ -1554,6 +1579,7 @@ into use_table_name
                     and ds_column.writeable =1
                     and ds_column.column_type <> ''
                     and JSON_EXISTS(request,concat('$.data[0].', column_name))=1
+                   
                 ;
                 
 
@@ -1572,7 +1598,7 @@ into use_table_name
                         (', 'temp_dsx_rest_data.__id',')
                     set ',update_statement_fields,'
                 ');
-                select sql_command;
+                
 
             ELSEIF
                 JSON_VALUE(request,'$.type')='delete' THEN
@@ -1612,6 +1638,7 @@ into use_table_name
                             and ds_column.table_name = use_table_name
                             and ds_column.writeable =1
                             and ds_column.column_type <> ''
+                           
                         union 
                             select '' table_name, 'id' column_name 
                         ) ds_column 
