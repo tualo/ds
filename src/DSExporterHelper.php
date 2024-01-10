@@ -168,7 +168,7 @@ class DSExporterHelper
             }
 
             foreach ($hcolumns as $key => $value) {
-                $sheet->getCell($x + 1, $y + 1)->setValue($value['label']);
+                $sheet->getCell([$x + 1, $y + 1])->setValue($value['label']);
                 $hash[$key] = $x + 1;
                 $x++;
             }
@@ -185,7 +185,7 @@ class DSExporterHelper
                     } else {
                         $rv = "";
                     }
-                    $sheet->getCell($hash[$key], $y + 1)->setValue($rv);
+                    $sheet->getCell([$hash[$key], $y + 1])->setValue($rv);
                 }
                 ++$y;
             }
