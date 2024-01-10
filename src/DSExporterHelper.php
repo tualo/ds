@@ -168,7 +168,7 @@ class DSExporterHelper
             }
 
             foreach ($hcolumns as $key => $value) {
-                $sheet->getCellByColumnAndRow($x + 1, $y + 1)->setValue($value['label']);
+                $sheet->getCell($x + 1, $y + 1)->setValue($value['label']);
                 $hash[$key] = $x + 1;
                 $x++;
             }
@@ -185,7 +185,7 @@ class DSExporterHelper
                     } else {
                         $rv = "";
                     }
-                    $sheet->getCellByColumnAndRow($hash[$key], $y + 1)->setValue($rv);
+                    $sheet->getCell($hash[$key], $y + 1)->setValue($rv);
                 }
                 ++$y;
             }
@@ -213,9 +213,11 @@ class DSExporterHelper
         foreach ($hcolumns as $key => $value) {
 
             if ($encoding != 'utf-8') {
+                /*
                 if (function_exists("mb_convert_encoding")) {
                     $value['label'] = utf8_decode($value['label']);
                 }
+                */
             }
 
             $row[] = $value['label'];
