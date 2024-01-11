@@ -27,6 +27,7 @@ class Export implements IRoute{
                 }else{
                     $fname = '';
                 }
+                set_time_limit(300);
                 $read = DSReadRoute::read($db,$tablename,$_REQUEST);
                 DSExporterHelper::exportDataToXSLX($db,$tablename,$hcolumns,$read['data'],$temporary_folder,$fname,$hcolumns);
                 App::result('file', $fname);
