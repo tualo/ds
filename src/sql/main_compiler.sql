@@ -2164,12 +2164,12 @@ select
                 )
             )
         ),
-        if (ds_column.data_type in ('varchar'),
-            JSON_OBJECT(
-                "maxLength", ds_column.character_maximum_length
-            ),
+--        if (ds_column.data_type in ('varchar'),
+--            JSON_OBJECT(
+--                "maxLength", ds_column.character_maximum_length
+--            ),
             JSON_OBJECT()
-        )
+--        )
     )
      obj
 from ds_column
