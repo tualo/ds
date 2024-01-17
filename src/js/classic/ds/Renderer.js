@@ -19,15 +19,18 @@ Ext.define('Tualo.DS.Renderer', {
     tools: [
       {
         xtype: "glyphtool",
-        glyph: "table",
+        glyph: "refresh",
         handler: function(me){
           if (
             this.up('cmp_ds_pdfrendererpanel') 
             && this.up('cmp_ds_pdfrendererpanel').up()
             && this.up('cmp_ds_pdfrendererpanel').up().getComponent('list')
           ){
+            this.up('cmp_ds_pdfrendererpanel').loadFrame();
+            /*
             let list = this.up('cmp_ds_pdfrendererpanel').up().getComponent('list');
             this.up('cmp_ds_pdfrendererpanel').loadBulk( list.getSelection() );
+            */
           }else{
             Ext.toast({
               html: 'Die Funktion steht hier leider nicht zur Verfügung',
