@@ -21,22 +21,13 @@ Ext.define('Tualo.DS.Renderer', {
         xtype: "glyphtool",
         glyph: "table",
         handler: function(me){
-            window.renderPanel = this.up('cmp_ds_pdfrendererpanel');
-            
-          console.log(me,this.up('cmp_ds_pdfrendererpanel').up(),
-          this.up('cmp_ds_pdfrendererpanel').up().getComponent('card'));
           if (
             this.up('cmp_ds_pdfrendererpanel') 
             && this.up('cmp_ds_pdfrendererpanel').up()
-            && this.up('cmp_ds_pdfrendererpanel').up().up()
-            && this.up('cmp_ds_pdfrendererpanel').up().up().getComponent('card')
-            && this.up('cmp_ds_pdfrendererpanel').up().up().getComponent('card').getComponent('list')
+            && this.up('cmp_ds_pdfrendererpanel').up().getComponent('list')
           ){
-            let list = this.up('cmp_ds_pdfrendererpanel').up().up().getComponent('card').getComponent('list');
-            console.log( list.getSelection() );
-  
+            let list = this.up('cmp_ds_pdfrendererpanel').up().getComponent('list');
             this.up('cmp_ds_pdfrendererpanel').loadBulk( list.getSelection() );
-  
           }else{
             Ext.toast({
               html: 'Die Funktion steht hier leider nicht zur Verfügung',
