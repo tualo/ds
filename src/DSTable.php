@@ -89,6 +89,7 @@ class DSTable {
 
     public function differentRows(array $records){
         $keymap = [];
+        if (!isset($records[0])) return false;
         if (count($records)==0) return false;
         foreach($records as $record){
             foreach($record as $key=>$value){
