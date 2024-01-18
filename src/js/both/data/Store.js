@@ -6,7 +6,13 @@ Ext.define("Tualo.DataSets.data.Store",{
         'Ext.data.reader.Json',
         'Ext.data.writer.Json'
     ],
+    getUpdatedRecords: function() {
+      let records = this.callParent(arguments);
+      console.log('getUpdatedRecords',records);
+      return records;
+    },
     constructor: function(config) {
+        let me = this;
         config = Ext.apply({
             proxy: {
                 type: 'ajax',
@@ -43,24 +49,40 @@ Ext.define("Tualo.DataSets.data.Store",{
                 writer: {
                   type: 'json',
                   writeAllFields: false,
-                  /*
+                  
                   transform: {
                     fn: function(data, request) {
-                        let result = {}, key;
-                        for (key in data) {
-                          if (
-                            data.hasOwnProperty(key) && ( 
-                              ( data[key]!=null ) ||
-                              ( this.model.getField(key).critical )
-                            )
-                          ) {
-                              result[key] = data[key];
-                          }
-                      }
-                      return result;
+                      let keySet = [];
+                      data.forEach(function(row){
+                          Object.keys(row).forEach((k)=>{ 
+                            keySet.indexOf(k)==-1 && keySet.push(k);
+                          });
+                      });
+
+                      data.forEach(function(row){
+                        let rec = me.findRecord('__id',row.__id,0,false,false,true);
+                        if (rec.get('__virtual')&&rec.get('__virtual')==1){
+                          console.log('virtual',
+                          
+                          rec.getData(
+                            {
+                              changes: false,
+                              serialize: true
+                            }
+                          )
+                          );
+                        }
+                        keySet.forEach((k)=>{
+                          if (!row.hasOwnProperty(k))
+                            row[k]=me.findRecord('__id',row.__id,0,false,false,true).get(k);
+                        });
+                      });
+
+                      console.log('transform',data,request,keySet);
+                      return data;
                     },
                     scope: this
-                }*/
+                  }
                 }
             }
         }, config);

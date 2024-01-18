@@ -87,24 +87,31 @@ class DSTable {
     }
 
 
-
-    public function prepareRecords(array $records):array{
-
-        if ( $records !== array_values($records) ) {
-            $records = [$records];
-        }
+    public function differentRows(array $records){
         $keymap = [];
         foreach($records as $record){
             foreach($record as $key=>$value){
                 $keymap[$key]=true;
             }
         }
-        foreach($records as $record){
+        foreach($records as $index=>$record){
             foreach($keymap as $key=>$value){
-                if (!isset($record[$key])){
-                    $record[$key]=null;
+                if (!isset($records[$index][$key])){
+                    return true;
                 }
             }
+        }
+        return false;
+    }
+
+    public function prepareRecords(array $records):array{
+
+        if ( $records !== array_values($records) ) {
+            $records = [$records];
+        }
+        
+        if ($this->differentRows($records)){
+            throw new \Exception('Different keys in rows');
         }
         /*
         $recs = [];

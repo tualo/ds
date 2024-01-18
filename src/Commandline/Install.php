@@ -25,6 +25,8 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/ds_property_definition'=> 'setup ds_property_definition ',
         'install/ds_property_definition.ds'=> 'setup ds_property_definition.ds ',
         'install/fix.id'=> 'setup fix.id ',
+        'install/view_readtable_ds_column_list_label_all'=> 'setup view_readtable_ds_column_list_label_all ',
+        'install/view_readtable_ds_column_form_label'=> 'setup view_readtable_ds_column_form_label ',
     ];
     
 }

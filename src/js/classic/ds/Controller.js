@@ -419,6 +419,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 proxyerror:{fn: this.onProxyError, scope: this, single: true}
             });
 
+            /*
             store.on('write',function(store, operation, eOpts){   
                 let response = operation.getResponse();
                 if (response.status==200){
@@ -436,12 +437,12 @@ Ext.define('Tualo.DS.panel.Controller', {
                                             
                                         }
                                     })
-                                    /*
+                                    / * 
                                     let record = store.getById(item[keys[0]]);
                                     if (record){
                                         record.set(item);
                                     }
-                                    */
+                                    * /
                                 })
                             }
                         }
@@ -450,8 +451,9 @@ Ext.define('Tualo.DS.panel.Controller', {
                 if(Ext.getApplication().getDebug()===true) console.info('operation',operation); 
                 if(Ext.getApplication().getDebug()===true) console.debug('write success',arguments); 
             },this,{single:true});
+            */
 
-
+            
             store.sync({
                 scope: this,
                 failure: function(){
