@@ -53,6 +53,10 @@ Ext.define("Tualo.DataSets.data.Store", {
           transform: {
             fn: function (data, request) {
               let keySet = [];
+              if (typeof data.forEach!='function'){
+                console.log('transform no function ', data, request, keySet);
+                return data;
+              }
               data.forEach(function (row) {
                 let rec = me.findRecord('__id', row.__id, 0, false, false, true);
                 if (rec.get('__virtual') && rec.get('__virtual') == 1) {
