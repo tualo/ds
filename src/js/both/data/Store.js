@@ -52,10 +52,10 @@ Ext.define("Tualo.DataSets.data.Store", {
 
           transform: {
             fn: function (data, request) {
-              let keySet = [];
+              let keySet = [],singlerecord=false;
               if (typeof data.forEach!='function'){
-                console.log('transform no function ', data, request, keySet);
-                return data;
+                data=[data];
+                singlerecord=true;
               }
               data.forEach(function (row) {
                 let rec = me.findRecord('__id', row.__id, 0, false, false, true);
@@ -76,25 +76,14 @@ Ext.define("Tualo.DataSets.data.Store", {
               });
 
               data.forEach(function (row) {
-                let rec = me.findRecord('__id', row.__id, 0, false, false, true);
-                if (rec.get('__virtual') && rec.get('__virtual') == 1) {
-                  console.log('virtual',
-
-                    rec.getData(
-                      {
-                        changes: false,
-                        serialize: true
-                      }
-                    )
-                  );
-                }
                 keySet.forEach((k) => {
                   if (!row.hasOwnProperty(k))
                     row[k] = me.findRecord('__id', row.__id, 0, false, false, true).get(k);
                 });
               });
-
-              console.log('transform', data, request, keySet);
+              if (singlerecord){
+                return data[0];
+              }
               return data;
             },
             scope: this
