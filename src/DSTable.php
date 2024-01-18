@@ -93,6 +93,19 @@ class DSTable {
         if ( $records !== array_values($records) ) {
             $records = [$records];
         }
+        $keymap = [];
+        foreach($records as $record){
+            foreach($record as $key=>$value){
+                $keymap[$key]=true;
+            }
+        }
+        foreach($records as $record){
+            foreach($keymap as $key=>$value){
+                if (!isset($record[$key])){
+                    $record[$key]=null;
+                }
+            }
+        }
         /*
         $recs = [];
         foreach($records as $record){
