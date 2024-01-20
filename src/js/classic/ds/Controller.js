@@ -475,30 +475,28 @@ Ext.define('Tualo.DS.panel.Controller', {
             console.error(e);
         }
     },
-    loadById: function(id){
+    filterField: function(field,id){
         var me = this,
             view = me.getView(),
-            store = me.getStore();
-        if ((store.isLoading())||(!store.isLoaded())){ 
-            console.debug(this.$className,'loadById','store.isLoading()||(!store.isLoaded())');
-            this.filterBy(filterBy,()=>{
-                this.setViewType('form');
-            });
-            /*
-            store.on('load',function(){
-                me.loadById(id);
-            },{single:true});
-            */
-            return;
-        }else{
-            console.debug(this.$className,'loadById','store.isLoading()==false');
-            let filterBy = [
+            store = me.getStore(),
+            filterBy = [
                 {
-                    "property": "table_name",
+                    "property": field,
                     "value": id,
                     "operator": "="
                 }
             ];
+        console.log('filterField',field,id,filterBy);
+        if (store.isLoading()){
+            console.log('filterField','store is loading');
+        }
+        else if(!store.isLoaded()){ 
+            this.filterBy(filterBy,()=>{
+                console.debug(this.$className,'loadById','filterBy','form');
+                this.setViewType('form');
+            });
+            this.setViewType('form');
+        }else{
             store.clearFilter();
             console.debug(this.$className,'loadById','store.clearFilter()');
             this.filterBy(filterBy,()=>{

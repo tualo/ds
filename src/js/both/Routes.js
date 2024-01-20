@@ -32,7 +32,6 @@ Ext.define('Tualo.routes.DS', {
         load: async function() {
             let response = await Tualo.Fetch.post('ds/ds/read',{limit:10000});
             let list = [];
-            console.log('Tualo.routes.DS', response);
             if (response.success==true){
                 for(let i=0;i<response.data.length;i++){
                     if (!Ext.isEmpty(response.data[i].table_name))
@@ -45,11 +44,10 @@ Ext.define('Tualo.routes.DS', {
             return list;
         }
     }, 
-    url: 'ds/:{table}(\/:{record_id})',
+    url: 'ds/:{table}(\/:{fieldName}\/:{fieldValue})',
     handler: {
         action: function (values) {
             let type = 'dsview';
-            console.log('Tualo.routes.DS', values);
             let tablename = values.table;
             let mainView = Ext.getApplication().getMainView();
             let tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1);
@@ -66,8 +64,8 @@ Ext.define('Tualo.routes.DS', {
                 component = Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase);
             }
 
-            if ((component)&&(typeof values.record_id!='undefined')){
-                component.loadById(values.record_id);
+            if ((component)&&(typeof values.fieldValue!='undefined')){
+                component.filterField(values.fieldName,values.fieldValue);
             }
         },
         before: function (values, action) {

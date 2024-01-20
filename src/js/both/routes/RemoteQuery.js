@@ -12,10 +12,6 @@ Ext.define('Tualo.routes.ds.RemoteQuery',{
     url: 'dsremotecommand/:{cmd}',
     handler: {
         action: function( values ){
-            //console.log('action');
-            //btoa('test')
-            //atob('dGVzdA==')
-            //Ext.getApplication().addView('Tualo.OnlineVote.Decryption');
             let cmd_json = JSON.parse(atob(values.cmd));
             console.log('cmd_json',cmd_json);
         },
