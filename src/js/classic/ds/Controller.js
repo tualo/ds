@@ -156,8 +156,6 @@ Ext.define('Tualo.DS.panel.Controller', {
         let me = this,
             model = me.getViewModel(),
             store = me.getStore();
-        console.log('onDataChanged',model.$className,store.getModifiedRecords().length,model.get('disableSave'));
-
         model.set('isModified',store.getModifiedRecords().length!=0);
     },
     
@@ -313,7 +311,6 @@ Ext.define('Tualo.DS.panel.Controller', {
             console.log('onBeforeStoreLoad','listsorters',listsorters)
         }
         if (view.isVisible(true)==false){ 
-            console.debug(this.$className,'onBeforeStoreLoad','view.isVisible(true)==false');
             view.un('show',this.onDeferedStoreLoad,);
             view.on({ show: {fn: this.onDeferedStoreLoad, scope: this, single: true} });
 
@@ -484,6 +481,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             store = me.getStore();
         if ((store.isLoading())||(!store.isLoaded())){ 
             console.debug(this.$className,'loadById','store.isLoading()||(!store.isLoaded())');
+            this.filterBy(filterBy,()=>{
+                this.setViewType('form');
+            });
             /*
             store.on('load',function(){
                 me.loadById(id);

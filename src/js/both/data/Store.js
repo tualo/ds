@@ -90,9 +90,7 @@ Ext.define("Tualo.DataSets.data.Store", {
         }
       }
     }, config);
-
     this.callParent([config]);
-
     this.proxy.setTimeout(6000000);
     this.proxy.tablename = this.tablename;
     this.getProxy().setApi({
@@ -101,10 +99,6 @@ Ext.define("Tualo.DataSets.data.Store", {
       update: './ds/' + this.tablename + '/update',
       destroy: './ds/' + this.tablename + '/delete'
     });
-
-    // console.log(this.$className,'constructor')
-    //console.log(this,this.tablename);
-
   },
   remoteFilter: true,
   remoteSort: true,

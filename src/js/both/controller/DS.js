@@ -5,11 +5,13 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     alias: 'controller.cmp_ds_dsview_controller',
 
     initViewModel: function(vm) {
-        //console.debug(this.$className,'initViewModel',vm);
-//        vm.bind('{selectedCompany}', 'onSelect', this);
-        //vm.bind('{activeItem}', 'onActiveItem', this);
-        //vm.bind('{pageSize}', 'onPageSizeChanged', this);
-        //
+        /*
+        var me = this;
+        me.callParent(arguments);
+        vm.bind('{selectRecordRecordNumber}', function(nv,ov){
+            me.doSelectRecordIndex();
+        });
+        */
     },
 
     onFormPainted: function(view){
@@ -44,7 +46,6 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
 
     onPageSizeChanged: function(nv,ov){
         if ((nv>0) && (ov==="") ){
-            console.debug(this.$className,'onPageSizeChanged',nv,ov);
             let store = this.lookup('list').getStore();
             store.setPageSize(nv);
             store.loadPage(1);
@@ -88,8 +89,6 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         model.set('hasModifiedRecords',modified);
     },
     onChildDoubleTab: function(){
-        //this.getView().setActiveItem( this.lookup('form') );
-        //console.debug(this.$className,'onChildDoubleTab',arguments);
         this.onSegClicked(null);
     },
     onSegClicked: function(btn){
@@ -158,20 +157,15 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     onStoreLoad: function(store, records, successful, operation, eOpts){
-        // con sole.de bug(this.$className,'onStoreLoad',arguments)
         var model = this.getViewModel(),
             view = this.getView();
             model.set('total',store.getTotalCount());
-        
-            console.log(this.$className,view.referencedList);
         model.set('pageSize',store.getPageSize());
         
         if (model.get('isNew')){
             model.set('isNew',false);
         }
         Ext.defer(this.doSelectRecordIndex,1000,this,[]);
-
-
     },
     onReload: function(){
         let store = this.lookup('list').getStore();
@@ -253,7 +247,6 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     skipRecord: function(){
-
     },
     onActiveItem: function(item){
 
