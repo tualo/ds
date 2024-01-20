@@ -46,6 +46,16 @@ Ext.define('Tualo.DS.Panel', {
     getList: function(){
         return this.getComponent('list');
     },
+    loadById: function(id){
+        this.getController().loadById(id);
+        
+    },
+    filterBy: function(filter){
+        this.getController().filterBy(filter);
+    },
+    searchFor: function(search){
+        this.getController().searchFor(search);
+    },
     dockedItems: [
         
     ]

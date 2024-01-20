@@ -8,7 +8,6 @@ Ext.define("Tualo.DataSets.data.Store", {
   ],
   getUpdatedRecords: function () {
     let records = this.callParent(arguments);
-    console.log('getUpdatedRecords', records);
     return records;
   },
   constructor: function (config) {

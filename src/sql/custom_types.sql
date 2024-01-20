@@ -131,3 +131,36 @@ values
         0
     )
 ;
+
+
+
+insert
+    ignore into extjs_base_types (
+        vendor,
+        id,
+        classname,
+
+        xtype_long_classic,
+        baseclass,
+        xtype_long_modern,
+        name,
+        description,
+        iscolumn,
+        isformfield
+    )
+values
+    (
+        "Tualo",
+        "Tualo.DS.fields.FormXtypeComboBox",
+        "Tualo.DS.fields.FormXtypeComboBox",
+        
+        "widget.formxtype_combobox",
+        "Ext.form.field.ComboBox",
+        "widget.formxtype_combobox",
+
+        "Tualo.DS.fields.FormXtypeComboBox",
+        "Tualo FormXtypeComboBox",
+        0,
+        1
+    )
+;

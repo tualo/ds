@@ -36,7 +36,6 @@ Ext.define('Tualo.DS.panel.Model', {
             return get('isModified');
         },
         userCls: function(get){
-            console.log('userCls',get('isNew'));
             return get("isNew")?"new_cmp_ds":"";
         },
     },
@@ -44,19 +43,5 @@ Ext.define('Tualo.DS.panel.Model', {
     constructor: function () {
         var me = this;
         me.callParent(arguments);
-
-        /*
-        me.bind('{selectedItem}', function (value) {
-            console.log('combobox selected item changed (bar value): ' + (value === null ? "null": value.get('bar')));
-            console.log(me.getView().getController());
-        });
-
-        me.bind('{testObj.foo}', function (value) {
-            console.log('combobox value (foo value): ' + value);
-
-            // you can access the controller
-            console.log(me.getView().getController());
-        });
-        */
     },
 });

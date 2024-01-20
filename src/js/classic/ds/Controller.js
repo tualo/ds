@@ -82,36 +82,48 @@ Ext.define('Tualo.DS.panel.Controller', {
 
        let view = this.getView();
         if (typeof view.searchFor=='string'){
-            let store = view.getComponent('list').getStore();
-                store.getProxy().setExtraParam("filter_by_search",1);
-                store.getProxy().setExtraParam("search",view.searchFor );
-                view.down('dssearchfield').setValue(view.searchFor);
-                view.getController().setViewType("list");
-                store.load();
+            this.searchFor(view.searchFor);
         }else if (typeof view.filterBy=='object'){
-            let columns = view.getComponent('list').getColumns();
-            view.filterBy.forEach(function(item){
-                columns.forEach(function(column){
-                    if (item.property ==  column.dataIndex ){
-                        try{
-                            column.filter.filter.setValue( item.value );
-                        }catch(e){
-                            console.error(e);
-                        }
-                        column.filter.setActive ( true ) ;
-                    }
-                })
-            });
-            setTimeout(()=>{
-                store.load();
-            },100);
-            
+            this.filterBy(view.filterBy);
         }else{
             store.load();
         }
 
     },
+
+    searchFor: function(searchFor){
+        let view = this.getView(),
+            store = view.getComponent('list').getStore();
+        store.getProxy().setExtraParam("filter_by_search",1);
+        store.getProxy().setExtraParam("search",searchFor );
+        view.down('dssearchfield').setValue(searchFor);
+        view.getController().setViewType("list");
+        store.load();
+    },
     
+    filterBy: function(filterBy,cb){
+        let view = this.getView(),
+            store = view.getComponent('list').getStore(),
+            columns = view.getComponent('list').getColumns();
+        filterBy.forEach(function(item){
+            columns.forEach(function(column){
+                if (item.property ==  column.dataIndex ){
+                    try{
+                        column.filter.filter.setValue( item.value );
+                    }catch(e){
+                        console.error(e);
+                    }
+                    column.filter.setActive ( true ) ;
+                }
+            })
+        });
+        if (typeof cb=='function') cb=()=>{};
+        setTimeout(()=>{
+            store.load({
+                callback: cb
+            });
+        },100);
+    },
     
     onDropGrid: function(){
         this.numberRows();
@@ -150,18 +162,13 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
     
     onListSelect: function(selModel, record, eOpts){
-        console.log('onListSelect',arguments);
         let me = this,
             model = me.getViewModel(),
             form = this.getView().getComponent('form'),
             list = this.getView().getComponent('list'),
             store = list.getStore(),
             record = selModel.getSelection()[0];
-
-        
-
         if (record){
-            console.log('onListSelect',store.indexOf(record)+1);
             model.set('selectRecordRecordNumber',store.indexOf(record)+1);
             model.set('record',record);
             form.loadRecord(record);
@@ -169,44 +176,25 @@ Ext.define('Tualo.DS.panel.Controller', {
         } else {
             model.set('selectRecordRecordNumber',0);
             model.set('record',null);
-            //form.load   Record(null);
         }
         model.set('disablePrev',model.get('selectRecordRecordNumber')<=1);
         model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
         model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
-        
         Ext.getApplication().updateWindowTitle();
     },
 
     onListSelectionChange: function(selModel, selected, eOpts){
-        
-        
         let me = this,
             model = me.getViewModel(),
             store = me.getStore(),
             form = this.getView().getComponent('form'),
             record = selModel.getSelection()[0];
-
-
         if (record){
-            /*
-            model.set('selectRecordRecordNumber',store.indexOf(record)+1);
-            model.set('record',record);
-            form.loadRecord(record);
-            */
             form.loadRecord(record);
         } else {
             model.set('selectRecordRecordNumber',0);
             model.set('record',null);
-            //form.loadRecord(null);
         }
-
-        /*
-        console.log('onListSelectionChange',this.$className);
-        model.set('disablePrev',model.get('selectRecordRecordNumber')<=1);
-        model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
-        model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
-        */
     },
 
     
@@ -228,7 +216,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
 
     onStoreLoad: function(store, records, successful, operation, eOpts){
-        console.debug(this.$className,'onStoreLoad',records,successful,operation,eOpts);
+        
         let model = this.getViewModel();
         if (model.get('isNew')){
             model.set('isNew',false);
@@ -265,13 +253,13 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
         if (me.getView().getComponent('list').getSelectionModel().type =="cellmodel"){
             selIndex = store.find('__id',keys[0]);
-            console.log('selIndex',selIndex);
             setTimeout(()=>{
                 me.getView().getComponent('list').view.bufferedRenderer.scrollTo(0, true);
             },100);
             setTimeout(()=>{
                 me.getView().getComponent('list').view.bufferedRenderer.scrollTo(selIndex, true);
             },300);
+            console.debug('preserveSelection',model.get('record'));
             me.getView().getComponent('form').loadRecord(model.get('record'));
         }
 
@@ -299,18 +287,6 @@ Ext.define('Tualo.DS.panel.Controller', {
                     record = range[0];
                     selModel.select(record);
             }
-            /*
-            console.warn( view.$className, view.id,model.$className,model.id,store.$className,store,selModel.$className);
-            if (record){
-                model.set('selectRecordRecordNumber',store.indexOf(record)+1);
-            } else {
-                model.set('selectRecordRecordNumber',0);
-            }
-            //model.set('pager',pagerData);
-            model.set('disablePrev',model.get('selectRecordRecordNumber')<=1);
-            model.set('disableNext',model.get('selectRecordRecordNumber')>=store.getCount());
-            model.set('pagerText',model.get('selectRecordRecordNumber')+'/'+store.getCount());
-            */
     },
 
     onDeferedStoreLoad: function(){
@@ -418,42 +394,6 @@ Ext.define('Tualo.DS.panel.Controller', {
             store.on({
                 proxyerror:{fn: this.onProxyError, scope: this, single: true}
             });
-
-            /*
-            store.on('write',function(store, operation, eOpts){   
-                let response = operation.getResponse();
-                if (response.status==200){
-                    if (response.responseJson){
-                        if (response.responseJson.success==true){
-                            if (response.responseJson.data){
-                                
-
-                                response.responseJson.data.forEach(function(item){
-
-                                    response.request.records.forEach(function(record){
-                                        if (record.get('__id')==item['__id']){
-                                            record.set(item);
-                                            if (item['__newid'])  record.set('__id',item['__newid']);
-                                            
-                                        }
-                                    })
-                                    / * 
-                                    let record = store.getById(item[keys[0]]);
-                                    if (record){
-                                        record.set(item);
-                                    }
-                                    * /
-                                })
-                            }
-                        }
-                    }
-                }
-                if(Ext.getApplication().getDebug()===true) console.info('operation',operation); 
-                if(Ext.getApplication().getDebug()===true) console.debug('write success',arguments); 
-            },this,{single:true});
-            */
-
-            
             store.sync({
                 scope: this,
                 failure: function(){
@@ -461,9 +401,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                     model.set('saving',false);
                 },
                 success: function(c,o){
-                    //this.saveSubStores();
-                    //o.operations.create.forEach(function(item){
-                        if(Ext.getApplication().getDebug()===true) console.log('save success',arguments);
+                    if(Ext.getApplication().getDebug()===true) console.log('save success',arguments);
                     if (o && o.operations && o.operations.create){
                         o.operations.create.forEach(function(item){
                             console.log('save success',item);
@@ -540,4 +478,32 @@ Ext.define('Tualo.DS.panel.Controller', {
             console.error(e);
         }
     },
+    loadById: function(id){
+        var me = this,
+            view = me.getView(),
+            store = me.getStore();
+        if ((store.isLoading())||(!store.isLoaded())){ 
+            console.debug(this.$className,'loadById','store.isLoading()||(!store.isLoaded())');
+            /*
+            store.on('load',function(){
+                me.loadById(id);
+            },{single:true});
+            */
+            return;
+        }else{
+            console.debug(this.$className,'loadById','store.isLoading()==false');
+            let filterBy = [
+                {
+                    "property": "table_name",
+                    "value": id,
+                    "operator": "="
+                }
+            ];
+            store.clearFilter();
+            console.debug(this.$className,'loadById','store.clearFilter()');
+            this.filterBy(filterBy,()=>{
+                this.setViewType('form');
+            });
+        }
+    }
 });
