@@ -3063,6 +3063,7 @@ select
     ) cols,
     min(ds_column_form_label.position) min_position,
     json_arrayagg(
+        distinct 
         JSON_OBJECT(
             "xtype",
             "fieldset",
@@ -3110,7 +3111,9 @@ select
     min(ds_column_form_label.position) position
 from
     `ds_column_form_label`
-    join `view_ds_formtabs_fieldsets` on `ds_column_form_label`.`table_name` = `view_ds_formtabs_fieldsets`.`table_name`
+    join `view_ds_formtabs_fieldsets` on 
+    
+    `ds_column_form_label`.`table_name` = `view_ds_formtabs_fieldsets`.`table_name`
     and SUBSTRING_INDEX(`field_path`, '/', 1) = `view_ds_formtabs_fieldsets`.`tab_title`
     and `ds_column_form_label`.`active` = 1
 group by

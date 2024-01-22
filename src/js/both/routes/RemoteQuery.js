@@ -13,6 +13,10 @@ Ext.define('Tualo.routes.ds.RemoteQuery',{
     handler: {
         action: function( values ){
             let cmd_json = JSON.parse(atob(values.cmd));
+            if(cmd_json.cmd=='ds'){
+                
+                Ext.getApplication().redirectTo('ds/'+cmd_json.table);
+            }
             console.log('cmd_json',cmd_json);
         },
         before: function ( values, action,cnt) {

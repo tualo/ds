@@ -118,11 +118,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             })
         });
         if (typeof cb=='function') cb=()=>{};
-        setTimeout(()=>{
-            store.load({
-                callback: cb
-            });
-        },100);
+        store.load({
+            callback: cb
+        });
     },
     
     onDropGrid: function(){
@@ -495,7 +493,6 @@ Ext.define('Tualo.DS.panel.Controller', {
                 console.debug(this.$className,'loadById','filterBy','form');
                 this.setViewType('form');
             });
-            this.setViewType('form');
         }else{
             store.clearFilter();
             console.debug(this.$className,'loadById','store.clearFilter()');
