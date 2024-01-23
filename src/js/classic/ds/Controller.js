@@ -154,6 +154,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         let me = this,
             model = me.getViewModel(),
             store = me.getStore();
+        console.debug('onDataChanged','getModifiedRecords',store.getModifiedRecords());
         model.set('isModified',store.getModifiedRecords().length!=0);
     },
     
@@ -195,6 +196,21 @@ Ext.define('Tualo.DS.panel.Controller', {
 
     
     onItemDblClick: function ( view, record, item, index, e, eOpts ){
+        let me = this,
+            model = me.getViewModel(),
+            store = me.getStore(),
+            form = this.getView().getComponent('form');
+        if (record){
+            form.loadRecord(record);
+        } 
+        /*
+        console.log('onItemDblClick',arguments);
+        Ext.getApplication().redirectTo('dsform/'+this.getViewModel().get('table_name')+'/'+record.get('__id'),{
+            force: true
+        });
+        */
+
+
         this.setViewType('form');
     },
     setViewType: function(view){
