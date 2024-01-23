@@ -2204,23 +2204,21 @@ select
         ),
         ', ',
         json_object(
-            'extend',
-            `ds`.`modelbaseclass`,
-            'entityName',
-            `ds`.`table_name`,
-            'idProperty',
-            '__id',
-            'clientIdProperty',
-            '__clientid',
+            'extend', `ds`.`modelbaseclass`,
+            'entityName', `ds`.`table_name`,
+            'idProperty', '__id',
+            'requires', json_arrayagg(
+                distinct
+                view_readtable_all_types.id
+            ),
+            'clientIdProperty', '__clientid',
             'fields',
             json_merge_preserve(
                 concat(
                     '[',
-                    '{"name": "__table_name", "defaultValue": "',
-                    `ds`.`table_name`,
-                    '","critical": true,"type":"string"},',
-                    '{"name": "__id", "critical": true, "type":"string"},',
-                    '{"name": "__rownumber", "critical": true, "type":"number"}',
+                        '{"name": "__table_name", "defaultValue": "', `ds`.`table_name`, '","critical": true,"type":"string"},',
+                        '{"name": "__id", "critical": true, "type":"string"},',
+                        '{"name": "__rownumber", "critical": true, "type":"number"}',
                     ']'
                 ),
                 ifnull(
@@ -2295,6 +2293,21 @@ from
                     join `ds_column` on(
                         `ds`.`table_name` = `ds_column`.`table_name`
                         and `ds_column`.`existsreal` = 1
+                    )
+                    join `view_readtable_all_types`
+                    on  view_readtable_all_types.xtype_long_classic  = concat( 
+                        'data.field.',
+                        if(
+                            `ds_column`.`fieldtype` <> '',
+                            `ds_column`.`fieldtype`,
+                            if(
+                                `ds_column`.`column_type` = 'bigint(4)'
+                                or `ds_column`.`column_type` = 'int(4)'
+                                or `ds_column`.`column_type` = 'tinyint(4)',
+                                'boolean',
+                                'string'
+                            )
+                        )
                     )
                 )
                 join `view_ds_column_merge` on(
