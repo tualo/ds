@@ -2610,6 +2610,14 @@ select
 -- 'flex', 1
                 )
             order by ds_column_list_label.position separator ','),
+            /*
+            ',',
+            JSON_OBJECT(
+
+                'xtype', 'dsroutetocolumn' 
+            )
+            ,
+            */
         ']')
     ) js,
     `ds`.`table_name`,
