@@ -2,6 +2,7 @@
 namespace Tualo\Office\DS;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\DS\DSTable;
+use Ramsey\Uuid\Uuid;
 
 class DSFiles {
     private mixed $db;
@@ -18,7 +19,30 @@ class DSFiles {
         $this->tablename=$tablename;
     }
 
-    
+    public static function fromUploadForm(string $attribute): array{
+        $result = [
+            "__file_data"=> "data:application/pdf;base64,",
+            "__file_id"=> "",
+            "__file_name"=> $_FILES[$attribute]['name'],
+            "__file_size"=> 0,
+            "__file_type"=> "application/pdf"
+        ];
+        $sfile = $_FILES[$attribute]['tmp_name'];
+        $type = $_FILES[$attribute]['type'];
+        $local_file_name = App::get('tempPath').'/.ht_'.(Uuid::uuid4())->toString();
+        $result['error'] = $_FILES[$attribute]['error'];
+        if ($result['error']  == UPLOAD_ERR_OK){
+            if (file_exists($local_file_name)){
+                unlink($local_file_name);
+            }
+            move_uploaded_file($sfile,$local_file_name);
+            $result['__file_size'] = filesize($local_file_name);
+            $result['__file_type'] = $type;
+            $result['__file_data'] = 'data:'.$type.';base64,'.base64_encode(file_get_contents($local_file_name));
+            unlink($local_file_name);
+        }
+        return $result;
+    }
     // :php
     //    $logodata = \Tualo\Office\DS\DSFiles::instance('tualocms_bilder')->getBase64('titel','Wahllogo'));
 

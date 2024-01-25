@@ -109,7 +109,11 @@ Ext.define('Tualo.DS.panel.Controller', {
             columns.forEach(function(column){
                 if (item.property ==  column.dataIndex ){
                     try{
-                        column.filter.filter.setValue( item.value );
+                        if ((column.filter.acceptedType==='array') && (typeof item.value=='string')){ 
+                            column.filter.filter.setValue( [item.value] );
+                        }else{
+                            column.filter.filter.setValue( item.value );
+                        }
                     }catch(e){
                         console.error(e);
                     }
@@ -199,10 +203,27 @@ Ext.define('Tualo.DS.panel.Controller', {
         let me = this,
             model = me.getViewModel(),
             store = me.getStore(),
+            tablename = model.get('table_name')||'None',
+            tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1),
+                    
             form = this.getView().getComponent('form');
+
+            console.log('onItemDblClick',tablename,model);
         if (record){
             form.loadRecord(record);
         } 
+        /*
+        let f = Ext.getApplication().addView(
+            'Tualo.DataSets.form.'+    tablenamecase,
+            {
+                record: record,
+                isNew: false,
+                viewTypeOnLoad: 'form'
+            }
+        );
+
+        f.loadRecord(record);
+        */
         /*
         console.log('onItemDblClick',arguments);
         Ext.getApplication().redirectTo('dsform/'+this.getViewModel().get('table_name')+'/'+record.get('__id'),{
@@ -374,7 +395,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             store = this.getStore(),
             wasNew = model.get('isNew'),
             keys = model.get('primaryKeys'),
-            tablename = model.get('tablename'),
+            tablename = model.get('table_name'),
             form = this.getView().getComponent('form'),
             invalidFields = form.query("field{isValid()==false}"),
             ok=true;

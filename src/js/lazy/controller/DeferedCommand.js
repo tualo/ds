@@ -2,12 +2,22 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.lazy_ds_defered_command',
     boxready: function(){
+        let me = this,range=[],record=null,sel=null;
         try{
-            var me = this,
-                parentView = Ext.getCmp(me.getView().calleeId),
-                sel = parentView.getList().getSelection(),
+
+            if (me.getView().record){
+                record = me.getView().record;
+                range = [record];
+                sel = [record];
+            }else if (me.getView().calleeId){
+                let parentView = Ext.getCmp(me.getView().calleeId);
+
+                sel = parentView.getList().getSelection();
+
                 range = parentView.getList().getStore().getRange(),
                 record = ((!Ext.isEmpty(sel))?sel[0]:null);
+            }
+
             me.c = Ext.create({
                 xtype: me.getView().command,
                 tablename: me.getView().tablename,
