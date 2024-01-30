@@ -18,6 +18,7 @@ Ext.define('Tualo.routes.DS', {
     url: 'ds/:{table}(\/:{fieldName}\/:{fieldValue})',
     handler: {
         action: function (values) {
+            console.log('ds route','action', values);
 
             async function sha1(str) {
                 const enc = new TextEncoder();
@@ -35,13 +36,17 @@ Ext.define('Tualo.routes.DS', {
                     stage = mainView.getComponent('dashboard_dashboard').getComponent('stage'),
                     component = null,
                     cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await sha1(JSON.stringify(values)));
-                component = stage.down(cmp_id);
+                    console.log('ds route','action','cmp_id', cmp_id);
+                component = stage.getComponent(cmp_id);
+
                 if (!Ext.isEmpty(component)) {
                     stage.setActiveItem(component);
+                    console.log('ds route','action','setActiveItem', component);
                 } else {
                     component = Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase, {
                         itemId: cmp_id
                     });
+                    console.log('ds route','action','new', component);
                 }
 
                 if ((component) && (typeof values.fieldValue != 'undefined')) {
@@ -51,7 +56,7 @@ Ext.define('Tualo.routes.DS', {
             fnx();
         },
         before: function (values, action) {
-
+            console.log('ds route','before', values);
             async function sha1(str) {
                 const enc = new TextEncoder();
                 const hash = await crypto.subtle.digest('SHA-1', enc.encode(str));

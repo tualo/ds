@@ -62,7 +62,7 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
         var me = this;
         me.getViewModel().set('enableNext',false);
         await me.c.run();
-        // window.history.back();
+        window.history.back();
 
     }   
 });
