@@ -1,5 +1,6 @@
 Ext.define('Tualo.routes.DS', {
     statics: {
+        
         load: async function () {
             let response = await Tualo.Fetch.post('ds/ds/read', { limit: 10000 });
             let list = [];
@@ -13,20 +14,24 @@ Ext.define('Tualo.routes.DS', {
                 }
             }
             return list;
+        },
+
+        sha1: async function (str) {
+            const enc = new TextEncoder();
+            if (crypto.subtle){
+                const hash = await crypto.subtle.digest('SHA-1', enc.encode(str));
+                return Array.from(new Uint8Array(hash))
+                    .map(v => v.toString(16).padStart(2, '0'))
+                    .join('');
+            }else{
+                return btoa(str).replace(/[^A-Za-z0-9]/,'');
+            }
         }
     },
     url: 'ds/:{table}(\/:{fieldName}\/:{fieldValue})',
     handler: {
         action: function (values) {
             console.log('ds route','action', values);
-
-            async function sha1(str) {
-                const enc = new TextEncoder();
-                const hash = await crypto.subtle.digest('SHA-1', enc.encode(str));
-                return Array.from(new Uint8Array(hash))
-                    .map(v => v.toString(16).padStart(2, '0'))
-                    .join('');
-            }
 
             const fnx = async () => {
                 let type = 'dsview',
@@ -35,7 +40,7 @@ Ext.define('Tualo.routes.DS', {
                     tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1),
                     stage = mainView.getComponent('dashboard_dashboard').getComponent('stage'),
                     component = null,
-                    cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await sha1(JSON.stringify(values)));
+                    cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await Tualo.routes.DS.sha1(JSON.stringify(values)));
                     console.log('ds route','action','cmp_id', cmp_id);
                 component = stage.getComponent(cmp_id);
 
@@ -57,19 +62,13 @@ Ext.define('Tualo.routes.DS', {
         },
         before: function (values, action) {
             console.log('ds route','before', values);
-            async function sha1(str) {
-                const enc = new TextEncoder();
-                const hash = await crypto.subtle.digest('SHA-1', enc.encode(str));
-                return Array.from(new Uint8Array(hash))
-                    .map(v => v.toString(16).padStart(2, '0'))
-                    .join('');
-            }
+            
 
             const fnx = async () => {
                 let type = 'dsview',
                     tablename = values.table,
                     tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1),
-                    cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await sha1(JSON.stringify(values)));
+                    cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await Tualo.routes.DS.sha1(JSON.stringify(values)));
 
 
                 if (!Ext.isEmpty(Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').down(cmp_id))) {
