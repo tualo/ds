@@ -969,6 +969,11 @@ create table if not exists `extjs_base_types` (
     isformfield tinyint default 0
 );
 
+
+alter table extjs_base_types add if not exists iscolumn tinyint default 0;
+alter table extjs_base_types add if not exists  isformfield tinyint default 0;
+
+
 create table if not exists `extjs_base_columnfilter_types`(
     id varchar(100) primary key,
     iscolumnfilter tinyint default 0

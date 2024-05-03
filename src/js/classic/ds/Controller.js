@@ -23,6 +23,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (this.getView().additionalTools.length>0){
             if(Ext.getApplication().getDebug()===true) console.log('Tualo.DS.Panel',this,this.additionalTools,toolbar);
 
+            
             this.getView().additionalTools.forEach(element => {
                 if(!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.'+element.defered))){
                     if (!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.'+element.defered).glyph)){

@@ -94,6 +94,11 @@ Ext.define('Tualo.DataSets.ListViewFileDrop',  {
             let record = container.up().getController().append();
             console.log('append record',file.name,reader.result);
             record.set('__file_data',reader.result);
+            if (Ext.isEmpty(record.get('titel')))
+              record.set('titel',file.name);
+              if (Ext.isEmpty(record.get('title')))
+              record.set('title',file.name);
+            
             record.set('__file_size',file.size);
             record.set('__file_name',file.name);
             record.set('__file_type',file.type);
