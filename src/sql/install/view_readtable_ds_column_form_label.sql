@@ -13,6 +13,7 @@ select
     ifnull(`ds_column_form_label`.`position`,999) AS `position`,
     ifnull(`ds_column_form_label`.`hidden`,1) AS `hidden`,
     ifnull(`ds_column_form_label`.`active`,0) AS `active`,
+    ifnull(`ds_column_form_label`.`flex`,1) AS `flex`,
     ifnull(`ds_column_form_label`.`allowempty`,0) AS `allowempty`,
     if(`ds_column_form_label`.`column_name` is null,1,0) AS `__virtual`
 from (

@@ -83,7 +83,7 @@ class DSExporterHelper
                     if (is_null($res['phpexporterfilename'])||($res['phpexporterfilename']=='')){
                         $res['phpexporterfilename'] = (Uuid::uuid4())->toString();
                     }
-                    $dateiname = $dsrenderer->renderTemplate($res['phpexporterfilename'], $_REQUEST);
+                    $dateiname = $dsrenderer->renderTemplate($res['phpexporterfilename'], array_merge($_REQUEST,$liste[0]));
                 }
             } catch (\Exception $e) {
             }
@@ -231,11 +231,11 @@ class DSExporterHelper
             $x = 0;
             $row = array();
             foreach ($hcolumns as $key => $value) {
-                if (isset($zeile[$tablename . '__' . $key])) {
-                    $ivalue = $zeile[$tablename . '__' . $key];
+                if (isset($zeile[  $key])) {
+                    $ivalue = $zeile[  $key];
                     if ($encoding != 'utf-8') {
                         if (function_exists("mb_convert_encoding")) {
-                            $ivalue = utf8_decode($ivalue);
+                            $ivalue = ($ivalue);
                         }
                     }
 
@@ -247,7 +247,7 @@ class DSExporterHelper
             $data[] = $row;
             ++$y;
         }
-
+       //print_r($data);
         /*
     $csv = '';
 
