@@ -2,6 +2,7 @@ delimiter ;
 insert ignore into ds_addcommands_xtypes (id,name) values ('compiler_command','Kompiler');
 insert ignore into ds_addcommands_xtypes (id,name) values ('ds_batch_command','Batchupdate');
 insert ignore into ds_addcommands_xtypes (id,name) values ('ds_refresh_information_schema_command','DDL-Refresh');
+insert ignore into ds_addcommands_xtypes (id,name) values ('cmp_ds_definition_command','DS-Refresh');
 
 
 
@@ -15,4 +16,7 @@ INSERT  IGNORE INTO `ds_addcommands` VALUES
 -- ('ds','cmp_setup_export_config_command','toolbar',1,'','x-fa fa-plus'),
 -- ('ds','cmp_setup_update_history_tables_command','toolbar',1,'','x-fa fa-plus'),
 ('ds','compiler_command','toolbar',1,'Kompiler',NULL),
-('ds','ds_refresh_information_schema_command','toolbar',1,'DDL-Refresh',NULL);
+('ds','ds_refresh_information_schema_command','toolbar',1,'DDL-Refresh',NULL),
+('ds','cmp_ds_definition_command','toolbar',1,'DS-Export',NULL);
+
+
