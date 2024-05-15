@@ -973,7 +973,6 @@ create table if not exists `extjs_base_types` (
 alter table extjs_base_types add if not exists iscolumn tinyint default 0;
 alter table extjs_base_types add if not exists  isformfield tinyint default 0;
 
-
 create table if not exists `extjs_base_columnfilter_types`(
     id varchar(100) primary key,
     iscolumnfilter tinyint default 0
@@ -2547,122 +2546,155 @@ where
 
 -- select * from view_ds_column;
 -- SOURCE FILE: ./src//500-ui/050-list/050.view_ds_listcolumn.sql 
-delimiter ;
+delimiter;
+
 /*
-update ds_column_list_label set xtype='booleancolumn' where (table_name,column_name) in (
-select table_name,column_name from ds_column where   data_type='tinyint'
-) and xtype='gridcolumn'
+ update ds_column_list_label set xtype='booleancolumn' where (table_name,column_name) in (
+ select table_name,column_name from ds_column where   data_type='tinyint'
+ ) and xtype='gridcolumn'
+ 
+ 
+ if( ifnull(ds_column_list_label.editor,'')='','', concat( '"editor": "', ds_column_list_label.editor ,'"', ', ') ),
+ 
+ 
+ */
+alter table ds_column_list_label add if not exists width integer default 0;
 
-
-if( ifnull(ds_column_list_label.editor,'')='','', concat( '"editor": "', ds_column_list_label.editor ,'"', ', ') ),
-      
-
-*/
-
-create or replace view view_ds_listcolumn as
-select 
-
-
-    JSON_MERGE('[]',
-        concat('[',
-            group_concat(
-                JSON_OBJECT(
-                    'text', `ds_column_list_label`.`label`,
-                    'xtype', if(types.type is null,'gridcolumn', `ds_column_list_label`.`xtype`),
-                    'dataIndex', concat( /*`ds_column`.`table_name`,'__',*/ `ds_column`.`column_name`),
-                    'align', if(ifnull(`ds_column_list_label`.`align`,'')<>'',`ds_column_list_label`.`align`,'start'),
-                    'formatter', if(ifnull(`ds_column_list_label`.`renderer`,'')<>'',`ds_column_list_label`.`renderer`,''),
-                    'summaryType', if(ifnull(`ds_column_list_label`.`summarytype`,'')<>'',`ds_column_list_label`.`summarytype`,null),
-                    'summaryRenderer', null,
-                    -- if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
-                    'summaryFormatter', if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
-                    'hidden', if (`ds_column_list_label`.`hidden`=1,true=true,false=true),
-                    'editor', if(
-                        (ifnull(ds_column_list_label.editor,'')=''   ),
-                        null,
-                        if (types.type is null,'missedxtypefield',ds_column_list_label.editor )
-                        
-                    ),
-                    'flex', 1,
-                    'filter' ,
-                        if ( ds_column_list_label.listfiltertype<>'',
-                        
-                            JSON_OBJECT(
-                                'type',   ds_column_list_label.listfiltertype
-                            ),
-
-                            CASE ds_column.data_type WHEN
-                                'date' THEN JSON_OBJECT(
-                                    'type', 'date',
-                                    'dateFormat', 'Y-m-d'
-                                )
-                                WHEN 'number' THEN JSON_OBJECT(
-                                    'type', 'number'
-                                )
-                                WHEN 'boolean' THEN JSON_OBJECT(
-                                    'type', 'boolean',
-                                    'yesText', 'Ja',
-                                    'noText', 'Nein'
-                                )
-                                WHEN 'tinyint' THEN JSON_OBJECT(
-                                    'type', 'boolean',
-                                    'yesText', 'Ja',
-                                    'noText', 'Nein'
-                                )
-
-                                ELSE 
-                                JSON_OBJECT(
-                                    'type', 'string'  
-                                )
-                            END
-                            
-                         )
-                            /*
-                        
-                        */
--- ' {"type":"',ds_column_list_label.listfiltertype,'"}') ,if(ds_column.data_type='date','{"type":"date", "dateFormat": "Y-m-d"}', 
--- if(ds_column.data_type='int','{"type":"number"}',
--- if((ds_column.data_type in ('tinyint','boolean') or ds_column.column_type='bigint(4)' ),
--- '{"type":"boolean", "yesText": "Ja", "noText":"Nein"}','{"type":"string"}') )   ) )
--- 'filter', 'string',
--- 'flex', 1
+create
+or replace view view_ds_listcolumn as
+select
+    json_arrayagg(
+        distinct JSON_OBJECT(
+            'text',
+            `ds_column_list_label`.`label`,
+            'xtype',
+            if(
+                types.type is null,
+                'gridcolumn',
+                `ds_column_list_label`.`xtype`
+            ),
+            'dataIndex',
+            concat(
+                /*`ds_column`.`table_name`,'__',*/
+                `ds_column`.`column_name`
+            ),
+            'align',
+            if(
+                ifnull(`ds_column_list_label`.`align`, '') <> '',
+                `ds_column_list_label`.`align`,
+                'start'
+            ),
+            'formatter',
+            if(
+                ifnull(`ds_column_list_label`.`renderer`, '') <> '',
+                `ds_column_list_label`.`renderer`,
+                ''
+            ),
+            'summaryType',
+            if(
+                ifnull(`ds_column_list_label`.`summarytype`, '') <> '',
+                `ds_column_list_label`.`summarytype`,
+                null
+            ),
+            'summaryRenderer',
+            null,
+            -- if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
+            'summaryFormatter',
+            if(
+                ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
+                `ds_column_list_label`.`summaryrenderer`,
+                null
+            ),
+            'hidden',
+            if (
+                `ds_column_list_label`.`hidden` = 1,
+                true = true,
+                false = true
+            ),
+            'editor',
+            if(
+                (ifnull(ds_column_list_label.editor, '') = ''),
+                null,
+                if (
+                    types.type is null,
+                    'missedxtypefield',
+                    ds_column_list_label.editor
                 )
-            order by ds_column_list_label.position separator ','),
-            /*
-            ',',
-            JSON_OBJECT(
+            ),
 
-                'xtype', 'dsroutetocolumn' 
+            if(ds_column_list_label.width > 0,'width','flex') , if(ds_column_list_label.width > 0,ds_column_list_label.width,ds_column_list_label.flex),
+
+            'filter',
+            if (
+                ds_column_list_label.listfiltertype <> '',
+                JSON_OBJECT(
+                    'type',
+                    ds_column_list_label.listfiltertype
+                ),
+                CASE
+                    ds_column.data_type
+                    WHEN 'date' THEN JSON_OBJECT(
+                        'type',
+                        'date',
+                        'dateFormat',
+                        'Y-m-d'
+                    )
+                    WHEN 'number' THEN JSON_OBJECT(
+                        'type',
+                        'number'
+                    )
+                    WHEN 'boolean' THEN JSON_OBJECT(
+                        'type',
+                        'boolean',
+                        'yesText',
+                        'Ja',
+                        'noText',
+                        'Nein'
+                    )
+                    WHEN 'tinyint' THEN JSON_OBJECT(
+                        'type',
+                        'boolean',
+                        'yesText',
+                        'Ja',
+                        'noText',
+                        'Nein'
+                    )
+                    ELSE JSON_OBJECT(
+                        'type',
+                        'string'
+                    )
+                END
             )
-            ,
-            */
-        ']')
+        )
+        order by
+            ds_column_list_label.position
+            
     ) js,
     `ds`.`table_name`,
-    concat('[',
-            group_concat(
-                distinct 
-                concat('"',types.id,'"')
-                separator ','
-            ),
+    concat(
+        '[',
+        group_concat(
+            distinct concat('"', types.id, '"') separator ','
+        ),
         ']'
     ) `requiresJS`
-from 
+from
     `ds`
-    join `ds_column` 
-        on `ds`.`table_name` = `ds_column`.`table_name`
-        and `ds_column`.`existsreal`=1 
-        and `ds`.`title`<>''
-    join `ds_column_list_label`
-        on (`ds_column`.`table_name`, `ds_column`.`column_name`) = (`ds_column_list_label`.`table_name`, `ds_column_list_label`.`column_name`)
-        and `ds_column_list_label`.`active` = 1
-    left join view_readtable_all_types_classic types on  types.type = `ds_column_list_label`.`xtype`
-        and typeclass='widget'
-    
-group by 
+    join `ds_column` on `ds`.`table_name` = `ds_column`.`table_name`
+    and `ds_column`.`existsreal` = 1
+    and `ds`.`title` <> ''
+    join `ds_column_list_label` on (
+        `ds_column`.`table_name`,
+        `ds_column`.`column_name`
+    ) = (
+        `ds_column_list_label`.`table_name`,
+        `ds_column_list_label`.`column_name`
+    )
+    and `ds_column_list_label`.`active` = 1
+    left join view_readtable_all_types_classic types on types.type = `ds_column_list_label`.`xtype`
+    and typeclass = 'widget'
+group by
     `ds`.`table_name`;
-
-
 -- SOURCE FILE: ./src//500-ui/050-list/054.view_ds_list.sql 
 delimiter ;
 
@@ -3625,7 +3657,10 @@ select
                 alternativeformxtype
             )
         ,
-        "itemId", "form"
+        "itemId", "form",
+         "listeners", JSON_OBJECT(
+            "expand", 'onFormExpand'
+        )
     ),
     2000000 position
 from ds

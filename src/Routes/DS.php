@@ -17,7 +17,7 @@ class DS implements IRoute
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
             $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
-
+            ini_set('memory_limit', '8G');
             try {
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 $read = DSReadRoute::read($db, $tablename, $_REQUEST);

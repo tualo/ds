@@ -69,6 +69,31 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         return null;
     },
+    onFormExpand: function(){
+        let me = this,
+            model = me.getViewModel(),
+            store = me.getStore(),
+            form = this.getView().getComponent('form'),
+            list = this.getView().getComponent('list'),
+            record = model.get('record');
+        console.log('onFormExpand',record,form);
+        if (form){
+            if (form.items){
+                if (form.items.getAt(0)){
+                        setTimeout(()=>{
+                            try{
+                                form.items.getAt(0).activeTab.getController().onDeferedStoreLoad();
+                            }catch(e){
+                                console.error(e);
+                            }
+                        },200)
+                }
+            }
+        }
+
+        //form.items.getAt(0).activeTab.getController().onDeferedStoreLoad()
+        window.form = form;
+    },
     initEvents: function(){
        let c = this;
 
@@ -170,11 +195,12 @@ Ext.define('Tualo.DS.panel.Controller', {
             list = this.getView().getComponent('list'),
             store = list.getStore(),
             record = selModel.getSelection()[0];
+        console.log('onListSelect',record,selModel,selModel.getSelection());
         if (record){
             model.set('selectRecordRecordNumber',store.indexOf(record)+1);
             model.set('record',record);
             form.loadRecord(record);
-
+            //this.getView().getComponent('list').getSelectionModel().select(record);
         } else {
             model.set('selectRecordRecordNumber',0);
             model.set('record',null);
@@ -212,7 +238,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             console.log('onItemDblClick',tablename,model);
         if (record){
             form.loadRecord(record);
+            
         } 
+        
         /*
         let f = Ext.getApplication().addView(
             'Tualo.DataSets.form.'+    tablenamecase,
