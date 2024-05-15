@@ -71,28 +71,20 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
     onFormExpand: function(){
         let me = this,
-            model = me.getViewModel(),
-            store = me.getStore(),
-            form = this.getView().getComponent('form'),
-            list = this.getView().getComponent('list'),
-            record = model.get('record');
-        console.log('onFormExpand',record,form);
-        if (form){
-            if (form.items){
-                if (form.items.getAt(0)){
-                        setTimeout(()=>{
-                            try{
-                                form.items.getAt(0).activeTab.getController().onDeferedStoreLoad();
-                            }catch(e){
-                                console.error(e);
-                            }
-                        },10)
-                }
-            }
-        }
+            form = me.getView().getComponent('form');
 
-        // form.items.getAt(0).activeTab.getController().onDeferedStoreLoad()
-        // window.form = form;
+            //form?.items?.getAt(0)?.activeTab?.getController()?.onDeferedStoreLoad();
+            
+        if ((form) && (form.items) && (form.items.getAt(0)) && (form.items.getAt(0).activeTab)) {
+            setTimeout(()=>{
+                try{
+                    form.items.getAt(0).activeTab.getController().onDeferedStoreLoad();
+                }catch(e){
+                    console.error(e);
+                }
+            },10);
+        }
+        
     },
     initEvents: function(){
        let c = this;
