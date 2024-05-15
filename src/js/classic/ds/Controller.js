@@ -86,13 +86,13 @@ Ext.define('Tualo.DS.panel.Controller', {
                             }catch(e){
                                 console.error(e);
                             }
-                        },200)
+                        },10)
                 }
             }
         }
 
-        //form.items.getAt(0).activeTab.getController().onDeferedStoreLoad()
-        window.form = form;
+        // form.items.getAt(0).activeTab.getController().onDeferedStoreLoad()
+        // window.form = form;
     },
     initEvents: function(){
        let c = this;
