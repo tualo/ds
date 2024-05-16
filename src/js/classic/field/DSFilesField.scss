@@ -1,0 +1,16 @@
+.tualo-dsfilesfield {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 9px 9px;
+    width: 32px;
+    cursor: pointer;
+}
+
+.dsfiles-body{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+

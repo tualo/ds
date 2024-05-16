@@ -164,3 +164,38 @@ values
         1
     )
 ;
+
+
+
+
+insert
+    ignore into extjs_base_types (
+        vendor,
+        id,
+        classname,
+
+        xtype_long_classic,
+        baseclass,
+        xtype_long_modern,
+        name,
+        description,
+        iscolumn,
+        isformfield
+    )
+values
+    (
+        "Tualo",
+        "Tualo.DS.field.DSFilesField",
+        "Tualo.DS.field.DSFilesField",
+        
+        "widget.dsfilesfield",
+        "Ext.form.field.Base",
+        "widget.dsfilesfield",
+
+        "Tualo.DS.field.DSFilesField",
+        "Tualo DSFilesField",
+        0,
+        1
+    )
+;
+
