@@ -27,6 +27,11 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/fix.id'=> 'setup fix.id ',
         'install/view_readtable_ds_column_list_label_all'=> 'setup view_readtable_ds_column_list_label_all ',
         'install/view_readtable_ds_column_form_label'=> 'setup view_readtable_ds_column_form_label ',
+
+        'install/ds_listplugins'=> 'setup ds_listplugins ',
+        'install/ds_listplugins_placements.ds'=> 'setup ds_listplugins_placements.ds ',
+        'install/ds_listplugins_ptypes.ds'=> 'setup ds_listplugins_ptypes.ds ',
+        'install/ds_listplugins.ds'=> 'setup ds_listplugins.ds ',
     ];
     
 }

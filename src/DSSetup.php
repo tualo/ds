@@ -51,11 +51,10 @@ class DSSetup {
             if ($table->error()){
                 throw new \Exception($table->errorMessage());
             }
-            $flds = [];
-            $vals = [];
-            $upds = [];
             foreach($values as $key=>$value){
-                
+                $flds = [];
+                $vals = [];
+                $upds = [];
                 foreach($info['config'] as $config){
                     $config['column_name']=strtolower($config['column_name']);
                     if (isset($value[$config['column_name']])){
