@@ -2448,7 +2448,7 @@ select
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.grid.filters.filter.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
             JSON_OBJECT(
-                "extend",  "Ext.grid.filters.filter.List",
+                "extend",  "Tualo.grid.filters.List",
                 "alias", concat('grid.filter.',lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter'))),
                 "tablename", `ds_dropdownfields`.`table_name`,
                 "idField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`idfield` )),
@@ -2708,7 +2708,7 @@ create or replace view view_ds_list_plugins as
         JSON_OBJECT(
             'ptype', 'cellediting',
             'clicksToEdit', 1,
-            'pluginId', concat(LOWER(table_name),'_cellediting')
+            'id', concat(LOWER(table_name),'_cellediting')
         )   fld,
         'view' placement
     FROM 
@@ -2721,7 +2721,7 @@ create or replace view view_ds_list_plugins as
         table_name,
         JSON_OBJECT(
             'ptype', 'gridfilters',
-            'pluginId', concat(LOWER(table_name),'_gridfilters')
+            'id', concat(LOWER(table_name),'_gridfilters')
         ) fld,
         'view' placement
     FROM 
@@ -2734,7 +2734,7 @@ create or replace view view_ds_list_plugins as
         table_name,
         JSON_OBJECT(
             'ptype', 'gridviewdragdrop',
-            'pluginId', concat(LOWER(table_name),'_gridviewdragdrop'),
+            'id', concat(LOWER(table_name),'_gridviewdragdrop'),
             'dragText', 'Reihenfolge ändern',
             'reorderfield', concat(table_name,'__',reorderfield)
         ) fld,
@@ -2751,25 +2751,23 @@ create or replace view view_ds_list_plugins as
         ds_listplugins.table_name,
         JSON_OBJECT(
             'ptype', ds_listplugins.ptype,
-            'pluginId', concat(LOWER(ds_listplugins.table_name),'_',LOWER(ds_listplugins.ptype))
+            'id', concat(LOWER(ds_listplugins.table_name),'_',LOWER(ds_listplugins.ptype))
         ) fld,
         ds_listplugins.placement
       FROM 
         ds_listplugins 
-      
-
 ;
 
-create or replace view view_ds_list_plugins_grouped as
 
+create or replace view view_ds_list_plugins_grouped as
 select
-table_name,
-placement,
-json_arrayagg(
-        fld
-) plugins
+    table_name,
+    placement,
+    json_arrayagg(
+            fld
+    ) plugins
 from 
-view_ds_list_plugins
+    view_ds_list_plugins
 group by table_name,placement
 ;
 
@@ -2789,14 +2787,18 @@ select
                 
                 "controller",concat('dsgridcontroller'),
                 "stateful",JSON_OBJECT("columns",true),
+                
                 "selModel",ds.listselectionmodel,
                 "features", JSON_ARRAY(
                     JSON_OBJECT(
                         "dock", "bottom",
                         "ftype","summary"
+                    ),
+                    JSON_OBJECT(
+                        "ftype","grouping"
                     )
                 ),
-
+                /*
                 "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),
                 
                 "viewConfig",JSON_OBJECT(
@@ -2806,11 +2808,8 @@ select
                     "plugins", ifnull(viewConfigPlugins.plugins,JSON_ARRAY())
                     
                 ),
+                */
                 "store", concat('ds_',ds.table_name),
-                
-
-                
-
                 "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
                 
             ),
@@ -3125,8 +3124,10 @@ select
         JSON_OBJECT(
             "xtype",
             "fieldset",
+            /*
             "layout",
             'anchor',
+            */
             "title",
             `view_ds_formfields`.`fieldset_title`,
             "defaults",
@@ -3721,6 +3722,7 @@ select
             "listeners", JSON_OBJECT(
                 "boxready", 'onBoxReady'
             ),
+            
             "layout", JSON_OBJECT(
                 "type", 'accordion',
                 "vertical",  1=0,
@@ -3728,6 +3730,7 @@ select
                 "animate", 1=1,
                 "activeOnTop", 1=0
             ),
+            
             "statics", JSON_OBJECT(
                 "stores", view_ds_column_stores.stores,
                 "globalsearch", JSON_OBJECT(

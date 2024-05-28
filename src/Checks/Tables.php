@@ -22,7 +22,7 @@ class Tables  extends PostCheck {
             'ds_column_form_label'=>[],
             'view_ds_column'=>[
                 'columns'=>[
-                    'filename'=>'text', 'js'=>'longtext', 'name'=>'varchar(100)', 'table_name'=>'varchar(128)']
+                    /*'filename'=>'text', */'js'=>'longtext', 'name'=>'varchar(100)', 'table_name'=>'varchar(128)']
                 ]  ,
             'view_ds_combobox'=>['filename'=>'text', 'js'=>'longtext', 'name'=>'varchar(100)', 'table_name'=>'varchar(128)'],
             'view_ds_controller'=>['filename'=>'text', 'js'=>'longtext', 'jsx'=>'longtext', 'table_name'=>'varchar(128)'],
