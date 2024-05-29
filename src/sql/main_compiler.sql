@@ -2798,7 +2798,7 @@ select
                         "ftype","grouping"
                     )
                 ),
-                /*
+                
                 "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),
                 
                 "viewConfig",JSON_OBJECT(
@@ -2808,7 +2808,7 @@ select
                     "plugins", ifnull(viewConfigPlugins.plugins,JSON_ARRAY())
                     
                 ),
-                */
+                
                 "store", concat('ds_',ds.table_name),
                 "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
                 
