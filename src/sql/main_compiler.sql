@@ -2627,7 +2627,7 @@ select
 
             'filter',
             if (
-                ds_column_list_label.listfiltertype <> '' and false,
+                ds_column_list_label.listfiltertype <> ' ,
                 JSON_OBJECT(
                     'type',
                     ds_column_list_label.listfiltertype
