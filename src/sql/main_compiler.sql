@@ -2448,7 +2448,8 @@ select
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.grid.filters.filter.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
             JSON_OBJECT(
-                "extend",  "Tualo.grid.filters.List",
+                -- "extend",  "Tualo.grid.filters.List",
+                "extend", "Ext.grid.filters.filter.List",
                 "alias", concat('grid.filter.',lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_listfilter'))),
                 "tablename", `ds_dropdownfields`.`table_name`,
                 "idField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`idfield` )),
@@ -2626,7 +2627,7 @@ select
 
             'filter',
             if (
-                ds_column_list_label.listfiltertype <> '',
+                ds_column_list_label.listfiltertype <> '' and false,
                 JSON_OBJECT(
                     'type',
                     ds_column_list_label.listfiltertype
