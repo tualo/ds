@@ -6,6 +6,8 @@ require_once "Checks/PrimaryKey.php";
 
 require_once "Commandline/DumpDS.php";
 require_once "Commandline/Install.php";
+require_once "Commandline/InstallPrivacy.php";
+
 require_once "Routes/DS.php";
 require_once "Middlewares/CSS.php";
 require_once "Routes/CSS.php";
