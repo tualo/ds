@@ -53,7 +53,7 @@ class DSTable {
     }
 
     public function s(string $field,string $direction):DSTable{ 
-        return $this->s($field,$direction);
+        return $this->sort($field,$direction);
     }
     public function sort(string $field,string $direction):DSTable{
 

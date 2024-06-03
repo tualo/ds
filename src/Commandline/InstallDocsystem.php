@@ -16,6 +16,8 @@ class InstallDocsystem extends CommandLineInstallSQL  implements ICommandline{
         'docsystem/view_docsystem_ds_column_documentation'=> 'setup view_docsystem_ds_column_documentation ',
         'docsystem/view_docsystem_ds_ds_reference_tables'=> 'setup view_docsystem_ds_ds_reference_tables ',
         'docsystem/view_docsystem_ds_ds_reference_tables_used_ds'=> 'setup view_docsystem_ds_ds_reference_tables_used_ds ',
+        
+        'docsystem/pug'=> 'setup pug templates ',
 
     ];
     
