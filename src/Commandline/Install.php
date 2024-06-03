@@ -7,8 +7,8 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
     public static function getDir():string {   return dirname(__DIR__,1); }
     public static $shortName  = 'ds';
     public static $files = [
-        'main_compiler' => 'setup main compiler views ',
-        'main_dsx' => 'setup main ds procedures ',
+        // 'main_compiler' => 'setup main compiler views ',
+        // 'main_dsx' => 'setup main ds procedures ',
         'custom_types' => 'setup custom types ',
         'addcommand' => 'load addcommand ',
         'ds_files' => 'add ds files ',

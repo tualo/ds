@@ -6,6 +6,8 @@ require_once "Checks/PrimaryKey.php";
 
 require_once "Commandline/DumpDS.php";
 require_once "Commandline/Install.php";
+require_once "Commandline/InstallDSX.php";
+require_once "Commandline/InstallMain.php";
 require_once "Commandline/InstallPrivacy.php";
 require_once "Commandline/InstallDocsystem.php";
 
