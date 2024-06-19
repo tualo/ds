@@ -64,14 +64,15 @@ class Procedure {
     }
 
 
-    private function call():Procedure{
+    public function call():Procedure{
         // $this->db->direct('set @log_dsx_commands=1',[],'r');
         // echo $this->db->singleValue('select @request r',[],'r').PHP_EOL;
         $pks = [];
         $pkv = [];
         foreach($this->parameters as $i=>$p){
+
             $pks[] = '{p_'.$i.'}';
-            $pkv['p_'.$i] = $p;
+            if (!is_null($p)) $pkv['p_'.$i] = $p;
         }
         $this->db->direct('call `',$this->procedureName,'`(',implode(',',$pks),')',$pkv,'');
         $this->readWarnings();
