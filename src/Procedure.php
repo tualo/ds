@@ -41,12 +41,12 @@ class Procedure {
         return  $this;
     }
 
-    public function a( mixed $value ):Procedure{ 
-        return $this->addParameter( $value );
+    public function a( mixed $value ,string $type='string'):Procedure{ 
+        return $this->addParameter( $value,$type );
     }
 
-    public function addParameter(mixed $value):Procedure{
-        $this->parameters[] =  $value;
+    public function addParameter(mixed $value,string $type='string'):Procedure{
+        $this->parameters[] =  [$value,$type];
         return $this;
     }
 
@@ -72,9 +72,10 @@ class Procedure {
         foreach($this->parameters as $i=>$p){
 
             $pks[] = '{p_'.$i.'}';
-            if (!is_null($p)) $pkv['p_'.$i] = $p;
+            if ($p[1]=='string') $pkv['p_'.$i] = '\''.$this->db->escape_string($p[0]).'\'';
+            if (!is_null($p)) $pkv['p_'.$i] = 'null';
         }
-        $this->db->direct('call `',$this->procedureName,'`(',implode(',',$pks),')',$pkv,'');
+        $this->db->direct('call `',$this->procedureName,'`(',implode(',',$pkv),')');
         $this->readWarnings();
         $this->readMoreResults();
         return $this;
