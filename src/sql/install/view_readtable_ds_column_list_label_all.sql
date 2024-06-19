@@ -23,4 +23,6 @@ CREATE OR REPLACE VIEW  `view_readtable_ds_column_list_label_all` AS
    on(((`ds_column_list_label`.`table_name` = `ic`.`table_name`)
    and (`ds_column_list_label`.`column_name` = `ic`.`column_name`))));
 
+
+call fill_ds('');
 call fill_ds_column('view_readtable_ds_column_list_label_all');

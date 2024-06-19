@@ -20,6 +20,23 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
                 {
                     xtype: 'label',
                     text: 'Klicken Sie auf exportieren, um die aktuelle Konfiguration des Datenstammes zu exportieren.',
+                },{
+                    xtype: 'radiogroup',
+                    checked: true,
+                    fieldLabel: 'Auswahl',
+                    boxLabel: 'aktueller Datensatz',
+                    name: 'fav-color',
+                    inputValue: 'current'
+                }, {
+                    xtype: 'radiogroup',
+                    boxLabel: 'aktuelle Auswahl',
+                    name: 'fav-color',
+                    inputValue: 'selection'
+                }, {
+                    xtype: 'radiogroup',
+                    boxLabel: 'aktuelle Liste',
+                    name: 'fav-color',
+                    inputValue: 'list'
                 }
             ]
         }
@@ -37,12 +54,28 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
         this.list = parent.getList();
     },
     run: function () {
-        let config = {
-            url: './dssetup/export/definition/'+this.record.get('table_name')+'',
-            scope: this,
-            showWait: true,
-            timeout: 300000
-        };
-        Tualo.Ajax.download(config);
+        let form = this.down('form'),
+            values = form.getValues(),
+            tasks = [];
+        if (values['fav-color'] == 'current') {
+            tasks.push(this.record);
+        }
+        if (values['fav-color'] == 'selection') {
+            tasks = this.selectedrecords;
+        }
+        if (values['fav-color'] == 'list') {
+            tasks = this.records;
+        }
+
+        for (let i = 0; i < tasks.length; i++) {
+            let config = {
+                url: './dssetup/export/definition/'+tasks[i].get('table_name')+'',
+                scope: this,
+                showWait: true,
+                timeout: 300000
+            };
+            Tualo.Ajax.download(config);
+        }
+        
     }
 });
