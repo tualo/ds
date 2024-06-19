@@ -72,12 +72,22 @@ class Procedure {
         foreach($this->parameters as $i=>$p){
 
             $pks[] = '{p_'.$i.'}';
-            if ($p[1]=='string') $pkv['p_'.$i] = '\''.$this->db->escape_string($p[0]).'\'';
-            if (!is_null($p)) $pkv['p_'.$i] = 'null';
+            if ($p[1]=='string'){ 
+                $pkv[] = '\''.$this->db->escape_string($p[0]).'\''; 
+            }else if (is_null($p[0])){ 
+                $pkv[] = 'null';
+            }else{
+                $pkv[] = $p[0];
+            }
         }
-        $this->db->direct('call `',$this->procedureName,'`(',implode(',',$pkv),')');
+        try{
+        $this->db->direct('call `'.$this->procedureName.'`('.implode(',',$pkv).')');
         $this->readWarnings();
         $this->readMoreResults();
+        }catch(\Exception $e){
+            $this->hasError = true;
+            $this->errorMessage = $e->getMessage();
+        }
         return $this;
     }
 
