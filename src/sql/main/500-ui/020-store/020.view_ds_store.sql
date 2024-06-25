@@ -1,5 +1,6 @@
 delimiter ;
 
+alter table ds add column if not exists autosave tinyint(1) default 0;
 create or replace view view_ds_store as
 select 
     concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) name,
@@ -15,7 +16,7 @@ select
             "model", concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))),
             "remoteFilter", TRUE is true,
             "autoLoad", FALSE is true,
-            "autoSync", FALSE is true,
+            "autoSync", ds.autosave=1,
             "pageSize", ifnull(ds.default_pagesize,1000),
             "sorters", JSON_ARRAY(
                 JSON_OBJECT(

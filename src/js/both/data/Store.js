@@ -22,6 +22,15 @@ Ext.define("Tualo.DataSets.data.Store", {
           update: './ds/tbl/update',
           destroy: './ds/tbl/delete'
         },
+        onEndUpdate: function() {
+          var me = this;
+   
+          console.log('onEndUpdate');
+          if (me.needsSync && me.autoSync && !me.autoSyncSuspended) {
+              me.sync();
+          }
+          me.callParent(arguments);
+        },
         listeners: {
           scope: this,
           exception: function (proxy, response, operation, eOpts) {

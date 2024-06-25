@@ -230,23 +230,31 @@ Ext.define('Tualo.DS.panel.Controller', {
             form = this.getView().getComponent('form');
 
             console.log('onItemDblClick',tablename,model);
-        if (record){
-            form.loadRecord(record);
-            
-        } 
-        
-        /*
-        let f = Ext.getApplication().addView(
-            'Tualo.DataSets.form.'+    tablenamecase,
-            {
-                record: record,
-                isNew: false,
-                viewTypeOnLoad: 'form'
-            }
-        );
 
-        f.loadRecord(record);
-        */
+            if (true){
+                if (record){
+                    form.loadRecord(record);
+                    this.setViewType('form');
+                } 
+
+                
+            }else{
+                let f = Ext.getApplication().addView(
+                    'Tualo.DataSets.dsview.'+    tablenamecase,
+                    {
+                        record: record,
+                        isNew: false,
+                        viewTypeOnLoad: 'form',
+                        bind: {
+                            record: '{record}',
+                        }
+                    }
+                );
+                console.log('onItemDblClick',f);
+                window.f = f;
+                window.record = record;
+                f.loadRecord(record);
+            }
         /*
         console.log('onItemDblClick',arguments);
         Ext.getApplication().redirectTo('dsform/'+this.getViewModel().get('table_name')+'/'+record.get('__id'),{
@@ -255,7 +263,6 @@ Ext.define('Tualo.DS.panel.Controller', {
         */
 
 
-        this.setViewType('form');
     },
     setViewType: function(view){
         let v = this.getView().getComponent(view);
