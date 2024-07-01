@@ -88,7 +88,7 @@ class DSReadRoute{
         }
 
         $o['data']=$db->direct($o['query'].' '.$o['order_by'].' '.$o['limitterm']);
-        TualoApplication::result('dsx_rest_api_get_result',$o['query']);
+        // TualoApplication::result('dsx_rest_api_get_result',$o['query']);
 
         if ($request['postprocessing']==1){
             $res = [];
