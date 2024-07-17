@@ -152,6 +152,7 @@ class DSTable {
         $this->readWarnings();
         $this->readMoreResults();
         $res = $this->db->singleValue('select @result s',[],'s');
+        TualoApplication::deferredTrigger();
         if ($res===false) return false;
         return json_decode($res,true);
     }
@@ -202,6 +203,7 @@ class DSTable {
                 $input,
                 array_merge(['type'=>'update'],$options)
             ),true ));
+            
             return $this->dsx_rest_api_set();
         }catch(\Exception $e){
             $this->hasError=true;
