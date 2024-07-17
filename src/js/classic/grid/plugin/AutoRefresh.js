@@ -17,7 +17,7 @@
  * The `cell` format is not valid for the `{@link Ext.plugin.AbstractClipboard#system system}`
  * clipboard format.
  */
-Ext.define('Tualo.DataSets.grid..plugin.AutoRefresh', {
+Ext.define('Tualo.DataSets.grid.plugin.AutoRefresh', {
     extend: 'Ext.plugin.Abstract',
     alias: 'plugin.tualo_plugin_autorefresh',
     requires: [
@@ -31,6 +31,9 @@ Ext.define('Tualo.DataSets.grid..plugin.AutoRefresh', {
         refreshInterval: 30000
     },
     init: function(grid) {
+
+        console.log('tualo_plugin_autorefresh','init');
+        
         var me = this;
         me.grid = grid;
         me.task = new Ext.util.DelayedTask(me.refresh, me);
