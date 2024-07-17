@@ -19,7 +19,10 @@ select
         "selModel", if(ifnull(ds.listselectionmodel,'')='','rowmodel',ds.listselectionmodel),
         "store", JSON_OBJECT(
             "type", concat("",ds.table_name,"_store"),
-            "autoLoad", 1=0
+            "autoLoad", 1=0,
+            "listeners", JSON_OBJECT(
+                "sync", "onSyncStore",
+            ),
         ),
         "listeners", JSON_OBJECT(
             "drop", "onDropGrid",

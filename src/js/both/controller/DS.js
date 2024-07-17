@@ -213,6 +213,11 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
             }
     },
 
+    onSyncStore: function(){
+        console.debug('onSyncStore',this.alias,arguments);
+        model.set('isNew',false);
+    },
+
     doSelectRecordIndex: function(){
         console.debug('doSelectRecordIndex',this.alias);
         /*
