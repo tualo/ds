@@ -180,6 +180,15 @@ Ext.define('Tualo.DS.panel.Controller', {
             store = me.getStore();
         console.debug('onDataChanged','getModifiedRecords',store.getModifiedRecords());
         model.set('isModified',store.getModifiedRecords().length!=0);
+
+        if (store.getModifiedRecords().length==0){
+            model.set('isNew',false);
+        }
+    },
+
+    onSyncStore: function(){
+        console.debug('onSyncStore',this.alias,arguments);
+        model.set('isNew',false);
     },
     
     onListSelect: function(selModel, record, eOpts){
