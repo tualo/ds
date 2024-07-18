@@ -20,23 +20,18 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
                 {
                     xtype: 'label',
                     text: 'Klicken Sie auf exportieren, um die aktuelle Konfiguration des Datenstammes zu exportieren.',
-                },{
+                },
+                {
                     xtype: 'radiogroup',
-                    checked: true,
-                    fieldLabel: 'Auswahl',
-                    boxLabel: 'aktueller Datensatz',
-                    name: 'fav-color',
-                    inputValue: 'current'
-                }, {
-                    xtype: 'radiogroup',
-                    boxLabel: 'aktuelle Auswahl',
-                    name: 'fav-color',
-                    inputValue: 'selection'
-                }, {
-                    xtype: 'radiogroup',
-                    boxLabel: 'aktuelle Liste',
-                    name: 'fav-color',
-                    inputValue: 'list'
+                    fieldLabel: 'Auswahls',
+                    // Arrange radio buttons into two columns, distributed vertically
+                    columns: 2,
+                    vertical: true,
+                    items: [
+                        { boxLabel: 'aktueller Datensatz', name: 'fav-color', inputValue: 'current' , checked: true},
+                        { boxLabel: 'aktuelle Auswahl', name: 'fav-color', inputValue: 'selection'},
+                        { boxLabel: 'aktuelle Liste', name: 'fav-color', inputValue: 'list' }
+                    ]
                 }
             ]
         }
