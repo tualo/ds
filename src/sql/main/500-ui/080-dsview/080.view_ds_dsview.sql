@@ -15,7 +15,7 @@ select
             "type", concat("",ds.table_name,"_store"),
             "autoLoad", 1=0,
             "listeners", JSON_OBJECT(
-                "sync", "onSyncStore",
+                "sync", "onSyncStore"
             ),
         ),
         "listeners", JSON_OBJECT(
