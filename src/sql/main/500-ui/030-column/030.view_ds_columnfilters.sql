@@ -1,3 +1,4 @@
+delimiter ;
 create or replace view view_ds_columnfilters as
 select 
     concat(  'Tualo/DataSets/grid/filters/filter/',lower(ds_dropdownfields.table_name),'/',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ,'.js') filename,
