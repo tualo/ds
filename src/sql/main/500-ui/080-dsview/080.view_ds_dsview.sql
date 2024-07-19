@@ -16,12 +16,11 @@ select
             "autoLoad", 1=0,
             "listeners", JSON_OBJECT(
                 "sync", "onSyncStore"
-            ),
+            )
         ),
         "listeners", JSON_OBJECT(
             "drop", "onDropGrid",
-            "itemdblclick", 'onItemDblClick' -- ,
-            -- "select", "onListSelect"
+            "itemdblclick", 'onItemDblClick'
         ),
         "itemId", "list"
     ) js,
