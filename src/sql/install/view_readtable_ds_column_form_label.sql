@@ -21,4 +21,6 @@ from (
     left join `ds_column_form_label` 
     on (`ds_column_form_label`.`table_name` = `ic`.`table_name` and `ds_column_form_label`.`column_name` = `ic`.`column_name`)
 );
+
+call fill_ds('view_readtable_ds_column_form_label');
 call fill_ds_column('view_readtable_ds_column_form_label');

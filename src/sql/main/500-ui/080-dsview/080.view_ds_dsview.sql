@@ -7,13 +7,7 @@ select
         "title", ifnull(concat('Liste (',ds.title,')'),"Liste"),
         "iconCls", "x-fa fa-th",
         "xtype", concat("dslist_",ds.table_name),
-        /*
-        "bind", JSON_OBJECT(
-                -- "store", "{list}",
-                "hidden", "{hideList}"
-                -- "selection", "{record}"
-        ),
-        */
+
 
         
         "selModel", if(ifnull(ds.listselectionmodel,'')='','rowmodel',ds.listselectionmodel),
