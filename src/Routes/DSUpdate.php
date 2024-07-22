@@ -15,11 +15,11 @@ class DSUpdate implements IRoute{
 
         try{
             
-            $db->direct('call fill_ds()');
+            $db->direct('call fill_ds("")');
             $mr = $db->moreResults();
             $wrn = $db->getWarnings();
 
-            $db->direct('call fill_ds_column()');
+            $db->direct('call fill_ds_column("")');
             $mr = $db->moreResults();
             $wrn = $db->getWarnings();
 
