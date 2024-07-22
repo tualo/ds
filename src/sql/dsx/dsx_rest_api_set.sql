@@ -50,6 +50,7 @@ BEGIN
         -- JSON_VALUE(request,'$.useInsertUpdate')=true
     THEN 
 
+
         SET request=JSON_SET(request,'$.type','insert');
         SET request=JSON_SET(request,'$.update',true);
     END IF;
