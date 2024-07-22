@@ -14,7 +14,15 @@ class DSUpdate implements IRoute{
         $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
         try{
-            $db->direct('call UPDATE_DS_SETUP()');
+            
+            $db->direct('call fill_ds()');
+            $mr = $db->moreResults();
+            $wrn = $db->getWarnings();
+
+            $db->direct('call fill_ds_column()');
+            $mr = $db->moreResults();
+            $wrn = $db->getWarnings();
+
             App::result('success', true);
         }catch(\Exception $e){
             App::result('last_sql', $db->last_sql );
