@@ -50,7 +50,7 @@ class DS implements IRoute
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db, $tablename);
                 $o = [];
-                if ($db->singleValue('select ifnull(readtable,"") v from ds where table_name = {tablename}', ['tablename' => $tablename],'v')!='') {
+                if ($db->singleValue('select ifnull(read_table,"") v from ds where table_name = {tablename}', ['tablename' => $tablename],'v')!='') {
                     $o = [ 'useInsertUpdate'=>true];
                 }
                 if (($result = $table->update($input, )) !== false) {
