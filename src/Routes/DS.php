@@ -49,8 +49,11 @@ class DS implements IRoute
                 $input = json_decode(file_get_contents('php://input'), true);
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db, $tablename);
-
-                if (($result = $table->update($input, [ /*'useInsertUpdate'=>true*/])) !== false) {
+                $o = [];
+                if ($db->singleValue('select ifnull(readtable,"") v from ds where table_name = {tablename}', ['tablename' => $tablename],'v')!='') {
+                    $o = [ 'useInsertUpdate'=>true];
+                }
+                if (($result = $table->update($input, )) !== false) {
                     if ($table->error()) {
                         throw new \Exception($table->errorMessage());
                     }
