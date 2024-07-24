@@ -69,17 +69,18 @@ Ext.define('Tualo.routes.DS', {
                     tablename = values.table,
                     tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1),
                     cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await Tualo.routes.DS.sha1(JSON.stringify(values)));
-
+                console.log('ds route','before', 'fnx', cmp_id)
 
                 if (!Ext.isEmpty(Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').down(cmp_id))) {
                     action.resume();
                 } else {
-
+                    console.log('ds route','before', 'fnx zeile 77', cmp_id)
                     if (
                         (Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase])
                         && (Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase].stores)
                     ) {
                         let waitFor = 0, resumed = false;
+                        console.log('ds route','before', 'fnx zeile 83', cmp_id)                        
                         try {
                             Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase].stores.forEach(element => {
                                 console.log(element, typeof Ext.data.StoreManager.lookup(element.store_id));
@@ -129,6 +130,7 @@ Ext.define('Tualo.routes.DS', {
                             action.stop();
                         }
                     } else {
+                        console.log('ds route','before', 'fnx zeile 133', cmp_id)                        
                         action.resume();
                     }
                 }
