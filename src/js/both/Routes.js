@@ -24,7 +24,7 @@ Ext.define('Tualo.routes.DS', {
                     .map(v => v.toString(16).padStart(2, '0'))
                     .join('');
             }else{
-                return btoa(str).replace(/[^A-Za-z0-9]/,'');
+                return btoa(str).replace(/[^A-Za-z0-9]/g,'');
             }
         }
     },
