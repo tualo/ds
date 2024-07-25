@@ -1,6 +1,5 @@
 DELIMITER //
 
-
 CREATE OR REPLACE FUNCTION `dsx_rest_api_unescape`(data longtext) RETURNS longtext
     DETERMINISTIC
 BEGIN 
@@ -106,10 +105,10 @@ BEGIN
     IF JSON_TYPE(JSON_EXTRACT(request,'$.data'))='ARRAY' THEN 
         SET use_table_name = JSON_VALUE(request,'$.tablename');
 
-select 
-if(ifnull(writetable,'') = '',use_table_name,writetable) 
-into use_table_name
- from ds where table_name = use_table_name;
+        select 
+            if(ifnull(writetable,'') = '',use_table_name,writetable) 
+            into use_table_name
+        from ds where table_name = use_table_name;
 
         IF use_table_name is not null THEN 
             -- select JSON_EXTRACT(request,'$.data');
@@ -141,8 +140,9 @@ into use_table_name
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
                 and column_type <> ''
-               
             ;
+
+            
 
             drop table if exists temp_dsx_rest_data;
             set sql_command = concat( 
@@ -172,6 +172,53 @@ into use_table_name
             EXECUTE stmt USING request;
             DEALLOCATE PREPARE stmt;
 
+
+
+            IF (JSON_EXISTS(request,'$.update')=1) THEN
+                FOR record IN (
+                    select
+                        concat(
+                            'update temp_dsx_rest_data,`',use_table_name,'` set temp_dsx_rest_data.`',column_name,'`= `',use_table_name,'`.`',column_name,'` ',
+                            ' where temp_dsx_rest_data.`',column_name,'` is null ',
+                            'and ',dsx_get_key_sql_prefix(use_table_name,use_table_name),' = temp_dsx_rest_data.__id'
+                        ) s
+                    from 
+                        ds_column
+                    where 
+                        ds_column.table_name = use_table_name
+                        and ds_column.existsreal=1
+                        and ds_column.writeable =1
+                        and ds_column.column_type <> ''
+                ) DO
+                    PREPARE stmt FROM record.s;
+                    EXECUTE stmt;
+                    DEALLOCATE PREPARE stmt;
+                END FOR;
+            END IF;
+
+
+            FOR record IN (
+                select
+                    concat(
+                        'update temp_dsx_rest_data,`',use_table_name,'` set temp_dsx_rest_data.`',column_name,'`= @serial + _rownumber ',
+                        ' where temp_dsx_rest_data.`',column_name,'` is null ',
+                        ' and ',dsx_get_key_sql(use_table_name),' temp_dsx_rest_data.__id'
+                    ) s
+                from 
+                    ds_column
+                where 
+                    ds_column.table_name = use_table_name
+                    and ds_column.default_value='{#serial}' 
+                    and ds_column.existsreal=1
+                    and ds_column.writeable =1
+                    and ds_column.column_type <> ''
+                           
+                ) DO
+
+                                PREPARE stmt FROM record.s;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
+            END FOR;
             -- select sql_command;
             -- select temp_dsx_rest_data.* from temp_dsx_rest_data;
 
