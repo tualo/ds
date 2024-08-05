@@ -211,7 +211,7 @@ BEGIN
                     concat(
                         'update temp_dsx_rest_data,`',use_table_name,'` set temp_dsx_rest_data.`',column_name,'`= @serial + _rownumber ',
                         ' where temp_dsx_rest_data.`',column_name,'` is null ',
-                        ' and ',dsx_get_key_sql(use_table_name),' temp_dsx_rest_data.__id'
+                        ' and ',dsx_get_key_sql(use_table_name),'= temp_dsx_rest_data.__id'
                     ) s
                 from 
                     ds_column
