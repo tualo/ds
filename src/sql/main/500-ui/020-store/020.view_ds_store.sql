@@ -1,6 +1,8 @@
 delimiter ;
 
 alter table ds add column if not exists autosave tinyint(1) default 0;
+alter table ds add column if not exists base_store_class varchar(50) default 'Tualo.DataSets.data.Store';
+
 create or replace view view_ds_store as
 select 
     concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) name,
@@ -8,7 +10,7 @@ select
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
-            "extend",  "Tualo.DataSets.data.Store",
+            "extend",  ds.base_store_class,
             "tablename", table_name,
             "alias", JSON_ARRAY( concat('store.ds_',table_name) ,concat('store.',table_name,'_store') ),
             "storeId", concat('ds_',table_name),

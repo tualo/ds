@@ -49,7 +49,6 @@ BEGIN
         -- JSON_VALUE(request,'$.useInsertUpdate')=true
     THEN 
 
-
         SET request=JSON_SET(request,'$.type','insert');
         SET request=JSON_SET(request,'$.update',true);
     END IF;
@@ -173,7 +172,6 @@ BEGIN
             DEALLOCATE PREPARE stmt;
 
 
-
             IF (JSON_EXISTS(request,'$.update')=1) THEN
                 FOR record IN (
                     select
@@ -190,12 +188,23 @@ BEGIN
                         and ds_column.writeable =1
                         and ds_column.column_type <> ''
                 ) DO
+
+                if (@log_dsx_commands=1) THEN
+                    drop table if exists test_ds_cmd;
+                    create table test_ds_cmd as select record.s;
+                END IF;
+
                     PREPARE stmt FROM record.s;
                     EXECUTE stmt;
                     DEALLOCATE PREPARE stmt;
                 END FOR;
             END IF;
 
+
+                if (@log_dsx_commands=1) THEN
+                    drop table if exists test_ds_cmd;
+                    create table test_ds_cmd as select '208' s;
+                END IF;
 
             FOR record IN (
                 select
@@ -480,6 +489,8 @@ BEGIN
                     set ',update_statement_fields,'
                 ');
                 
+
+
 
             ELSEIF
                 JSON_VALUE(request,'$.type')='delete' THEN
