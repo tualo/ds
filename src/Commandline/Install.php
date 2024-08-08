@@ -74,6 +74,7 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/ds/ds_sync_data.ds' => 'setup ds_sync_data.ds',
         'install/ds/ds_trigger.ds' => 'setup ds_trigger.ds',
         'install/ds/ds_used_tables.ds' => 'setup ds_used_tables.ds',
+        'install/ds/ds_renderer.ds' => 'setup ds_renderer.ds',
 
 
         'install/ds/ds.view_readtable' => 'setup ds.view_readtable',
