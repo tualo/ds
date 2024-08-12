@@ -181,6 +181,8 @@ Ext.define('Tualo.DS.panel.Controller', {
             model = me.getViewModel(),
             store = me.getStore();
         console.debug('onDataChanged','getModifiedRecords',store.getModifiedRecords());
+
+        me.lastChanges = (new Date()).getTime();
         model.set('isModified',store.getModifiedRecords().length!=0);
 
         if (store.getModifiedRecords().length==0){
@@ -190,11 +192,10 @@ Ext.define('Tualo.DS.panel.Controller', {
 
     onBeforeStoreSync: function (options,evt) {
         console.log('beforesync',options,evt);
-        if (window.lastsync && (new Date()).getTime() - window.lastsync < 1000) {
+        if (me.lastChanges && (new Date()).getTime() - me.lastChanges < 2000) {
             console.log('lastsync***');
-        return false;
+            return false;
         }
-        window.lastsync = (new Date()).getTime();
         return true;
     },
 
