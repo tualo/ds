@@ -22,6 +22,16 @@ Ext.define("Tualo.DataSets.data.Store", {
           update: './ds/tbl/update',
           destroy: './ds/tbl/delete'
         },
+        sync: function(options) {
+          var me = this,
+              records = me.getNewRecords().concat(me.getUpdatedRecords()),
+              toCreate = [],
+              toUpdate = [],
+              toDestroy = [],
+              i, len, record;
+          console.log('sync', records,options);    
+          me.callParent(arguments);
+        },
         onEndUpdate: function() {
           var me = this;
    
