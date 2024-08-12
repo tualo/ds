@@ -190,8 +190,16 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
         if (me.getView().referencedList===true){
-            let referencedRecord = this.getReferencedRecord();
-            console.log('todo check parent status for',referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel() );
+            let ref=null,
+                referencedRecord = this.getReferencedRecord();
+                console.log('todo check parent status for',referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel() );
+            if(ref = me.getReferencedView()){
+                if (referencedRecord){
+                    console.log('todo check parent',ref,rec);
+                    let rec = ref.getComponent('list').getStore().findRecord('__id', referencedRecord.get('__id'),0,false,false,true);
+                }
+            }
+            
         }
     },
 
