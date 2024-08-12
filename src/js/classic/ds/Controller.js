@@ -191,6 +191,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         if (me.getView().referencedList===true){
             let referencedRecord = this.getReferencedRecord();
+            referencedRecord.set('__internal_gen',Math.random());
             console.log('todo check parent status for',referencedRecord);
         }
     },
