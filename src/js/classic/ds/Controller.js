@@ -191,6 +191,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
 
     onBeforeStoreSync: function (options,evt) {
+        let me = this;
         console.log('beforesync',options,evt);
         if (me.lastChanges && (new Date()).getTime() - me.lastChanges < 2000) {
             console.log('lastsync***');
