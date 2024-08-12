@@ -193,8 +193,13 @@ Ext.define('Tualo.DS.panel.Controller', {
     onBeforeStoreSync: function (options,evt) {
         let me = this;
         console.log('beforesync',options,evt);
+        if (me.syncDeferId) {
+            Ext.undefer(me.syncDeferId);
+            me.syncDeferId = null;
+        }
         if (me.lastChanges && (new Date()).getTime() - me.lastChanges < 2000) {
             console.log('lastsync***');
+            me.syncDeferId = Ext.defer(me.sync, 2000, me);
             return false;
         }
         return true;
