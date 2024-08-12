@@ -200,7 +200,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
         if (me.lastChanges && (new Date()).getTime() - me.lastChanges < 2000) {
             console.log('lastsync***');
-            me.syncDeferId = Ext.defer(store.sync, 2000, me);
+            me.syncDeferId = Ext.defer(store.sync, 2000, store);
             return false;
         }
         return true;
