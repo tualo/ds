@@ -188,6 +188,11 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (store.getModifiedRecords().length==0){
             model.set('isNew',false);
         }
+
+        if (me.getView().referencedList===true){
+            let referencedRecord = this.getReferencedRecord();
+            console.log('todo check parent status for',referencedRecord);
+        }
     },
 
     onBeforeStoreSync: function (options,evt) {
