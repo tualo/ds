@@ -96,7 +96,9 @@ Ext.define('Tualo.DS.panel.Controller', {
 
        store.on('datachanged',this.onDataChanged,this);
        store.on('beforeload',this.onBeforeStoreLoad,this);
+       store.on('beforesync',this.onBeforeStoreSync,this);
        store.on('load',this.onStoreLoad,this);
+
        list.on('selectionchange',c.onListSelectionChange,this);
        list.on('select',c.onListSelect,this);
 
@@ -184,6 +186,16 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (store.getModifiedRecords().length==0){
             model.set('isNew',false);
         }
+    },
+
+    onBeforeStoreSync: function (options,evt) {
+        console.log('beforesync',options,evt);
+        if (window.lastsync && (new Date()).getTime() - window.lastsync < 1000) {
+            console.log('lastsync***');
+        return false;
+        }
+        window.lastsync = (new Date()).getTime();
+        return true;
     },
 
     onSyncStore: function(){

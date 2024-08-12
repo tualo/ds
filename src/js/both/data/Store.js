@@ -43,15 +43,6 @@ Ext.define("Tualo.DataSets.data.Store", {
         },
         listeners: {
           scope: this,
-          beforesync: function (options,evt) {
-            console.log('beforesync',options,evt);
-            if (window.lastsync && (new Date()).getTime() - window.lastsync < 1000) {
-              console.log('lastsync***');
-            return false;
-            }
-            window.lastsync = (new Date()).getTime();
-            return true;
-          },
           exception: function (proxy, response, operation, eOpts) {
             console.log('exception', proxy, response, operation, eOpts);
             if (response.responseJson) {
