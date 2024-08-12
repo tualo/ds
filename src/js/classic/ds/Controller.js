@@ -195,7 +195,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 console.log('todo check parent status for',referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel() );
             if(ref = me.getReferencedView()){
                 if (referencedRecord){
-                    ref.refreshRecordFromRemote( referencedRecord.get('__id') );
+                    ref.getController().refreshRecordFromRemote( referencedRecord.get('__id') );
                 }
             }
             
