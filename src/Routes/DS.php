@@ -47,8 +47,8 @@ class DS implements IRoute
                 $table = new DSTable($db, $tablename);
                 $read = $table->f('__id','eq',$matches['id'])->read()->get();
 
-                App::result('data', $read['data']);
-                App::result('total', $read['total']);
+                App::result('data', $read);
+                //App::result('total', $read['total']);
                 App::result('success', true);
             } catch (\Exception $e) {
 
