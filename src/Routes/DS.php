@@ -37,6 +37,31 @@ class DS implements IRoute
         }, ['get', 'post'], true);
 
 
+        Route::add('/ds/(?P<tablename>\w+)/read/(?P<id>.+)', function ($matches) {
+            $db = App::get('session')->getDB();
+            $tablename = $matches['tablename'];
+            ini_set('memory_limit', '8G');
+            try {
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
+                $table = new DSTable($db, $tablename);
+                $read = $table->f('__id','eq',$matches['id'])->read()->get();
+
+                App::result('data', $read['data']);
+                App::result('total', $read['total']);
+                App::result('success', true);
+            } catch (\Exception $e) {
+
+                App::result('last_sql', $db->last_sql);
+                App::result('msg', $e->getMessage());
+                //App::result('dq', implode("\n",$GLOBALS['debug_query']));
+
+            }
+
+            Route::$finished = true;
+            App::contenttype('application/json');
+        }, ['get'], true);
+
         Route::add('/ds/(?P<tablename>\w+)/update', function ($matches) {
             App::contenttype('application/json');
 

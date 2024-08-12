@@ -195,13 +195,21 @@ Ext.define('Tualo.DS.panel.Controller', {
                 console.log('todo check parent status for',referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel() );
             if(ref = me.getReferencedView()){
                 if (referencedRecord){
-                    let rec = ref.getComponent('list').getStore().findRecord('__id', referencedRecord.get('__id'),0,false,false,true);
-                    console.log('todo check parent',ref,rec);
+                    ref.refreshRecordFromRemote( referencedRecord.get('__id') );
                 }
             }
             
         }
     },
+
+    refreshRecordFromRemote: async function(id){
+
+        let rec = this.getComponent('list').getStore().findRecord('__id', id,0,false,false,true);
+        const response = await fetch('./ds/'+rec.get('__table_name')+'/read/'+rec.get('__id'),{
+            method: 'GET'
+        });
+        console.log('refreshCurrentRecord',response);
+    },  
 
     onBeforeStoreSync: function (options,evt) {
         let me = this,
