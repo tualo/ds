@@ -103,8 +103,8 @@ Ext.define('Tualo.DataSets.form.Form', {
         }
     },
     onDirtychange: function(view,dirty,opts){
-        //console.log('onDirtychange',dirty);
-        this.getViewModel().set('hasModifiedRecords',dirty);
+        console.log('onDirtychange',dirty);
+        //this.getViewModel().set('hasModifiedRecords',dirty);
     },
     updateRecord: function(nv,ov){
         this.callParent([nv,ov]);

@@ -18,6 +18,7 @@ select
                 "store", JSON_OBJECT(
                     "type", concat('ds_',`ds_dropdownfields`.`table_name`),
                     "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_columnstore'),
+                    
                     "pageSize", 1000000
                 ),
                 "alias", concat('widget.combobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name))

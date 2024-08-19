@@ -14,9 +14,11 @@ Ext.define('Tualo.DS.Panel', {
     getWindowTitle: function(){
         return this.getViewModel().get('currentWindowTitle');
     },
+    /*
     bind: {
         disabled: "{saving}"
     },
+    */
     "keyMap": {
         'ctrl+s': {
             handler: function(event,view) {
