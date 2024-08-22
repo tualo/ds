@@ -1,4 +1,5 @@
 DELIMITER //
+
 CREATE OR REPLACE FUNCTION `dsx_get_key_sql`(in_table_name varchar(64)
 ) RETURNS longtext
     DETERMINISTIC
@@ -11,6 +12,7 @@ BEGIN
         where 
             ds_column.table_name = in_table_name
             and ds_column.existsreal = 1
+            and ds_column.is_generated <> 'ALWAYS'
             and ds_column.is_primary = 1
             
     );
@@ -29,6 +31,8 @@ BEGIN
         where 
             ds_column.table_name = in_table_name
             and ds_column.existsreal = 1
+            
+            and ds_column.is_generated <> 'ALWAYS'
             and ds_column.is_primary = 1
             
     );
@@ -46,6 +50,7 @@ BEGIN
         where 
             ds_column.table_name = in_table_name
             and ds_column.existsreal = 1
+            and ds_column.is_generated <> 'ALWAYS'
             and ds_column.is_primary = 1
             
     );

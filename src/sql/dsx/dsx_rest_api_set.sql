@@ -11,6 +11,7 @@ BEGIN
     return data;    
 END //
 
+
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set`( IN  request JSON , OUT  result JSON)
 `whole_proc`:
 BEGIN 
@@ -138,6 +139,7 @@ BEGIN
                 ds_column.table_name = use_table_name
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
+                and ds_column.is_generated <> 'ALWAYS'
                 and column_type <> ''
             ;
 
@@ -186,6 +188,7 @@ BEGIN
                         ds_column.table_name = use_table_name
                         and ds_column.existsreal=1
                         and ds_column.writeable =1
+                        and ds_column.is_generated <> 'ALWAYS'
                         and ds_column.column_type <> ''
                 ) DO
 
@@ -220,6 +223,7 @@ BEGIN
                     and ds_column.default_value='{#serial}' 
                     and ds_column.existsreal=1
                     and ds_column.writeable =1
+                    and ds_column.is_generated <> 'ALWAYS'
                     and ds_column.column_type <> ''
                            
                 ) DO
@@ -244,6 +248,7 @@ BEGIN
                     ds_column.table_name = use_table_name
                     and ds_column.existsreal=1
                     and ds_column.writeable =1
+                    and ds_column.is_generated <> 'ALWAYS'
                     and ds_column.data_type in ('char','longtext','varchar')
                     and ds_column.column_type <> ''
                    
@@ -278,6 +283,7 @@ BEGIN
                             and ( SUBSTRING(ds_column.default_value,1,2)='{:' and SUBSTRING(ds_column.default_value,length(ds_column.default_value),1)='}')  
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                     union 
@@ -294,6 +300,7 @@ BEGIN
                             and default_value='{DATETIME}'
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                     union 
@@ -309,6 +316,7 @@ BEGIN
                             and default_value='{DATE}'
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                     /*
@@ -340,6 +348,7 @@ BEGIN
                             and default_value='{TIME}'
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                     union 
@@ -355,6 +364,7 @@ BEGIN
                             and default_value='{GUID}'
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                     
 
@@ -392,6 +402,7 @@ BEGIN
                             and ds_column.default_value='{#serial}' 
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                 ) DO
@@ -429,6 +440,7 @@ BEGIN
                             and ds_column.default_value<>'' 
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                 ) DO
@@ -466,6 +478,7 @@ BEGIN
                     ds_column.table_name = use_table_name
                     and ds_column.existsreal=1
                     and ds_column.writeable =1
+                    and ds_column.is_generated <> 'ALWAYS'
                     and ds_column.column_type <> ''
                     and JSON_EXISTS(request,concat('$.data[0].', column_name))=1
                    
@@ -529,6 +542,7 @@ BEGIN
                                 ds_column.existsreal=1
                             and ds_column.table_name = use_table_name
                             and ds_column.writeable =1
+                            and ds_column.is_generated <> 'ALWAYS'
                             and ds_column.column_type <> ''
                            
                         union 

@@ -20,9 +20,11 @@ class DSUpdate implements IRoute{
             $wrn = $db->getWarnings();
 
             $db->direct('call fill_ds_column("")');
-            $mr = $db->moreResults();
-            $wrn = $db->getWarnings();
+            $mr = [... $db->moreResults()];
+            $wrn = [... $db->getWarnings()];
 
+            App::result('mr', $mr);
+            App::result('wrn', $wrn);
             App::result('success', true);
         }catch(\Exception $e){
             App::result('last_sql', $db->last_sql );

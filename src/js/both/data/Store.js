@@ -75,8 +75,11 @@ Ext.define("Tualo.DataSets.data.Store", {
                 data=[data];
                 singlerecord=true;
               }
+              /*
+              let me=this;
               data.forEach(function (row) {
                 let rec = me.findRecord('__id', row.__id, 0, false, false, true);
+
                 if (rec.get('__virtual') && rec.get('__virtual') == 1) {
                   let r = rec.getData(
                     {
@@ -99,6 +102,7 @@ Ext.define("Tualo.DataSets.data.Store", {
                     row[k] = me.findRecord('__id', row.__id, 0, false, false, true).get(k);
                 });
               });
+              */
               if (singlerecord){
                 return data[0];
               }

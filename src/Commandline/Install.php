@@ -56,6 +56,7 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/ds/ds_dropdownfields.ds' => 'setup ds_dropdownfields.ds',
         'install/ds/ds_export_file_transfer.ds' => 'setup ds_export_file_transfer.ds',
         'install/ds/ds_form_properties.ds' => 'setup ds_form_properties.ds',
+        
         'install/ds/ds_import_file_transfer.ds' => 'setup ds_import_file_transfer.ds',
         'install/ds/ds_listplugins.ds' => 'setup ds_listplugins.ds',
         'install/ds/ds_listplugins_placements.ds' => 'setup ds_listplugins_placements.ds',
