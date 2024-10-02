@@ -34,6 +34,8 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
             me.getView().add(me.c);
             me.getView().setActiveItem(me.c);
             if (typeof me.c.getNextText == 'function'){
+                
+                
                 me.getViewModel().set('enableNext',true);
                 me.getViewModel().set('nextButtonText',me.c.getNextText());
             }
@@ -45,6 +47,7 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
     enableNext: function(){
         console.log('enableNext');
         this.getViewModel().set('enableNext',true);
+        
     },
     disableNext: function(){
         console.log('disableNext');
