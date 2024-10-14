@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS`ds_listplugins_placements` (
   `placement` varchar(50) PRIMARY KEY
 );
 INSERT IGNORE INTO `ds_listplugins_placements` (`placement`) VALUES ('view');
+INSERT IGNORE INTO `ds_listplugins_placements` (`placement`) VALUES ('viewConfig');
+
+
+-- summary
 
 CREATE TABLE IF NOT EXISTS `ds_listplugins` (
   `table_name` varchar(128) NOT NULL,
