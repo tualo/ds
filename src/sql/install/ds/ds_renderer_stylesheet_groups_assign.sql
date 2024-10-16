@@ -1,5 +1,5 @@
 DELIMITER ;
-CREATE TABLE `ds_renderer_stylesheet_groups_assign` (
+CREATE TABLE IF NOT EXISTS `ds_renderer_stylesheet_groups_assign` (
   `pug_id` varchar(50) NOT NULL,
   `group_id` int(11) NOT NULL DEFAULT 0,
   `active` tinyint(4) DEFAULT 0,

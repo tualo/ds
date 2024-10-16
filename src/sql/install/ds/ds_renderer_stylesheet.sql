@@ -1,6 +1,6 @@
 DELIMITER ;
 
-CREATE TABLE `ds_renderer_stylesheet` (
+CREATE TABLE IF NOT EXISTS `ds_renderer_stylesheet` (
   `classname` varchar(50) NOT NULL,
   `group` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`classname`),

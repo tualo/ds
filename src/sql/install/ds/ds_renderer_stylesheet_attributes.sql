@@ -1,5 +1,5 @@
 DELIMITER ;
-CREATE TABLE `ds_renderer_stylesheet_attributes` (
+CREATE TABLE IF NOT EXISTS `ds_renderer_stylesheet_attributes` (
   `classname` varchar(50) NOT NULL,
   `attribute` varchar(50) NOT NULL,
   `values` text NOT NULL,

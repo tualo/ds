@@ -1,6 +1,6 @@
 DELIMITER ;
 
-CREATE TABLE `ds_renderer_stylesheet_groups` (
+CREATE TABLE IF NOT EXISTS `ds_renderer_stylesheet_groups` (
   `id` int(11) NOT NULL DEFAULT 0,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
