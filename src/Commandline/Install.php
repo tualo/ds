@@ -88,6 +88,28 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/ds/ds_column_list_export.view_readtable' => 'setup ds_column_list_export.view_readtable',
         'install/ds/ds_column.view_readtable' => 'setup ds_column.view_readtable',
         'install/ds/ds_access.view_readtable' => 'setup ds_access.view_readtable',
+
+
+
+        'install/ds/ds_renderer_stylesheet_groups' => 'setup ds_renderer_stylesheet_groups',
+        'install/ds/ds_renderer_stylesheet_groups.ds' => 'setup ds_renderer_stylesheet_groups.ds',
+
+        
+        'install/ds/ds_renderer_stylesheet' => 'setup ds_renderer_stylesheet',
+        'install/ds/ds_renderer_stylesheet.ds' => 'setup ds_renderer_stylesheet.ds',
+        
+        'install/ds/ds_renderer_stylesheet_groups_assign' => 'setup ds_renderer_stylesheet_groups_assign',
+        'install/ds/ds_renderer_stylesheet_groups_assign.ds' => 'setup ds_renderer_stylesheet_groups_assign.ds',
+        
+        'install/ds/ds_renderer_stylesheet_attributes' => 'setup ds_renderer_stylesheet_attributes',
+        'install/ds/ds_renderer_stylesheet_attributes.ds' => 'setup ds_renderer_stylesheet_attributes.ds',
+
+        'install/ds/ds_renderer_stylesheet_attributes_dd' => 'setup ds_renderer_stylesheet_attributes_dd',
+        'install/ds/ds_renderer_stylesheet_attributes_dd.ds' => 'setup ds_renderer_stylesheet_attributes_dd.ds',
+
+        'install/ds/view_readtable_ds_renderer_stylesheet' => 'setup view_readtable_ds_renderer_stylesheet',
+        
+        
     ];
     
 }

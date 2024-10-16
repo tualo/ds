@@ -49,7 +49,11 @@ select
                 null
             ),
             'summaryRenderer',
-            null,
+            if(
+                ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
+                `ds_column_list_label`.`summaryrenderer`,
+                null
+            ),
             -- if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
             'summaryFormatter',
             if(
