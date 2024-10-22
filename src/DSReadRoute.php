@@ -13,6 +13,7 @@ class DSReadRoute{
     }
     
     public static function read($db,$tablename,$request){
+        TualoApplication::deferredTrigger();
         $config = (TualoApplication::get('configuration'));
         if (!isset($request['shortfieldnames'])){ 
             $request['shortfieldnames']=1; $request['comibedfieldname']=0;
