@@ -43,6 +43,7 @@ class DS implements IRoute
             ini_set('memory_limit', '8G');
             try {
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct( 'SET GLOBAL max_allowed_packet = 50331648 ' . (48 * 1024 * 1024) );
                 //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 $table = new DSTable($db, $tablename);
                 $read = $table->f('__id','eq',$matches['id'])->read()->get();
@@ -67,6 +68,7 @@ class DS implements IRoute
 
             $db = App::get('session')->getDB();
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+           
             $tablename = $matches['tablename'];
             $table = null;
             try {
@@ -127,6 +129,7 @@ class DS implements IRoute
 
             $db = App::get('session')->getDB();
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            
             $tablename = $matches['tablename'];
             try {
 

@@ -17,6 +17,13 @@ select
             "listeners", JSON_OBJECT(
                 "sync", "onSyncStore"
             )
+
+        ),
+        "features", JSON_ARRAY(
+            JSON_OBJECT(
+                "ftype", 'summary',
+                "dock", 'bottom'
+            )
         ),
         "listeners", JSON_OBJECT(
             "drop", "onDropGrid",

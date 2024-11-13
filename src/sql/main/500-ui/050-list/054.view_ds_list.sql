@@ -93,7 +93,8 @@ select
                 "selModel",ds.listselectionmodel,
                 "features", JSON_ARRAY(
                     JSON_OBJECT(
-                        "ftype","tualofixedsummary"
+                        "ftype", 'summary',
+                        "dock", 'bottom'
                     ),
                     JSON_OBJECT(
                         "ftype","grouping"

@@ -4,6 +4,13 @@
     min-height: 100vh;
 }
 
+.lds-container-compact {
+  display: grid;
+  place-items: center;
+  min-height: 30px;
+}
+
+
 .lds-grid {
     display: inline-block;
     position: relative;

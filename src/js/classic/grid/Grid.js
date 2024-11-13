@@ -7,6 +7,7 @@ Ext.define('Tualo.DataSets.grid.Grid', {
         if (typeof store=='undefined'){
             new storeConst();
         }
+        console.log('constructor config','ds_'+this.tablename,config);
         if(Ext.getApplication().getDebug()===true) console.debug(this.$className,'constructor')
         this.callParent([config]);
     },

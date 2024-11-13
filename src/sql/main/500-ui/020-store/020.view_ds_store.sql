@@ -10,7 +10,7 @@ select
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
-            "extend",  if(ifnull(ds.base_store_class,'')='','Tualo.DataSets.data.Store', s.base_store_class),
+            "extend",  if(ifnull(ds.base_store_class,'')='','Tualo.DataSets.data.Store', ds.base_store_class),
             "tablename", table_name,
             "alias", JSON_ARRAY( concat('store.ds_',table_name) ,concat('store.',table_name,'_store') ),
             "storeId", concat('ds_',table_name),
