@@ -84,12 +84,12 @@ Ext.define('Tualo.routes.DS', {
                         try {
                             Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase].stores.forEach(element => {
                                 console.log('create store',element, typeof Ext.data.StoreManager.lookup(element.store_id));
-                                if (typeof Ext.data.StoreManager.lookup(element.storeId) == 'undefined') {
+                                if (typeof Ext.data.StoreManager.lookup(element.store_Id) == 'undefined') {
                                     waitFor++;
                                     console.log('create store', element.storeId, waitFor);
                                     Ext.createByAlias('store.' + element.store_type, {
                                         autoLoad: true,
-                                        storeId: element.storeId,
+                                        storeId: element.store_Id,
                                         pageSize: element.store_pageSize,
                                         listeners: {
                                             load: function () {
