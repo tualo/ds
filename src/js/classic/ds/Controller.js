@@ -447,7 +447,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             sorters.push(item.getConfig());
         });
         listfilter.each(function(item){
-            filters.push(item.getConfig());
+            let c = item.getConfig();
+            console.log('listfilter',c);
+            filters.push(c);
         });
         if (Ext.isEmpty(extraParams)){ extraParams = {}; };
         if (view.referencedList===true){

@@ -93,6 +93,18 @@ select
                         'type',
                         'date',
                         'dateFormat',
+                        'Y-m-d',
+                        'pickerDefaults', JSON_OBJECT(
+                            'xtype', 'datepicker',
+                            'border', 0,
+                            'format',
+                            'Y-m-d',
+                        )
+                    )
+                    WHEN 'datetime' THEN JSON_OBJECT(
+                        'type',
+                        'date',
+                        'dateFormat',
                         'Y-m-d'
                     )
                     WHEN 'number' THEN JSON_OBJECT(
