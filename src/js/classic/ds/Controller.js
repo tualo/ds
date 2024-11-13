@@ -449,7 +449,10 @@ Ext.define('Tualo.DS.panel.Controller', {
         listfilter.each(function(item){
             let c = item.getConfig();
             try{
-                c.serializer(c);
+                if (c.value instanceof Date){
+                    console.debug('listfilter', 'Date', 'workaround')
+                    c.serializer(c);
+                }
             }catch(e){}
             filters.push(c);
         });
