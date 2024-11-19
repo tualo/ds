@@ -109,7 +109,7 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
 
         'install/ds/view_readtable_ds_renderer_stylesheet' => 'setup view_readtable_ds_renderer_stylesheet',
         
-        
+        'install/ds_create_fulltext_search' => 'setup ds_create_fulltext_search',
     ];
     
 }
