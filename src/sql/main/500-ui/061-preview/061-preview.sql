@@ -32,10 +32,11 @@ JSON_ARRAYAGG(
         "xtype", "form",
         "title", "Vorschau",
         "bodyPadding", 12,
-        "collapsible", 1=0,
+        "collapsible", 1=1,
         "scrollable", 1=1,
-        "width", 250,
-        "maxWidth", 250,
+        "resizable",1=1,
+        "widtXh", 250,
+        "maxWidthX", 250,
         "dock", dockposition,
         "items", jsfield
     )

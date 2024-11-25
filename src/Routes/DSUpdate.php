@@ -73,6 +73,30 @@ class DSUpdate implements IRoute{
 
 
 
+
+        Route::add('/procedure/(?P<proc>[\w\_\-]+)',function($matches){
+
+            $db = App::get('session')->getDB();
+            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+
+            try{
+                $proc = $matches['proc'];
+                $results=[];
+                $warnings=[];
+                $db->direct('call '.$proc.'()',[]);
+                $results    = array_merge($results,$db->moreResults());
+                $warnings   = array_merge($warnings,$db->getWarnings());
+                
+                App::result('success', true);
+                App::result('results',$results);
+            }catch(\Exception $e){
+                App::result('last_sql', $db->last_sql );
+                App::result('msg', $e->getMessage());
+            }
+            App::contenttype('application/json');
+        },['get'],true);
+
+
         Route::add('/dssetup/ds_cloneformlabelexport',function($matches){
 
             $db = App::get('session')->getDB();

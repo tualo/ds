@@ -297,7 +297,7 @@ BEGIN
             SET @newfilter = JSON_SET(@newfilter, '$.value', concat(if(searchany=1,'%',''),JSON_VALUE(userequest,'$.search'),if(searchany=1,'%','') ) ) ; 
             set @filter = JSON_ARRAY_INSERT(JSON_QUERY(@filter,'$'), '$[0]', JSON_QUERY(@newfilter,'$'));
             SET userequest = JSON_SET( userequest, '$.filter',  @filter );
-        ELSEIF JSON_VALUE(userequest,'$.filter_by_search')=1 and JSON_EXISTS(userequest,'$.fulltext') = 1 THEN
+        ELSEIF JSON_VALUE(userequest,'$.filter_by_search')=2 and JSON_EXISTS(userequest,'$.fulltext') = 1 THEN
             SET @filter = JSON_EXTRACT( userequest, '$.filter'  );
             /*
             SET @newfilter = JSON_OBJECT();
@@ -355,10 +355,11 @@ BEGIN
         'FROM ',
 
         if(
-            JSON_EXISTS(userequest,'$.fulltext') = 1,
+            JSON_EXISTS(userequest,'$.fulltext') = 2
+            and JSON_VALUE(userequest,'$.search') is not null,
             concat(
                 '( select `',JSON_VALUE(userequest,'$.tablename'),'`.* from  `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` '
-                ' join (select * from ds_ftsearch_ds where match(searchvalue) against("',JSON_VALUE(userequest,'$.search'),'")) `_FT` ',
+                ' join (select * from ds_ftsearch_',JSON_VALUE(userequest,'$.tablename'),' where match(searchvalue) against("',JSON_VALUE(userequest,'$.search'),'")) `_FT` ',
                 ' on ',
                 dsx_get_key_sql_prefix('_FT',JSON_VALUE(userequest,'$.tablename')),'=',
                 dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),JSON_VALUE(userequest,'$.tablename')),

@@ -64,7 +64,7 @@ class DSReadRoute{
         
         $request['tablename'] = $tablename;
         $request['nodata'] = 1;
-        // $request['fulltext'] = 1;
+        $request['fulltext'] = 0;
 
         TualoApplication::result('json_encode', ($request));
         $db->direct('set @request = {request};',['request'=>json_encode($request)]);
@@ -90,6 +90,8 @@ class DSReadRoute{
             TualoApplication::logger('TualoApplication')->debug('DSReadRoute',[$o['query'].' '.$o['limitterm']]);
         }
 
+
+        TualoApplication::result('sqlq',$o['query']);
         $o['data']=$db->direct($o['query'].' '.$o['order_by'].' '.$o['limitterm']);
         // TualoApplication::result('dsx_rest_api_get_result',$o['query']);
 
