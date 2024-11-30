@@ -77,7 +77,6 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/ds/ds_used_tables.ds' => 'setup ds_used_tables.ds',
         'install/ds/ds_renderer.ds' => 'setup ds_renderer.ds',
 
-
         'install/ds/ds.view_readtable' => 'setup ds.view_readtable',
         'install/view_readtable_ds_column_list_label_all'=> 'setup view_readtable_ds_column_list_label_all ',
         'install/view_readtable_ds_column_form_label'=> 'setup view_readtable_ds_column_form_label ',

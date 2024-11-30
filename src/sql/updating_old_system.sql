@@ -10,7 +10,7 @@ alter table ds modify phpexporterfilename varchar(255) default 'export.xslx';
 alter table ds_reference_tables add if not exists existsreal  tinyint default 0;
 
 update ds_column_list_label set summaryrenderer = 'number'  where summaryrenderer = 'count';
-
+update  ds_column_list_label set renderer = '' where table_name='ds'  and renderer='Tualo.renderer.CSSMetaRenderer';
 
 insert ignore into custom_types (        vendor,        name,        id, xtype_long_classic, extendsxtype_classic,        xtype_long_modern,        extendsxtype_modern    ) values ( "Tualo",  "Ext.tualo.form.field.IBAN", "Ext.tualo.form.field.IBAN", "widget.iban", "Ext.form.field.Text", "widget.textarea", "Ext.field.Text" ) on duplicate key update    id =values(id), xtype_long_classic = values(xtype_long_classic),    extendsxtype_classic = values(extendsxtype_classic),name = values(name),vendor = values(vendor);
 insert ignore into custom_types (        vendor,        name,        id, xtype_long_classic, extendsxtype_classic,        xtype_long_modern,        extendsxtype_modern    ) values ( "Tualo",  "Ext.tualo.form.field.BIC", "Ext.tualo.form.field.BIC", "widget.bic", "Ext.form.field.ComboBox", "widget.textarea", "Ext.field.Text" ) on duplicate key update    id =values(id), xtype_long_classic = values(xtype_long_classic),    extendsxtype_classic = values(extendsxtype_classic),name = values(name),vendor = values(vendor);

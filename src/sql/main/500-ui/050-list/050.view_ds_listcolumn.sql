@@ -98,7 +98,7 @@ select
                             'xtype', 'datepicker',
                             'border', 0,
                             'format',
-                            'Y-m-d',
+                            'Y-m-d'
                         )
                     )
                     WHEN 'datetime' THEN JSON_OBJECT(
