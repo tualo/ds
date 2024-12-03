@@ -23,6 +23,10 @@ class DSUpdate implements IRoute{
             $mr = [... $db->moreResults()];
             $wrn = [... $db->getWarnings()];
 
+            $db->direct('call fill_ds_reference_table("")');
+            $mr = [... $db->moreResults()];
+            $wrn = [... $db->getWarnings()];
+
             App::result('mr', $mr);
             App::result('wrn', $wrn);
             App::result('success', true);
