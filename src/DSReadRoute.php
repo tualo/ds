@@ -64,9 +64,10 @@ class DSReadRoute{
         
         $request['tablename'] = $tablename;
         $request['nodata'] = 1;
-        $request['fulltext'] = 0;
+       //$request['fulltext'] = 0;
 
         TualoApplication::result('json_encode', ($request));
+        
         $db->direct('set @request = {request};',['request'=>json_encode($request)]);
         $db->direct('call dsx_rest_api_get(@request,@result);');
         $mysqlresults = [];

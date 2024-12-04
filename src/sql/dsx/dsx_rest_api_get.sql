@@ -212,6 +212,29 @@ select
     
 END //
 
+
+CREATE OR REPLACE FUNCTION `fulltext_like`( search LONGTEXT,  field varchar(128) )
+RETURNS LONGTEXT
+DETERMINISTIC
+BEGIN 
+
+return (
+select 
+    REGEXP_REPLACE(
+        concat(
+            ' #ftq# "%',
+            REGEXP_REPLACE(
+                REGEXP_REPLACE(lower(search),'[^0-9a-z ]','%'),
+                '[ ]','%" and #ftq# "%'
+            ),
+            '%"'
+        ),
+        '(#ftq#)',
+        concat(' `',field,'` like ')
+    ))
+;
+END //
+
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_get`( IN request JSON , OUT result JSON)
 BEGIN 
     DECLARE userequest JSON;
@@ -267,7 +290,7 @@ BEGIN
         
     END IF;
 
-    IF JSON_VALUE(userequest,'$.fulltext') IS NULL THEN
+    IF JSON_EXISTS(userequest,'$.fulltext') IS NULL THEN
         SET userequest = JSON_SET( userequest, '$.fulltext', 0 );
     END IF;
 
@@ -289,7 +312,7 @@ BEGIN
         END IF;
 
 --        select searchfield;
-        IF JSON_VALUE(userequest,'$.filter_by_search')=1 and JSON_EXISTS(userequest,'$.fulltext') = 0 THEN
+        IF JSON_VALUE(userequest,'$.filter_by_search')=1 and JSON_VALUE(userequest,'$.fulltext') = 0 THEN
             SET @filter = JSON_EXTRACT( userequest, '$.filter'  );
             SET @newfilter = JSON_OBJECT();
             SET @newfilter = JSON_SET(@newfilter, '$.operator',  'like');
@@ -297,23 +320,18 @@ BEGIN
             SET @newfilter = JSON_SET(@newfilter, '$.value', concat(if(searchany=1,'%',''),JSON_VALUE(userequest,'$.search'),if(searchany=1,'%','') ) ) ; 
             set @filter = JSON_ARRAY_INSERT(JSON_QUERY(@filter,'$'), '$[0]', JSON_QUERY(@newfilter,'$'));
             SET userequest = JSON_SET( userequest, '$.filter',  @filter );
-        ELSEIF JSON_VALUE(userequest,'$.filter_by_search')=2 and JSON_EXISTS(userequest,'$.fulltext') = 1 THEN
+        ELSEIF JSON_VALUE(userequest,'$.filter_by_search')=2 and JSON_VALUE(userequest,'$.fulltext') = 1 THEN
             SET @filter = JSON_EXTRACT( userequest, '$.filter'  );
-            /*
-            SET @newfilter = JSON_OBJECT();
-            SET @newfilter = JSON_SET(@newfilter, '$.operator',  'like');
-            SET @newfilter = JSON_SET(@newfilter, '$.property',  searchfield);
-            SET @newfilter = JSON_SET(@newfilter, '$.value', concat(if(searchany=1,'%',''),JSON_VALUE(userequest,'$.search'),if(searchany=1,'%','') ) ) ; 
-            set @filter = JSON_ARRAY_INSERT(JSON_QUERY(@filter,'$'), '$[0]', JSON_QUERY(@newfilter,'$'));
-            */
-
+            SET userequest = JSON_SET( userequest, '$.filter',  @filter );
+        ELSEIF JSON_VALUE(userequest,'$.filter_by_search')=2 and JSON_VALUE(userequest,'$.fulltext') = 2 THEN
+            SET @filter = JSON_EXTRACT( userequest, '$.filter'  );
             SET userequest = JSON_SET( userequest, '$.filter',  @filter );
         ELSE
         
             SET @filter = JSON_EXTRACT( userequest, '$.latefilter'  );
             SET userequest = JSON_SET( userequest, '$.latefilter', 
             JSON_ARRAY_APPEND(@filter, '$', 
-                JSON_OBJECT('operator','like','value',  concat(if(searchany=1,'%',''),JSON_VALUE(userequest,'$.search') )  ,'property',searchfield)
+                JSON_OBJECT('operator','like','value',  concat(if(searchany=1,'%',''),JSON_VALUE(userequest,'$.search'),if(searchany=1,'%',''))  ,'property',searchfield)
             ));
             
         END IF;
@@ -354,20 +372,36 @@ BEGIN
          ' `',JSON_VALUE(userequest,'$.tablename'),'`.* ',
         'FROM ',
 
-        if(
-            JSON_EXISTS(userequest,'$.fulltext') = 2
-            and JSON_VALUE(userequest,'$.search') is not null,
-            concat(
-                '( select `',JSON_VALUE(userequest,'$.tablename'),'`.* from  `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` '
-                ' join (select * from ds_ftsearch_',JSON_VALUE(userequest,'$.tablename'),' where match(searchvalue) against("',JSON_VALUE(userequest,'$.search'),'")) `_FT` ',
-                ' on ',
-                dsx_get_key_sql_prefix('_FT',JSON_VALUE(userequest,'$.tablename')),'=',
-                dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),JSON_VALUE(userequest,'$.tablename')),
-                ')  `',JSON_VALUE(userequest,'$.tablename'),'`'
+            if(
+                JSON_VALUE(userequest,'$.fulltext') = 1
+                and JSON_VALUE(userequest,'$.search') is not null,
+                concat(
+                    '( select `',JSON_VALUE(userequest,'$.tablename'),'`.* from  `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` '
+                    ' join (select * from ds_ftsearch_',JSON_VALUE(userequest,'$.tablename'),' where match(searchvalue) against("',JSON_VALUE(userequest,'$.search'),'" in boolean mode)) `_FT` ',
+                    ' on ',
+                    dsx_get_key_sql_prefix('_FT',JSON_VALUE(userequest,'$.tablename')),'=',
+                    dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),JSON_VALUE(userequest,'$.tablename')),
+                    ')  `',JSON_VALUE(userequest,'$.tablename'),'`'
+                ),
+                
+               if(
+                    JSON_VALUE(userequest,'$.fulltext') = 2
+                    and JSON_VALUE(userequest,'$.search') is not null,
+                    concat(
+                        '( select `',JSON_VALUE(userequest,'$.tablename'),'`.* from  `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` '
+                        ' join (select * from ds_ftsearch_',JSON_VALUE(userequest,'$.tablename'),' where ',fulltext_like( JSON_VALUE(userequest,'$.search'), 'searchvalue'),' ) `_FT` ',
+                        ' on ',
+                        dsx_get_key_sql_prefix('_FT',JSON_VALUE(userequest,'$.tablename')),'=',
+                        dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),JSON_VALUE(userequest,'$.tablename')),
+                        ')  `',JSON_VALUE(userequest,'$.tablename'),'`'
+                    ),
+                    
+                    concat(' `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` ')
+                )
             ),
+
+
             
-            concat(' `',readtable,'` `',JSON_VALUE(userequest,'$.tablename'),'` ')
-        ),
 
         if(
             JSON_EXISTS(userequest,'$.concat_set_table') = 1,

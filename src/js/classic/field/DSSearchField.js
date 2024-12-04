@@ -26,6 +26,7 @@ Ext.define('Tualo.DS.field.SearchField', {
             if (e.getKey() == e.ENTER) {
                 let store = field.up().up().getComponent('list').getStore();
                 store.getProxy().setExtraParam("filter_by_search",1);
+//                store.getProxy().setExtraParam("fulltext",2);
                 store.getProxy().setExtraParam("search",field.getValue());
                 store.load();
                 field.up().up().getController().setViewType("list");

@@ -12,6 +12,12 @@ use Tualo\Office\DS\DSTable;
 
 class DS implements IRoute
 {
+
+    private static function sanitizeInput($input)
+    {
+        return preg_replace('/[\'";#]/', '', $input);
+    }
+    
     public static function register()
     {
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
@@ -20,6 +26,22 @@ class DS implements IRoute
             ini_set('memory_limit', '8G');
             try {
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+
+                if ( isset($_REQUEST['filter_by_search']) && ($_REQUEST['filter_by_search']==1) && !isset($_REQUEST['fulltext']) ) {
+                    $sql ="select count(*) c from ds where table_name = 'ds_ftsearch_".$tablename."'";
+                    $count = $db->singleValue($sql,[],'c');
+                    if ($count>0){
+                        $_REQUEST['filter_by_search']=2;
+                        $_REQUEST['fulltext'] = 2;
+
+                    }
+                }
+
+                if ( isset($_REQUEST['search'])){
+                    $_REQUEST['search'] = DS::sanitizeInput($_REQUEST['search']);
+                }
+                
+
                 $read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 App::result('data', $read['data']);
                 App::result('total', $read['total']);

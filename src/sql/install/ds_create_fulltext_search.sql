@@ -90,7 +90,7 @@ BEGIN
       select 
          
         ds_searchfields.table_name,
-        concat(" select concat_ws('#',",group_concat(concat('`tn`.`',ds_searchfields.column_name,'`') separator ","),") as v into addvalue from `<tablename>` tn where (<table_keycolumns>) = (<parameter_def_columns>);") main_block
+        concat("set addvalue=( select group_concat(  concat_ws('#',",group_concat(concat('`tn`.`',ds_searchfields.column_name,'`') separator ","),") separator '#') as v    from `<tablename>` tn where (<table_keycolumns>) = (<parameter_def_columns>));") main_block
       from 
         ds_searchfields
         join ds_column 
@@ -221,10 +221,10 @@ BEGIN
                 select 
 
 
-                  referenced_table_name,
+                  table_name,
 
                   concat("(",group_concat(
-                      concat('tn.`',referenced_column_name,'`')
+                      concat('tn.`',column_name,'`')
                       order by column_name
                       separator ','
                   ),")") x,
@@ -273,7 +273,7 @@ BEGIN
                       referential_constraints.referenced_table_name,
                       referential_constraints.table_name,
                       key_column_usage.column_name
-                  having table_name= x_table.table_name
+                  having referenced_table_name = x_table.table_name
                       
                   union
                   select
@@ -321,7 +321,7 @@ BEGIN
               select 
           
                 ds_searchfields.table_name,
-                concat(" select concat_ws('#',",group_concat(concat('`tn`.`',ds_searchfields.column_name,'`') separator ","),") as v into addvalue from `",ds_column.table_name,"` tn where (",refcdef.x,") = (",refcdef.y,");") main_block
+                concat("set   addvalue = (select group_concat( concat_ws('#',",group_concat(concat('`tn`.`',ds_searchfields.column_name,'`') separator ","),") separator '#') as v from `",ds_column.table_name,"` tn where (",refcdef.x,") = (",refcdef.y,"));") main_block
               from 
                 ds_searchfields
                 join ds_column 
@@ -330,13 +330,13 @@ BEGIN
               where 
                 ds_searchfields.table_name in (
                   select 
-                    reference_table_name
+                    table_name
                   from 
                     ds_reference_tables
-                  where ds_reference_tables.table_name = x_table.table_name
+                  where ds_reference_tables.reference_table_name = x_table.table_name
                     and searchable=1
                 ) 
-                and ds_searchfields.table_name =  refcdef.referenced_table_name
+                and ds_searchfields.table_name =  refcdef.table_name
               group by 
                 ds_searchfields.table_name
             ) do -- xblock
@@ -395,8 +395,6 @@ BEGIN
           set refresh_sqlstmt = replace(refresh_sqlstmt,'<tablename>',x_table.table_name); 
           set refresh_sqlstmt = replace(refresh_sqlstmt,'<columns>',defs.columns); 
           set refresh_sqlstmt = replace(refresh_sqlstmt,'<trigger_columns>',replace(defs.trigger_columns,'NEW.','record.')); 
-
-
 
           PREPARE stmt FROM sqlstmt;
           EXECUTE stmt;
