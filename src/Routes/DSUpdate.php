@@ -14,16 +14,17 @@ class DSUpdate implements IRoute{
         $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
         try{
-            
-            $db->direct('call fill_ds("")');
+            $tn = isset($_REQUEST['table_name'])?$_REQUEST['table_name']:'';
+
+            $db->direct('call fill_ds({table_name})',['table_name'=>$tn]);
             $mr = $db->moreResults();
             $wrn = $db->getWarnings();
 
-            $db->direct('call fill_ds_column("")');
+            $db->direct('call fill_ds_column({table_name})',['table_name'=>$tn]);
             $mr = [... $db->moreResults()];
             $wrn = [... $db->getWarnings()];
 
-            $db->direct('call fill_ds_reference_table("")');
+            $db->direct('call fill_ds_reference_table({table_name})',['table_name'=>$tn]);
             $mr = [... $db->moreResults()];
             $wrn = [... $db->getWarnings()];
 
