@@ -517,7 +517,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         }catch(e){
             console.error('invalidFields',e);
         }
-
+console.log('abc');
         if ( !Ext.isEmpty(store.getModifiedRecords()) ){
             model.set('saving',true);
 
@@ -543,12 +543,37 @@ Ext.define('Tualo.DS.panel.Controller', {
                 }
             });
         }else{
+            console.log('nothin to do');
             // this.saveSubStores();
             // model.set('saving',false);
         }
         
 
 
+    },
+
+    forcedSave: function(){
+        let model = this.getViewModel(),
+        store = this.getStore();
+        store.on({
+            proxyerror:{fn: this.onProxyError, scope: this, single: true}
+        });
+        store.sync({
+            scope: this,
+            failure: function(){
+                model.set('saving',false);
+            },
+            success: function(c,o){
+                if (o && o.operations && o.operations.create){
+                    o.operations.create.forEach(function(item){
+                        console.log('save success',item);
+                    });
+                }
+                model.set('saving',false);
+                model.set('isNew',false);
+                model.set('isModified',store.getModifiedRecords().length!=0);
+            }
+        });
     },
 
     onProxyError: function(response){
