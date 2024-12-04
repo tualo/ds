@@ -112,7 +112,11 @@ select
                 ),
                 
                 "store", concat('ds_',ds.table_name),
-                "columns",ifnull(JSON_MERGE('[]', view_ds_listcolumn.js),json_array())
+                "columns",ifnull(JSON_MERGE('[]', 
+                JSON_MERGE(
+                    view_ds_listcolumn.js,
+                    ifnull(ds_listroutes.col,json_array())
+                )),json_array())
                 
             ),
             JSON_OBJECT(
@@ -135,6 +139,26 @@ from
     ds
     join view_ds_listcolumn 
         on ds.table_name = view_ds_listcolumn.table_name
+    left join 
+        (
+            select 
+                table_name,
+                JSON_OBJECT(
+                    "text","",
+                    "routes", json_arrayagg(
+                        json_object(
+                            "route",route,
+                            "target",ifnull(target,'_self'),
+                            "iconCls",ifnull(iconcls,'"fa-solid fa-up-right-from-square"')
+                        )  
+                        order by position 
+                    ),
+                    "xtype", "tualo_route_column"
+                ) col
+            from ds_listroutes group by table_name
+        ) ds_listroutes
+        on ds_listroutes.table_name = ds.table_name
+
     left join extjs_base_types
         on extjs_base_types.id = ds.listviewbaseclass
     left join view_ds_list_plugins_grouped viewConfigPlugins

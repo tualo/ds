@@ -17,6 +17,7 @@ class DSSetup {
         'ds_addcommands'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
         'ds_access'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>'','where'=>['role','in',['administration','_default_',]]],
         'ds_renderer'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
+        'ds_listroutes'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
     ];
     function __construct(mixed $db,string $tablename){
         $this->db=$db;

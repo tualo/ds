@@ -15,6 +15,7 @@ class InstallDSX extends CommandLineInstallSQL  implements ICommandline{
         'dsx/dsx_read_order' => 'setup dsx_read_order ',
         'dsx/dsx_rest_api_get' => 'setup dsx_rest_api_get ',
         'dsx/dsx_rest_api_set' => 'setup dsx_rest_api_set ',
+        'dsx/createJSONReadTable' => 'setup createJSONReadTable ',
     ];
     
 }

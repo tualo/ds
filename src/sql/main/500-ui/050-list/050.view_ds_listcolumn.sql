@@ -78,7 +78,15 @@ select
                 )
             ),
 
-            if(ds_column_list_label.width > 0,'width','flex') , if(ds_column_list_label.width > 0,ds_column_list_label.width,ds_column_list_label.flex),
+            if(
+                ds_column_list_label.width > 0,
+                'width','flex'
+            ) , 
+            if(
+                ds_column_list_label.width > 0,
+                ds_column_list_label.width,
+                ds_column_list_label.flex
+            ),
 
             'filter',
             if (
@@ -147,19 +155,22 @@ select
         ']'
     ) `requiresJS`
 from
-    `ds`
-    join `ds_column` on `ds`.`table_name` = `ds_column`.`table_name`
-    and `ds_column`.`existsreal` = 1
-    and `ds`.`title` <> ''
-    join `ds_column_list_label` on (
-        `ds_column`.`table_name`,
-        `ds_column`.`column_name`
-    ) = (
-        `ds_column_list_label`.`table_name`,
-        `ds_column_list_label`.`column_name`
-    )
-    and `ds_column_list_label`.`active` = 1
-    left join view_readtable_all_types_classic types on types.type = `ds_column_list_label`.`xtype`
-    and typeclass = 'widget'
+
+        `ds`
+        join 
+        `ds_column` on `ds`.`table_name` = `ds_column`.`table_name`
+            and `ds_column`.`existsreal` = 1
+            and `ds`.`title` <> ''
+        join  `ds_column_list_label` on (
+            `ds_column`.`table_name`,
+            `ds_column`.`column_name`
+        ) = (
+            `ds_column_list_label`.`table_name`,
+            `ds_column_list_label`.`column_name`
+        )
+        and `ds_column_list_label`.`active` = 1
+        left join 
+            view_readtable_all_types_classic types on types.type = `ds_column_list_label`.`xtype`
+            and typeclass = 'widget'
 group by
     `ds`.`table_name`;
