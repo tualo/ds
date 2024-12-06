@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS `kandidaten_properties` (
   KEY `fk_kandidaten_properties_ds_property_types` (`property_type`),
   CONSTRAINT `fk_kandidaten_properties` FOREIGN KEY (`id`) REFERENCES `kandidaten` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_kandidaten_properties_ds_property_types` FOREIGN KEY (`property_type`) REFERENCES `ds_property_types` (`type`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
