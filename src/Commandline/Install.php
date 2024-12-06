@@ -12,6 +12,8 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'custom_types' => 'setup custom types ',
         'addcommand' => 'load addcommand ',
         'ds_files' => 'add ds files ',
+        'install/ds/ds_listroutes' => 'setup ds_listroutes',
+        
         'ds_renderer_stylesheet_attributes_dd' => 'setup ds_renderer_stylesheet_attributes_dd  ',
         'ds_renderer_stylesheet_attributes_dd.ds' => 'setup ds_renderer_stylesheet_attributes_dd  ds ',
         'ds_listplugin'=> 'setup ds_listplugin ',
@@ -110,7 +112,6 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         
         'install/ds_create_fulltext_search' => 'setup ds_create_fulltext_search',
 
-        'install/ds/ds_listroutes' => 'setup ds_listroutes',
         'install/ds/ds_listroutes.ds' => 'setup ds_listroutes.ds',
     ];
     
