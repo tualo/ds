@@ -21,6 +21,7 @@ Ext.define('Tualo.routes.ds.DSFill',{
                     method: "POST",
                     body: formData,
                     }).then((res)=>{ return res.json() });
+                Ext.util.History.back();
             }
 
             fn();
@@ -31,7 +32,7 @@ Ext.define('Tualo.routes.ds.DSFill',{
                 align: 't',
                 iconCls: 'fa fa-check'
             });
-            Ext.util.History.back();
+
         },
         before: function ( values, action) {
             action.resume();
