@@ -221,7 +221,7 @@ BEGIN
                 select 
 
 
-                  table_name,
+                  referenced_table_name,
 
                   concat("(",group_concat(
                       concat('tn.`',column_name,'`')
@@ -273,7 +273,8 @@ BEGIN
                       referential_constraints.referenced_table_name,
                       referential_constraints.table_name,
                       key_column_usage.column_name
-                  having referenced_table_name = x_table.table_name
+                  -- having referenced_table_name = x_table.table_name
+                  having table_name= x_table.table_name
                       
                   union
                   select
@@ -308,6 +309,7 @@ BEGIN
                       ds_referenced_manual.table_name,
                       ds_referenced_manual_columns.column_name 
                   having table_name= x_table.table_name
+                  
                       
 
                   ) c
@@ -328,6 +330,7 @@ BEGIN
                   on (ds_column.column_name,ds_column.table_name) = (ds_searchfields.column_name,ds_searchfields.table_name)
                   and ds_searchfields.active=1
               where 
+                /*
                 ds_searchfields.table_name in (
                   select 
                     table_name
@@ -336,7 +339,8 @@ BEGIN
                   where ds_reference_tables.reference_table_name = x_table.table_name
                     and searchable=1
                 ) 
-                and ds_searchfields.table_name =  refcdef.table_name
+                and */ ds_searchfields.table_name =  refcdef.referenced_table_name
+                -- and searchable=1
               group by 
                 ds_searchfields.table_name
             ) do -- xblock
@@ -378,7 +382,6 @@ BEGIN
 
           set proc_sqlstmt = replace(proc_sqlstmt,'<main_block>',x_table.main_block);
           set proc_sqlstmt = replace(proc_sqlstmt,'<reference_block>',proc_sub);
-
 
 
           set insert_sqlstmt = insert_trigger_template;
