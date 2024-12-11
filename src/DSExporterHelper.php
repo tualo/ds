@@ -227,12 +227,17 @@ class DSExporterHelper
         $data[] = $row;
         ++$y;
 
+
         foreach ($liste as $key => $zeile) {
             $x = 0;
             $row = array();
             foreach ($hcolumns as $key => $value) {
                 if (isset($zeile[  $key])) {
                     $ivalue = $zeile[  $key];
+
+                    if ($value['data_type'] == 'decimal') {
+                        $ivalue = number_format($ivalue,2,',','.');
+                    }
                     if ($encoding != 'utf-8') {
                         if (function_exists("mb_convert_encoding")) {
                             $ivalue = ($ivalue);
