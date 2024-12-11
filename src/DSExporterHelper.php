@@ -112,6 +112,9 @@ class DSExporterHelper
         } else if ($fn == 'CSV-ANSI') {
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, '"WINDOWS-1255');
+        } else if ($fn == 'CSV-DATEV-EXTF') {
+            $dateiname .= '.csv';
+            DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns,'utf-8',';','EXTF');
         } else {
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns);
@@ -202,7 +205,7 @@ class DSExporterHelper
 
 
 
-    public static function exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = ';')
+    public static function exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = ';', $extraHeader = '')
     {
         $header = array();
         $data = array();
@@ -268,6 +271,9 @@ class DSExporterHelper
     */
 
         $out = fopen($pathName . $dateiname, 'w');
+        if ($extraHeader != '') {
+            fwrite($out, $extraHeader."\r\n");
+        }
         foreach ($data as $row) {
             fputcsv($out, $row, $delimiter, '"', "\\");
         }
