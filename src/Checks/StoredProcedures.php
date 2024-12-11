@@ -19,12 +19,12 @@ class StoredProcedures extends PostCheck {
             'dsx_read_order'=>'8163802ef4b62bdd5294b853e36d26ca',
             'create_or_upgrade_hstr_table'=>'ad429a9b1ae27217a536bede47edaf2e',
             'dsx_filter_operator'=>'8841e1840ec0dff0a44c1ea43020687e',
-            'dsx_get_key_sql'=>'3275f6c90b641c0fc49d85e747342d89',
-            'dsx_get_key_sql_prefix'=>'702b60315bc7c1103dc0a51d5570246e',
+            'dsx_get_key_sql'=>'f452ab71edbfa2adf7b16867bdfa0077',
+            'dsx_get_key_sql_prefix'=>'535002a61e8621194e93820b9dea7a16',
             'dsx_filter_term'=>'54352cc2aef440d4d30e111106907d51',
             'dsx_filter_values_extract'=>'302f4d9815bb7b237bf32afb75c522db',
-            'dsx_rest_api_get'=>'3f0eaa8c845f2065502577aac69478fd',
-            'dsx_rest_api_set'=>'5370db244696c31a4e07bd982e8c5cf8',
+            'dsx_rest_api_get'=>'bd005ad88ec24753dc772514d016d608',
+            'dsx_rest_api_set'=>'23bfd2d150f57cade7d46b83117baceb',
             'ds_create_fulltext_search'=>'1a66bf141d48f3eb435a2958d6caa4ed'
         ];
         self::procedureCheck(
