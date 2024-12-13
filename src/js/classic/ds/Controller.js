@@ -552,7 +552,7 @@ console.log('abc');
 
     },
 
-    forcedSave: function(){
+    forcedSave: function(cb){
         let model = this.getViewModel(),
         store = this.getStore();
         store.on({
@@ -572,6 +572,7 @@ console.log('abc');
                 model.set('saving',false);
                 model.set('isNew',false);
                 model.set('isModified',store.getModifiedRecords().length!=0);
+                if (typeof cb=='function') cb();
             }
         });
     },
