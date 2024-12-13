@@ -241,6 +241,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     onSyncStore: function(){
         console.debug('onSyncStore',this.alias,arguments);
         model.set('isNew',false);
+        return true;
     },
     
     onListSelect: function(selModel, record, eOpts){
@@ -558,12 +559,19 @@ console.log('abc');
         store.on({
             proxyerror:{fn: this.onProxyError, scope: this, single: true}
         });
+        console.log('forcedSave',arguments)
         store.sync({
             scope: this,
+            callback: function(){
+                console.log('forcedSave','callback',arguments)
+                model.set('saving',false);
+            },
             failure: function(){
+                console.log('forcedSave','failure',arguments)
                 model.set('saving',false);
             },
             success: function(c,o){
+                console.log('forcedSave','success',arguments)
                 if (o && o.operations && o.operations.create){
                     o.operations.create.forEach(function(item){
                         console.log('save success',item);
