@@ -1,20 +1,22 @@
-Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
+Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
     extend: 'Ext.form.field.ComboBox',
-    xtype: 'cmp_ds_comboboxfield',
+    xtype: 'tualo_ds_linkedcomboboxfield',
     value: 'To Do',
 
-    /*
     triggers: {
         opends: {
-            cls: 'x-fa fa-link',
+            cls: 'fa-solid fa-arrow-up-right-from-square',
             tooltip: "Den Datensatz öffnen",
             handler: function(btn) {
                 console.log('wnd',btn);
                 window.btn = btn;
+                let tn = btn.getSelectedRecord().get('__table_name'),
+                    name = btn.getName(),
+                    route = "#ds/"+tn+'/'+name+'/'+btn.getValue();
+                window.open(route,'_blank');
             }
         }
     },
-    */
 
     constructor: function(config){
         this.callParent([config]);

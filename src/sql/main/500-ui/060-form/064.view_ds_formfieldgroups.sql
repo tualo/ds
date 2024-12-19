@@ -87,11 +87,15 @@ select
                         --     "clear", JSON_OBJECT( "type", 'clear')/*,
                         --     "undo", JSON_OBJECT( "type", 'trigger', "iconCls", 'x-fa fa-undo',"weight",-2000) 
                         -- ),
+
                         'emptyText', `ds_column_form_label`.`label`,
                         'name', concat( /*`ds_column_form_label`.`table_name`,'__',*/ `ds_column_form_label`.`column_name`),
                         'bind', JSON_OBJECT( 
                             "value",concat('{record.',/*`ds_column_form_label`.`table_name`,'__',*/ `ds_column_form_label`.`column_name`,'}')
                         ),
+
+         
+
                         'listeners', JSON_OBJECT( 
                             'change', 'onFormFieldChanged'
                         )

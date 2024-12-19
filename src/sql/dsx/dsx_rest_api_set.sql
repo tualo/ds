@@ -696,57 +696,60 @@ BEGIN
                             temp_dsx_rest_data 
                         where __file_data is not null
                     ) do
-                    
-                        insert into ds_files    
-                        (
-                            file_id,
-                            table_name,
-                            name,
-                            path,
-                            size,
-                            mtime,
-                            ctime,
-                            type,
-                            hash,
-                            login
-                        ) values
-                        (
-                            rec.__file_id,
-                            use_table_name,
-                            rec.__file_name,
-                            concat('files/',rec.__file_id),
-                            length(rec.__file_data),
-                            now(),
-                            now(),
-                            rec.__file_type,
-                            md5(rec.__file_data),
-                            @sessionuser
-                        ) on duplicate key update
-                            mtime=now(),
-                            size=length(rec.__file_data),
-                            hash=md5(rec.__file_data),
-                            login=@sessionuser;
+
+                        if length(rec.__file_data) <> 0 then
                         
-                        insert into ds_files_data
-                        (
-                            file_id,
-                            data
-                        ) values
-                        (
-                            rec.__file_id,
-                            rec.__file_data
-                        ) on duplicate key update
-                            data=rec.__file_data;
+                            insert into ds_files    
+                            (
+                                file_id,
+                                table_name,
+                                name,
+                                path,
+                                size,
+                                mtime,
+                                ctime,
+                                type,
+                                hash,
+                                login
+                            ) values
+                            (
+                                rec.__file_id,
+                                use_table_name,
+                                rec.__file_name,
+                                concat('files/',rec.__file_id),
+                                length(rec.__file_data),
+                                now(),
+                                now(),
+                                rec.__file_type,
+                                md5(rec.__file_data),
+                                @sessionuser
+                            ) on duplicate key update
+                                mtime=now(),
+                                size=length(rec.__file_data),
+                                hash=md5(rec.__file_data),
+                                login=@sessionuser;
+                            
+                            insert into ds_files_data
+                            (
+                                file_id,
+                                data
+                            ) values
+                            (
+                                rec.__file_id,
+                                rec.__file_data
+                            ) on duplicate key update
+                                data=rec.__file_data;
 
-                        set sql_command = concat('
-                            update `',use_table_name,'` 
-                            set file_id=',quote(rec.__file_id),'  
-                            where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data where __id=',quote(rec.__id),')');
-                        PREPARE stmt FROM sql_command;
-                        EXECUTE stmt;
-                        DEALLOCATE PREPARE stmt;
+                            set sql_command = concat('
+                                update `',use_table_name,'` 
+                                set file_id=',quote(rec.__file_id),'  
+                                where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data where __id=',quote(rec.__id),')');
+                            PREPARE stmt FROM sql_command;
+                            EXECUTE stmt;
+                            DEALLOCATE PREPARE stmt;
 
-                        call ds_files_cleanup(use_table_name);
+                            call ds_files_cleanup(use_table_name);
+                        end if;
                     end for;
 
 

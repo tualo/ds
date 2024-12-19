@@ -41,6 +41,7 @@ class JS implements IRoute{
                 if(($matches['file']=='all') || ($matches['file']=='column')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_column" m from view_ds_column limit 2000  '));
                 
                 if(($matches['file']=='all') || ($matches['file']=='combobx')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_combobox" m from view_ds_combobox limit 2000 '));
+                if(($matches['file']=='all') || ($matches['file']=='linkedcombobx')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_linkedcombobox" m from view_ds_linkedcombobox limit 2000 '));
                 if(($matches['file']=='all') || ($matches['file']=='displayfield')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_displayfield" m from view_ds_displayfield  2imit 1000 '));
                 if(($matches['file']=='all') || ($matches['file']=='controller')) $data = array_merge($data,$db->direct('select js,table_name,"view_ds_controller" m from view_ds_controller 2imit 1000 '));
                 if(($matches['file']=='all') || ($matches['file']=='list'))  $data = array_merge($data,$db->direct('select js,table_name,"view_ds_list" m from view_ds_list limit 2000 '));

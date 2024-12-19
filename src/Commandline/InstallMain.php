@@ -30,6 +30,8 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline{
         'main/500-ui/030-column/030.view_ds_columnfilters' => 'setup 030.view_ds_columnfilters ',
         'main/500-ui/040-field/040.display' => 'setup 040.display ',
         'main/500-ui/040-field/041.combobox' => 'setup 041.combobox ',
+        'main/500-ui/040-field/042.displaylink' => 'setup 042.displaylink ',
+
         'main/500-ui/050-list/050.view_ds_listcolumn' => 'setup 050.view_ds_listcolumn ',
         'main/500-ui/050-list/054.view_ds_list' => 'setup 054.view_ds_list ',
         'main/500-ui/050-list/view_dd_column' => 'setup view_dd_column ',

@@ -149,6 +149,34 @@ from
 
 union  all
 
+
+select 
+    concat('Tualo.DataSets.displaylinkedfield.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ) `id`,
+    concat('widget.displaylinkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `xtype_long_modern`,
+    concat('widget.displaylinkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `xtype_long_classic`,
+
+    'widget' `modern_typeclass`,
+    concat('displaylinkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `modern_type`,
+
+    'widget' `classic_typeclass`,
+    concat('displaylinkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `classic_type`,
+
+    concat('DS LinkedDisplayField ',`ds`.`title`,'-',ds_dropdownfields.name,' (',`ds`.`table_name`,' ',lower(ds_dropdownfields.name),')') `name`,
+    'Tualo DS' `vendor`,
+    '' `description`,
+    1 isformfield,
+    0 iscolumn
+
+from
+    `ds_dropdownfields`
+    join `ds` 
+        on `ds_dropdownfields`.`table_name` = `ds`.`table_name`
+    join `ds_column` 
+        on (`ds_dropdownfields`.`table_name`,`ds_dropdownfields`.`idfield`) = (`ds_column`.`table_name`,`ds_column`.`column_name`)
+        and `ds_column`.`existsreal`=1
+
+union  all
+
 -- DS DD Field
 select 
     concat('Tualo.DataSets.combobox.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ) `id`,
@@ -179,6 +207,41 @@ join (
         from `ds_access` join `view_session_groups` on `ds_access`.`role` = `view_session_groups`.`group` and  `ds_access`.`read`=1 
         group by  `table_name` 
     ) `acc` on `acc`.`table_name` = `ds`.`table_name`
+
+
+union  all
+
+-- DS DD Field
+select 
+    concat('Tualo.DataSets.linkedcombobox.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ) `id`,
+    concat('widget.linkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `xtype_long_modern`,
+    concat('widget.linkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `xtype_long_classic`,
+
+    'widget' `modern_typeclass`,
+    concat('linkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `modern_type`,
+
+    'widget' `classic_typeclass`,
+    concat('linkedcombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name)) `classic_type`,
+
+    concat('DS LinkedComboBox ',`ds`.`title`,'-',ds_dropdownfields.name,' (',`ds`.`table_name`,' ',lower(ds_dropdownfields.name),')') `name`,
+    'Tualo DS' `vendor`,
+    '' `description`,
+    1 isformfield,
+    0 iscolumn
+
+from
+    `ds_dropdownfields`
+    join `ds` 
+        on `ds_dropdownfields`.`table_name` = `ds`.`table_name`
+    join `ds_column` 
+        on (`ds_dropdownfields`.`table_name`,`ds_dropdownfields`.`idfield`) = (`ds_column`.`table_name`,`ds_column`.`column_name`)
+        and `ds_column`.`existsreal`=1
+join ( 
+        select `table_name` 
+        from `ds_access` join `view_session_groups` on `ds_access`.`role` = `view_session_groups`.`group` and  `ds_access`.`read`=1 
+        group by  `table_name` 
+    ) `acc` on `acc`.`table_name` = `ds`.`table_name`
+
 
 
 union  all

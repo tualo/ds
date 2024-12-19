@@ -4,6 +4,7 @@ Ext.define('Tualo.ds.lazy.dashboard.DSChart', {
     ],
     extend: 'Ext.dashboard.Part',
     alias: 'part.tualodashboard_chart',
+
     createView: function(config) {
         let me=this, view = this.callParent([config]);
         
@@ -19,6 +20,7 @@ Ext.define('Tualo.ds.lazy.dashboard.DSChart', {
     config:{
         addConfiguration: true,
     },
+    stateful: true,
 
     viewTemplate: {
         layout: 'fit',
