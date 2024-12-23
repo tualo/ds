@@ -5,11 +5,9 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
 
     triggers: {
         opends: {
-            cls: 'fa-solid fa-arrow-up-right-from-square',
+            cls: 'x-fa fa-solid fa-arrow-up-right-from-square',
             tooltip: "Den Datensatz öffnen",
             handler: function(btn) {
-                console.log('wnd',btn);
-                window.btn = btn;
                 let tn = btn.getSelectedRecord().get('__table_name'),
                     name = btn.getName(),
                     route = "#ds/"+tn+'/'+name+'/'+btn.getValue();
