@@ -5,7 +5,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
 
     triggers: {
         opends: {
-            cls: 'x-fa fa-solid fa-arrow-up-right-from-square',
+            cls: 'x-fa fa-link',
             tooltip: "Den Datensatz öffnen",
             handler: function(btn) {
                 let tn = btn.getSelectedRecord().get('__table_name'),
@@ -33,5 +33,15 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
             pageSize: store.pageSize
             */
         });
+    },
+
+    onFocus: function(e) {
+        let me = this;
+        this.callParent(e);
+        try{
+            me.onTriggerClick(me, me.getPickerTrigger(), {});
+        }catch(e){
+
+        }
     }
 })

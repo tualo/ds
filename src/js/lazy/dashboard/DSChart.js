@@ -7,14 +7,21 @@ Ext.define('Tualo.ds.lazy.dashboard.DSChart', {
 
     createView: function(config) {
         let me=this, view = this.callParent([config]);
-        
-        
         if (view._partConfig && view._partConfig.addConfiguration){
             view.title = view._partConfig.addConfiguration.title;
-            view.items = [ view._partConfig.addConfiguration.items ];
 
+            if (view._partConfig.addConfiguration.items.requires){
+                Ext.require(
+                    view._partConfig.addConfiguration.items.requires,
+                    ()=>{
+                        console.log('req done')
+                            view.items = [ view._partConfig.addConfiguration.items ];
+                        }
+                )
+            }else{
+                view.items = [ view._partConfig.addConfiguration.items ];
+            }
         }
-    
         return view;
     },
     config:{
