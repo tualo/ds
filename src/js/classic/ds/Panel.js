@@ -9,57 +9,57 @@ Ext.define('Tualo.DS.Panel', {
         'Tualo.ds.data.field.PropertyValue',
     ],
     viewModel: {
-        type:'dspanelmodel',
+        type: 'dspanelmodel',
     },
-    getWindowTitle: function(){
+    getWindowTitle: function () {
         return this.getViewModel().get('currentWindowTitle');
     },
-    /*
+
     bind: {
-        disabled: "{saving}"
+        disabled: "{datatransmissions}"
     },
-    */
+
     "keyMap": {
         'ctrl+s': {
-            handler: function(event,view) {
+            handler: function (event, view) {
                 event.stopEvent();
                 view.getController().save();
             }
         },
         'cmd+s': {
-            handler: function(event,view) {
+            handler: function (event, view) {
                 event.stopEvent();
                 view.getController().save();
             }
         }
     },
-    constructor: function(config){
+    constructor: function (config) {
 
-        
+
 
         this.callParent([config]);
 
 
-        
+
 
     },
-    getStore: function(){
+    getStore: function () {
         return this.getComponent('list').getStore();
     },
-    getList: function(){
+    getList: function () {
         return this.getComponent('list');
     },
-    loadById: function(field,id){
+    loadById: function (field, id) {
         this.getController().loadById(id);
 
     },
-    filterField: function(filter,value){
-        this.getController().filterField(filter,value);
+    filterField: function (filter, value) {
+        this.getController().filterField(filter, value);
     },
-    searchFor: function(search){
+    searchFor: function (search) {
         this.getController().searchFor(search);
     },
     dockedItems: [
-        
+
     ]
 })

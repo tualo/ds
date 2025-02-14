@@ -10,34 +10,38 @@ Ext.define('Tualo.DS.panel.Model', {
         pagerText: '0/0',
         disableNext: false,
         disablePrev: false,
+        loading: false,
         saving: false
     },
     formulas: {
-        currentTitle: function(get){
-            try{
-                if (!Ext.isEmpty(get('record'))){
-                    return get('title')+" | Formular: "+get('record').get('__displayfield');
+        currentTitle: function (get) {
+            try {
+                if (!Ext.isEmpty(get('record'))) {
+                    return get('title') + " | Formular: " + get('record').get('__displayfield');
                 }
-            }catch(e){}
+            } catch (e) { }
             return "Formular";
         },
-        currentWindowTitle: function(get){
-            try{
-                if (!Ext.isEmpty(get('record'))){
-                    return get('title')+" | "+get('record').get('__displayfield');
+        currentWindowTitle: function (get) {
+            try {
+                if (!Ext.isEmpty(get('record'))) {
+                    return get('title') + " | " + get('record').get('__displayfield');
                 }
-            }catch(e){}
+            } catch (e) { }
             return "DS";
         },
-        disableSave: function(get){
+        disableSave: function (get) {
             return !get('isModified');
         },
-        disableRefresh: function(get){
+        disableRefresh: function (get) {
             return get('isModified');
         },
-        userCls: function(get){
-            return get("isNew")?"new_cmp_ds":"";
+        userCls: function (get) {
+            return get("isNew") ? "new_cmp_ds" : "";
         },
+        datatransmissions: function (get) {
+            return get('saving') || get('loading')
+        }
     },
 
     constructor: function () {

@@ -2,7 +2,8 @@ Ext.define('Tualo.DS.panel.Controller', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.dspanelcontroller',
     mixins: {
-        util: 'Tualo.DS.panel.mixins.ControllerTools'
+        util: 'Tualo.DS.panel.mixins.ControllerTools',
+        storeevenets: 'Tualo.DS.panel.mixins.ControllerStore'
     },
     constructor: function (config) {
         this.callParent([config]);
@@ -180,7 +181,9 @@ Ext.define('Tualo.DS.panel.Controller', {
         let me = this,
             model = me.getViewModel(),
             store = me.getStore();
-        console.debug('onDataChanged', 'getModifiedRecords', store.getModifiedRecords());
+
+
+        console.debug('onDataChanged', 'getModifiedRecords', store.getModifiedRecords(), e);
 
         me.lastChanges = (new Date()).getTime();
         model.set('isModified', store.getModifiedRecords().length != 0);
@@ -192,14 +195,17 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (me.getView().referencedList === true) {
             let ref = null,
                 referencedRecord = this.getReferencedRecord();
-            console.log('todo check parent status for', referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel());
+            console.info('todo check parent status for', referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel());
             if (ref = me.getReferencedView()) {
                 if (referencedRecord) {
                     ref.getController().refreshRecordFromRemote.bind(ref)(referencedRecord.get('__id'));
                 }
             }
-
         }
+
+        // me.getViewModel('saving', false);
+        me.getViewModel('loading', false);
+
     },
 
     refreshRecordFromRemote: async function (id) {
@@ -225,7 +231,10 @@ Ext.define('Tualo.DS.panel.Controller', {
     onBeforeStoreSync: function (options, evt) {
         let me = this,
             store = me.getStore();
+
+        me.getViewModel().set('saving', true);
         console.log('beforesync', options, evt);
+        /*
         if (me.syncDeferId) {
             Ext.undefer(me.syncDeferId);
             me.syncDeferId = null;
@@ -235,6 +244,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             me.syncDeferId = Ext.defer(store.sync, 2000, store);
             return false;
         }
+        */
         return true;
     },
 
