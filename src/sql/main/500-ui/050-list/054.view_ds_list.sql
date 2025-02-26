@@ -79,7 +79,7 @@ select
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.list.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
 
-        if( extjs_base_types.id<>'Ext.grid.property.Grid',
+        if( if( ifnull(extjs_base_types.id,"")='', 'Tualo.DataSets.grid.Grid', extjs_base_types.id)  <>'Ext.grid.property.Grid',
 
             JSON_OBJECT(
                 "extend", if( ifnull(extjs_base_types.id,"")='', 'Tualo.DataSets.grid.Grid', extjs_base_types.id),

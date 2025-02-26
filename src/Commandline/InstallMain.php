@@ -1,10 +1,16 @@
 <?php
+
 namespace Tualo\Office\DS\Commandline;
+
 use Tualo\Office\Basic\ICommandline;
 use Tualo\Office\Basic\CommandLineInstallSQL;
 
-class InstallMain extends CommandLineInstallSQL  implements ICommandline{
-    public static function getDir():string {   return dirname(__DIR__,1); }
+class InstallMain extends CommandLineInstallSQL  implements ICommandline
+{
+    public static function getDir(): string
+    {
+        return dirname(__DIR__, 1);
+    }
     public static $shortName  = 'ds-main';
     public static $files = [
         'main/000-basic/000.fieldquote' => 'setup 000.fieldquote ',
@@ -31,6 +37,7 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline{
         'main/500-ui/040-field/040.display' => 'setup 040.display ',
         'main/500-ui/040-field/041.combobox' => 'setup 041.combobox ',
         'main/500-ui/040-field/042.displaylink' => 'setup 042.displaylink ',
+        'main/500-ui/040-field/043.linkedcombobox' => 'setup 043.linkedcombobox ',
 
         'main/500-ui/050-list/050.view_ds_listcolumn' => 'setup 050.view_ds_listcolumn ',
         'main/500-ui/050-list/054.view_ds_list' => 'setup 054.view_ds_list ',
@@ -45,5 +52,4 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline{
         'main/500-ui/080-dsview/080.view_ds_dsview' => 'setup 080.view_ds_dsview ',
         'main/999-dsbackup/importance' => 'setup importance ',
     ];
-    
 }

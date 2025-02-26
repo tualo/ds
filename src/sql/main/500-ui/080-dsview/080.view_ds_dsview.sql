@@ -118,6 +118,7 @@ select
                 "boxready", 'onBoxReady'
             ),
             
+            /*
             "layout", JSON_OBJECT(
                 "type", 'accordion',
                 "vertical",  1=0,
@@ -125,6 +126,7 @@ select
                 "animate", 1=1,
                 "activeOnTop", 1=0
             ),
+            */
             
             "statics", JSON_OBJECT(
                 "stores", view_ds_column_stores.stores,

@@ -1,6 +1,6 @@
 Ext.define('Tualo.DS.Panel', {
-    //extend: "Tualo.panel.Accordion",
-    extend: "Ext.panel.Panel",
+    extend: "Tualo.panel.Accordion",
+    //extend: "Ext.panel.Panel",
     controller: 'dspanelcontroller',
     config: {
         additionalTools: [],
