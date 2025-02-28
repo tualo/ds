@@ -20,6 +20,6 @@
        "tualo/extjscmplr": "*",
        "phpoffice/phpspreadsheet": "*",
        "ramsey/uuid": "*",
-       "tualo-ext-shim": "*"
+       "tualo/tualo-ext-shim": "*"
     }
 }
