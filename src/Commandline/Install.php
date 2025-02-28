@@ -113,6 +113,10 @@ class Install extends CommandLineInstallSQL  implements ICommandline{
         'install/ds_create_fulltext_search' => 'setup ds_create_fulltext_search',
 
         'install/ds/ds_listroutes.ds' => 'setup ds_listroutes.ds',
+
+        'install/ds/fix.use_insert_for_update' => 'setup fix.use_insert_for_update',
+
+        
     ];
     
 }

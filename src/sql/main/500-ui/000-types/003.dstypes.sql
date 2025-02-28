@@ -282,10 +282,11 @@ join (
 
 
 
+
 create or replace view view_readtable_all_types as
         select `name` as `id`,`xtype_long_modern`,`xtype_long_classic`,`modern_typeclass`,`modern_type`,`classic_typeclass`,`classic_type`,`name`,`vendor`,`description` from view_readtable_extjs_base_types
-union   select `id`,`xtype_long_modern`,`xtype_long_classic`,`modern_typeclass`,`modern_type`,`classic_typeclass`,`classic_type`,`name`,`vendor`,`description` from view_readtable_custom_types
-union   select `id`,`xtype_long_modern`,`xtype_long_classic`,`modern_typeclass`,`modern_type`,`classic_typeclass`,`classic_type`,`name`,`vendor`,`description` from view_readtable_ds_types
+union   select `id`,`xtype_long_modern`,`xtype_long_classic`,`modern_typeclass`,`modern_type`,`classic_typeclass`,`classic_type`,`name`,`vendor`,`description`  from view_readtable_custom_types
+union   select `id`,`xtype_long_modern`,`xtype_long_classic`,`modern_typeclass`,`modern_type`,`classic_typeclass`,`classic_type`,`name`,`vendor`,`description`  from view_readtable_ds_types
 ;
 
 create or replace view view_readtable_all_types_modern as

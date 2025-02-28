@@ -19,6 +19,7 @@
     "require": {
        "tualo/extjscmplr": "*",
        "phpoffice/phpspreadsheet": "*",
-       "ramsey/uuid": "*"
+       "ramsey/uuid": "*",
+       "tualo-ext-shim": "*"
     }
 }

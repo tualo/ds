@@ -122,3 +122,4 @@ INSERT IGNORE INTO `ds_access` (`append`,`delete`,`read`,`role`,`table_name`,`wr
 INSERT IGNORE INTO `ds_listroutes` (`iconcls`,`position`,`route`,`table_name`,`target`) VALUES ('fa-solid fa-rotate','1','#dsfill/{table_name}','ds','_self') ; 
 INSERT IGNORE INTO `ds_listroutes` (`iconcls`,`position`,`route`,`table_name`,`target`) VALUES ('fa-solid fa-binoculars','0','#dstestsuite/checkitem/{table_name}','ds','_self') ; 
 SET FOREIGN_KEY_CHECKS=1;
+
