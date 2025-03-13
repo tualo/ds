@@ -94,7 +94,7 @@ ds_addcommands.location,
 ds_addcommands.position,
 JSON_OBJECT(
     'text', ds_addcommands.label,
-    'iconCls', ifnull(ds_addcommands.iconcls,'x-fa fa-plus'),
+    'iconCls',if( ifnull(ds_addcommands.iconcls,'') = '','x-fa fa-plus',ds_addcommands.iconcls),
     'defered', ds_addcommands.xtype,
     'handler', 'onAddCommandClick'
 ) js
