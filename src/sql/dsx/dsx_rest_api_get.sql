@@ -462,6 +462,12 @@ BEGIN
         "__id", ',idfield,' ,
         "__displayfield",',displayfield,' ,',
 
+        if(
+            JSON_EXISTS(userequest,'$.concat_set_table') = 1,
+            '__clientid, ',
+            ''
+        ),
+
         if ( JSON_VALUE(userequest,'$.rownumber') IS NOT NULL and JSON_VALUE(userequest,'$.rownumber')=1, concat(
             '"__rownumber", ROW_NUMBER() OVER ( ',if( sorts is null ,'',concat(' ORDER  BY ',sorts)),') + ',JSON_VALUE(userequest,'$.start'),', '
         ),'' ),

@@ -6,7 +6,7 @@ BEGIN
     DECLARE result varchar(128) default '=';
     
     IF operator='==' or operator='eq' THEN SET result='='; END IF;
-    IF operator='!=' or operator='not' THEN SET result='<>'; END IF;
+    IF operator='!=' or operator='not' or operator='neq' THEN SET result='<>'; END IF;
     IF operator='>=' or operator='gt' THEN SET result='>='; END IF;
     IF operator='<=' or operator='lt' THEN SET result='<='; END IF;
     IF operator='not like' THEN SET result='not like'; END IF;

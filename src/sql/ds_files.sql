@@ -26,6 +26,16 @@ create table if not exists ds_files_data (
     constraint `fk_ds_files_data_file_id` foreign key (file_id) references ds_files(file_id) on delete cascade on update cascade
 );
 
+
+CREATE TABLE IF NOT EXISTS `ds_files_data_chunks` (
+  `file_id` varchar(36) NOT NULL,
+  `page` integer default 0,
+  `data` longtext NOT NULL,
+  PRIMARY KEY (`file_id`,`page`),
+  CONSTRAINT `fk_ds_files_data_chunks_file_id` FOREIGN KEY (`file_id`) REFERENCES `ds_files` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ;
+
+
 delimiter //
 
 CREATE OR REPLACE PROCEDURE `ds_files_cleanup`( IN  in_table_name varchar(128))

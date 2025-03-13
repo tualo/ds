@@ -17,7 +17,7 @@ class DS implements IRoute
     {
         return preg_replace('/[\'";#]/', '', $input);
     }
-    
+
     public static function register()
     {
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
@@ -27,20 +27,19 @@ class DS implements IRoute
             try {
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
-                if ( isset($_REQUEST['filter_by_search']) && ($_REQUEST['filter_by_search']==1) && !isset($_REQUEST['fulltext']) ) {
-                    $sql ="select count(*) c from ds where table_name = 'ds_ftsearch_".$tablename."'";
-                    $count = $db->singleValue($sql,[],'c');
-                    if ($count>0){
-                        $_REQUEST['filter_by_search']=2;
+                if (isset($_REQUEST['filter_by_search']) && ($_REQUEST['filter_by_search'] == 1) && !isset($_REQUEST['fulltext'])) {
+                    $sql = "select count(*) c from ds where table_name = 'ds_ftsearch_" . $tablename . "'";
+                    $count = $db->singleValue($sql, [], 'c');
+                    if ($count > 0) {
+                        $_REQUEST['filter_by_search'] = 2;
                         $_REQUEST['fulltext'] = 2;
-
                     }
                 }
 
-                if ( isset($_REQUEST['search'])){
+                if (isset($_REQUEST['search'])) {
                     $_REQUEST['search'] = DS::sanitizeInput($_REQUEST['search']);
                 }
-                
+
 
                 $read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 App::result('data', $read['data']);
@@ -68,7 +67,7 @@ class DS implements IRoute
                 // $db->direct( 'SET GLOBAL max_allowed_packet = 50331648 ' . (48 * 1024 * 1024) );
                 //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 $table = new DSTable($db, $tablename);
-                $read = $table->f('__id','eq',$matches['id'])->read()->get();
+                $read = $table->f('__id', 'eq', $matches['id'])->read()->get();
 
                 App::result('data', $read);
                 //App::result('total', $read['total']);
@@ -90,7 +89,7 @@ class DS implements IRoute
 
             $db = App::get('session')->getDB();
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
-           
+
             $tablename = $matches['tablename'];
             $table = null;
             try {
@@ -99,10 +98,10 @@ class DS implements IRoute
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db, $tablename);
                 $o = [];
-                if ($db->singleValue('select ifnull(read_table,"") v from ds where table_name = {tablename} and use_insert_for_update=1', ['tablename' => $tablename],'v')!='') {
-                    $o = [ 'useInsertUpdate'=>true];
+                if ($db->singleValue('select ifnull(read_table,"") v from ds where table_name = {tablename} and use_insert_for_update=1', ['tablename' => $tablename], 'v') != '') {
+                    $o = ['useInsertUpdate' => true];
                 }
-                if (($result = $table->update($input,$o)) !== false) {
+                if (($result = $table->update($input, $o)) !== false) {
                     if ($table->error()) {
                         throw new \Exception($table->errorMessage());
                     }
@@ -118,8 +117,6 @@ class DS implements IRoute
                         'concat_set_table' => 1
                     ]);
                     App::result('data', $read['data']);
-
-                    
                 } else {
                     App::result('success', false);
                     App::result('warnings',  $db->getWarnings());
@@ -151,7 +148,7 @@ class DS implements IRoute
 
             $db = App::get('session')->getDB();
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
-            
+
             $tablename = $matches['tablename'];
             try {
 
@@ -165,6 +162,12 @@ class DS implements IRoute
 
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
+
+                    App::result('temp_dsx_rest_data', $db->direct('select * from temp_dsx_rest_data'));
+                    App::result('insret_result', $db->direct('select * from temp_dsx_rest_data'));
+
+
+
                     App::deferredTrigger();
                     if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
@@ -174,7 +177,6 @@ class DS implements IRoute
                         'concat_set_table' => 1
                     ]);
                     App::result('data', $read['data']);
-
                 } else {
                     App::result('success', false);
                     App::result('warnings', $table->warnings());

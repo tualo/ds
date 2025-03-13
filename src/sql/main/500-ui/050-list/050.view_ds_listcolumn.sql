@@ -30,6 +30,7 @@ select
                 /*`ds_column`.`table_name`,'__',*/
                 `ds_column`.`column_name`
             ),
+            'groupable', 1=1,
             'align',
             if(
                 ifnull(`ds_column_list_label`.`align`, '') <> '',

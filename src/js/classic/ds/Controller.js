@@ -501,6 +501,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
     save: function (cb) {
         let model = this.getViewModel(),
+            me = this,
             store = this.getStore(),
             wasNew = model.get('isNew'),
             keys = model.get('primaryKeys'),
@@ -532,6 +533,17 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (!Ext.isEmpty(store.getModifiedRecords())) {
             model.set('saving', true);
 
+            let delayedFileUpload = [];
+            store.getModifiedRecords().forEach(function (record) {
+                if (record.get('__file_data').length > 10 * 1024 * 1024) {
+                    let o = { ...record.data };
+                    o.internalId = record.internalId;
+                    delayedFileUpload.push(o);
+                    record.set('__file_data', 'chunks');
+                }
+            });
+
+
             store.on({
                 proxyerror: { fn: this.onProxyError, scope: this, single: true }
             });
@@ -544,8 +556,23 @@ Ext.define('Tualo.DS.panel.Controller', {
                 success: function (c, o) {
                     if (Ext.getApplication().getDebug() === true) console.log('save success', arguments);
                     if (o && o.operations && o.operations.create) {
+
+
                         o.operations.create.forEach(function (item) {
                             console.log('save success', item);
+                            if (delayedFileUpload.length > 0) {
+
+                                delayedFileUpload.forEach(function (record) {
+                                    console.log('compare', record, item);
+                                    if (record.internalId === item.internalId) {
+                                        record.__id = item.get('__id')
+                                        record.__file_id = item.get('__file_id')
+                                        console.log('delayedFileUpload', record);
+                                    }
+                                });
+
+                                me.uploadFileData(delayedFileUpload);
+                            }
                         });
                     }
                     model.set('saving', false);
@@ -561,6 +588,69 @@ Ext.define('Tualo.DS.panel.Controller', {
 
 
 
+    },
+
+    chunks: function (str, size) {
+        let chunks = [];
+        for (let i = 0; i < str.length; i += size) {
+            chunks.push(str.slice(i, i + size));
+        }
+        return chunks;
+
+    },
+
+    uploadFileData: async function (filesData) {
+        console.log('uploadFileData', filesData);
+        let p = Ext.create('Ext.ProgressBar', {
+            text: 'Dateiupload ...',
+        })
+        let t = Ext.toast({
+            items: p,
+            width: 300,
+            layout: 'fit',
+            alignment: 'tc-tc',
+            hideDuration: 3000000,
+            //timeout: 2000
+        });
+        t.show();
+        for (let i = 0; i < filesData.length; i++) {
+            let record = filesData[i];
+            let maxChunkSize = 10 * 1024 * 1024;
+            let dataChunks = this.chunks(record.__file_data, maxChunkSize);
+            // filesData.forEach(async function (record) {
+            //let dataChunks = record.__file_data.match(/.{1,20000}/g);
+            for (let j = 0; j < dataChunks.length; j++) {
+                let chunk = dataChunks[j],
+                    index = j;
+
+                // dataChunks.forEach(async function (chunk, index) {
+                let res = await (await fetch('./dsfiles/' + record.__table_name + '/' + record.__file_id, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            __file_data: chunk,
+                            page: index,
+                            total: dataChunks.length,
+                        }
+                    })
+                })).json();
+                try {
+                    p.updateValue(index / dataChunks.length);
+                } catch (e) {
+                    console.error(e);
+                }
+                console.log('uploadFileData res', res);
+                if (res.success !== true) {
+                    throw new Error(res.msg);
+                }
+            };
+        };
+        console.log('uploadFileData done');
+        t.destroy();
+        // 
     },
 
     forcedSave: function (cb) {

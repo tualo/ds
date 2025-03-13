@@ -15,6 +15,7 @@ CREATE OR REPLACE VIEW  `view_readtable_ds_column_list_label_all` AS
  ifnull(`ds_column_list_label`.`active`,0)   AS `active`,
  ifnull(`ds_column_list_label`.`grouped`,0)   AS `grouped`,
  ifnull(`ds_column_list_label`.`flex`,1)   AS `flex`,
+ ifnull(`ds_column_list_label`.`align`,'start')   AS `align`,
  ifnull(`ds_column_list_label`.`listfiltertype`,'') `listfiltertype`,
  
  if(`ds_column_list_label`.`column_name` is null,1,0) AS `__virtual`

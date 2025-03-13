@@ -23,6 +23,10 @@ select
             JSON_OBJECT(
                 "ftype", 'summary',
                 "dock", 'bottom'
+            ),
+            JSON_OBJECT(
+                "ftype","grouping",
+                "showSummaryRow", 1=1
             )
         ),
         "listeners", JSON_OBJECT(
