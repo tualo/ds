@@ -535,12 +535,15 @@ Ext.define('Tualo.DS.panel.Controller', {
 
             let delayedFileUpload = [];
             store.getModifiedRecords().forEach(function (record) {
-                if (record.get('__file_data').length > 10 * 1024 * 1024) {
-                    let o = { ...record.data };
-                    o.internalId = record.internalId;
-                    delayedFileUpload.push(o);
-                    record.set('__file_data', 'chunks');
+                if (!Ext.isEmpty(record.get('__file_data'))) {
+                    if (record.get('__file_data').length > 10 * 1024 * 1024) {
+                        let o = { ...record.data };
+                        o.internalId = record.internalId;
+                        delayedFileUpload.push(o);
+                        record.set('__file_data', 'chunks');
+                    }
                 }
+
             });
 
 
@@ -615,7 +618,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         t.show();
         for (let i = 0; i < filesData.length; i++) {
             let record = filesData[i];
-            let maxChunkSize = 10 * 1024 * 1024;
+            let maxChunkSize = 2 * 1024 * 1024;
             let dataChunks = this.chunks(record.__file_data, maxChunkSize);
             // filesData.forEach(async function (record) {
             //let dataChunks = record.__file_data.match(/.{1,20000}/g);
