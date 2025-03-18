@@ -1,103 +1,134 @@
 <?php
+
 namespace Tualo\Office\DS;
+
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\DS\DataRenderer;
 
 
-class DSTable {
+class DSTable
+{
     private mixed $db;
     private string $tablename;
-    private int $limit=100000;
-    private int $start=0;
-    private array $filter=[];
-    private array $sorter=[];
-    private array $data=[];
+    private int $limit = 100000;
+    private int $start = 0;
+    private array $filter = [];
+    private array $sorter = [];
+    private array $data = [];
     private bool $isQueried = false;
     private bool $isEmpty = true;
     private bool $hasError = false;
     private string $errorMessage = "";
     private array $_warnings = [];
     private array $_moreResults = [];
-    
-    public static function instance(string $tablename='test'):DSTable{
-        return new DSTable( TualoApplication::get('session')->getDB(),$tablename);
+
+    public static function instance(string $tablename = 'test'): DSTable
+    {
+        return new DSTable(TualoApplication::get('session')->getDB(), $tablename);
     }
 
-    public static function init(mixed $db):DSTable{
-        return new DSTable($db,'test');
-    }
-    
-
-    function __construct(mixed $db,string $tablename){
-        $this->db=$db;
-        $this->tablename=$tablename;
+    public static function init(mixed $db): DSTable
+    {
+        return new DSTable($db, 'test');
     }
 
-    public function t(string $tablename):DSTable{ 
-        $this->tablename=$tablename;
+
+    function __construct(mixed $db, string $tablename)
+    {
+        $this->db = $db;
+        $this->tablename = $tablename;
+    }
+
+    public function t(string $tablename): DSTable
+    {
+        $this->tablename = $tablename;
         return  $this;
     }
 
-    public function f(string $field,string $operator,mixed $value):DSTable{ 
-        return $this->filter($field,$operator,$value);
+    public function f(string $field, string $operator, mixed $value): DSTable
+    {
+        return $this->filter($field, $operator, $value);
     }
 
-    public function filter(string $field,string $operator,mixed $value):DSTable{
+    public function filter(string $field, string $operator, mixed $value): DSTable
+    {
 
         $this->filter[] = [
-            'property' => /*$this->tablename.'__'.*/$field,
+            'property' => /*$this->tablename.'__'.*/ $field,
             'operator' => $operator,
             'value'    =>  $value
         ];
         return $this;
     }
 
-    public function s(string $field,string $direction):DSTable{ 
-        return $this->sort($field,$direction);
+    public function s(string $field, string $direction): DSTable
+    {
+        return $this->sort($field, $direction);
     }
-    public function sort(string $field,string $direction):DSTable{
+
+    public function sort(string $field, string $direction): DSTable
+    {
 
         $this->sorter[] = [
-            'property' => /*$this->tablename.'__'.*/$field,
+            'property' => /*$this->tablename.'__'.*/ $field,
             'direction' => $direction
         ];
         return $this;
     }
 
-    public function start(int $start):DSTable{
+    public function start(int $start): DSTable
+    {
         $this->start = $start;
         return $this;
     }
 
-    public function limit(int $limit):DSTable{
+    public function limit(int $limit): DSTable
+    {
         $this->limit = $limit;
         return $this;
     }
 
-    public function empty():bool { return $this->isEmpty; }
-    public function queried():bool { return $this->isQueried; }
-    public function error():bool { return $this->hasError; }
-    public function errorMessage():string { return $this->errorMessage; }
-    public function warnings():array { return $this->_warnings; }
-    public function moreResults():array { return $this->_moreResults; }
-    
-
-    public function g():array{
-        return $this->get();
+    public function empty(): bool
+    {
+        return $this->isEmpty;
+    }
+    public function queried(): bool
+    {
+        return $this->isQueried;
+    }
+    public function error(): bool
+    {
+        return $this->hasError;
+    }
+    public function errorMessage(): string
+    {
+        return $this->errorMessage;
+    }
+    public function warnings(): array
+    {
+        return $this->_warnings;
+    }
+    public function moreResults(): array
+    {
+        return $this->_moreResults;
     }
 
 
-    public function differentRows(array $records){
+
+
+
+    public function differentRows(array $records)
+    {
         $keymap = [];
-        if (count($records)==0) return false;
-        foreach($records as $record){
-            foreach($record as $key=>$value){
-                $keymap[$key]=true;
+        if (count($records) == 0) return false;
+        foreach ($records as $record) {
+            foreach ($record as $key => $value) {
+                $keymap[$key] = true;
             }
         }
-        foreach($records as $index=>$record){
-            foreach($keymap as $key=>$value){
-                if (!isset($records[$index][$key])){
+        foreach ($records as $index => $record) {
+            foreach ($keymap as $key => $value) {
+                if (!isset($records[$index][$key])) {
                     return true;
                 }
             }
@@ -105,13 +136,14 @@ class DSTable {
         return false;
     }
 
-    public function prepareRecords(array $records):array{
+    public function prepareRecords(array $records): array
+    {
 
-        if ( $records !== array_values($records) ) {
+        if ($records !== array_values($records)) {
             $records = [$records];
         }
-        
-        if ($this->differentRows($records)){
+
+        if ($this->differentRows($records)) {
             // throw new \Exception('Different keys in rows');
         }
         /*
@@ -135,134 +167,206 @@ class DSTable {
         return $records;
     }
 
-    private function requestData(array $input,array $merge):string{
-        
-        $data = json_encode( array_merge([
-            'tablename'=>$this->tablename,
-            'data'=>$input
-        ],$merge),JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    /*
+    private function requestData(array $input, array $merge): string
+    {
+
+        $data = json_encode(array_merge([
+            'tablename' => $this->tablename,
+            'data' => $input
+        ], $merge), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         //if(strlen($data)>1000000) throw new \Exception('Request data too long');
-        return str_replace(chr(92).chr(92),chr(92),$data);
+        return str_replace(chr(92) . chr(92), chr(92), $data);
+    }
+    */
+
+
+    private function requestData(array $input, array $merge): string
+    {
+
+        //print_r($input);
+        $data = json_encode(array_merge([
+            'tablename' => $this->tablename,
+            'data' => $input
+        ], $merge)); //, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        /*
+        echo ($data);
+        echo __LINE__;
+        exit();
+        */
+
+        //if(strlen($data)>1000000) throw new \Exception('Request data too long');
+        return  $data;
     }
 
-    private function dsx_rest_api_set():mixed{
+    private function dsx_rest_api_set(): mixed
+    {
         // $this->db->direct('set @log_dsx_commands=1',[],'r');
         // echo $this->db->singleValue('select @request r',[],'r').PHP_EOL;
+        /*
+        echo $this->db->singleValue('select @request r', [], 'r');
+        exit();
+        */
         $this->db->direct('call dsx_rest_api_set(@request,@result)');
         $this->readWarnings();
         $this->readMoreResults();
-        $res = $this->db->singleValue('select @result s',[],'s');
+        $res = $this->db->singleValue('select @result s', [], 's');
         TualoApplication::deferredTrigger();
-        if ($res===false) return false;
-        return json_decode($res,true);
+        if ($res === false) return false;
+        return json_decode($res, true);
     }
 
-    public function readWarnings():mixed{
-        $this->_warnings = array_merge($this->_warnings,$this->db->getWarnings());
+    public function readWarnings(): mixed
+    {
+        $this->_warnings = array_merge($this->_warnings, $this->db->getWarnings());
         return $this->_warnings;
     }
-    public function readMoreResults():mixed{
+    public function readMoreResults(): mixed
+    {
         $mr = $this->db->moreResults();
-        if (!is_null($mr)){
-            $this->_moreResults = array_merge($this->_moreResults,$mr);
+        if (!is_null($mr)) {
+            $this->_moreResults = array_merge($this->_moreResults, $mr);
         }
         return $this->_moreResults;
     }
-    
 
-    public function delete(mixed $record=[], mixed $options=[]):mixed{
-        try{
-            $input=$this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [ 
-                'd'=> $this->requestData(
+
+    public function delete(mixed $record = [], mixed $options = []): mixed
+    {
+        try {
+            $input = $this->prepareRecords($record);
+            $this->db->direct('set @request = {d}', [
+                'd' => $this->requestData(
                     $input,
-                    array_merge(['type'=>'delete'],$options)
-                ) 
+                    array_merge(['type' => 'delete'], $options)
+                )
             ]);
             return $this->dsx_rest_api_set();
-
-        }catch(\Exception $e){
-            $this->hasError=true;
-            $this->errorMessage=$e->getMessage();
+        } catch (\Exception $e) {
+            $this->hasError = true;
+            $this->errorMessage = $e->getMessage();
         }
         return false;
     }
 
-    
 
-    public function update(mixed $record=[], mixed $options=[]):mixed{
-        try{
-            $input=$this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [ 
-                'd'=> $this->requestData(
+
+    public function update(mixed $record = [], mixed $options = []): mixed
+    {
+        try {
+            $input = $this->prepareRecords($record);
+            $this->db->direct('set @request = {d}', [
+                'd' => $this->requestData(
                     $input,
-                    array_merge(['type'=>'update'],$options)
-                ) 
+                    array_merge(['type' => 'update'], $options)
+                )
             ]);
+
+
             TualoApplication::result('o', json_decode($this->requestData(
                 $input,
-                array_merge(['type'=>'update'],$options)
-            ),true ));
-            
+                array_merge(['type' => 'update'], $options)
+            ), true));
+
             return $this->dsx_rest_api_set();
-        }catch(\Exception $e){
-            $this->hasError=true;
-            $this->errorMessage=$e->getMessage();
+        } catch (\Exception $e) {
+            $this->hasError = true;
+            $this->errorMessage = $e->getMessage();
         }
         return false;
     }
 
-    public function insert(mixed $record=[], mixed $options=[]):mixed{
-        try{
-            $input=$this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [ 
-                'd'=> $this->requestData(
+    public function insert(mixed $record = [], mixed $options = []): mixed
+    {
+        try {
+            $input = $this->prepareRecords($record);
+            $this->db->direct('set @request = {d}', [
+                'd' => $this->requestData(
                     $input,
-                    array_merge(['type'=>'insert','update'=>true],$options)
-                ) 
+                    array_merge(['type' => 'insert', 'update' => true], $options)
+                )
             ]);
 
             //$this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'insert','update'=>true]) ]);
             return $this->dsx_rest_api_set();
-
-        }catch(\Exception $e){
-            $this->hasError=true;
-            $this->errorMessage=$e->getMessage();
+        } catch (\Exception $e) {
+            $this->hasError = true;
+            $this->errorMessage = $e->getMessage();
         }
         return false;
     }
-        
 
 
-    public function read():DSTable{
+
+    public function r(): DSTable
+    {
+        return $this->read();
+    }
+
+    public function read(): DSTable
+    {
         $request = array(
             'start' => $this->start,
-            'shortfieldnames'=>1,
+            'shortfieldnames' => 1,
             'limit' => $this->limit,
             'filter' => $this->filter,
             'sort' => $this->sorter
         );
-        try{
-            $read = DSReadRoute::read($this->db,$this->tablename,$request);
-            $this->isQueried=true;
-            if (count($read['data'])==0){ $this->isEmpty=true; }else{ $this->isEmpty=false; }
+        try {
+            $read = DSReadRoute::read($this->db, $this->tablename, $request);
+            $this->isQueried = true;
+            if (count($read['data']) == 0) {
+                $this->isEmpty = true;
+            } else {
+                $this->isEmpty = false;
+            }
             $this->data = $read['data'];
-        }catch(\Exception $e){
-            $this->hasError=true;
-            $this->errorMessage=$e->getMessage();
+        } catch (\Exception $e) {
+            $this->hasError = true;
+            $this->errorMessage = $e->getMessage();
         }
         return $this;
     }
 
 
-    public function get():array{
+    public function g(string $hashKey = ''): array
+    {
+        return $this->get($hashKey);
+    }
+    public function get(string $hashKey = ''): array
+    {
         $this->read();
+        if ($hashKey !== '') {
+            $hash = [];
+            foreach ($this->data as $record) {
+                $hash[$record[$hashKey]] = $record;
+            }
+            return $hash;
+        }
         return $this->data;
     }
 
-    public function getSingle():array{
-        
-        if (count($this->data)>0){ return $this->data[0];}
+    public function getSingle(): array
+    {
+        if (!$this->isQueried) {
+            $this->read();
+        }
+
+        if (count($this->data) > 0) {
+            return $this->data[0];
+        }
         return [];
+    }
+
+    public function getSingleValue(string $column): mixed
+    {
+        if (!$this->isQueried) {
+            $this->read();
+        }
+
+        if (($elem = $this->getSingle()) &&  isset($elem[$column])) {
+            return $elem[$column];
+        }
+        return false;
     }
 }

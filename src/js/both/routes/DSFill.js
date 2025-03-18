@@ -1,6 +1,6 @@
-Ext.define('Tualo.routes.ds.DSFill',{
+Ext.define('Tualo.routes.ds.DSFill', {
     statics: {
-        load: async function() {
+        load: async function () {
             return [
                 {
                     name: 'DSFill item',
@@ -8,19 +8,19 @@ Ext.define('Tualo.routes.ds.DSFill',{
                 }
             ]
         }
-    }, 
+    },
     url: 'dsfill/:{table_name}',
     handler: {
-        action: function( values ){
+        action: function (values) {
 
-            let fn = async function(){
+            let fn = async function () {
                 const formData = new FormData();
-                formData.append("table_name",values.table_name);
+                formData.append("table_name", values.table_name);
 
-                let res = await fetch('./dssetup/ds-update',{
+                let res = await fetch('./dssetup/ds-update', {
                     method: "POST",
                     body: formData,
-                    }).then((res)=>{ return res.json() });
+                }).then((res) => { return res.json() });
                 Ext.util.History.back();
             }
 
@@ -34,7 +34,7 @@ Ext.define('Tualo.routes.ds.DSFill',{
             });
 
         },
-        before: function ( values, action) {
+        before: function (values, action) {
             action.resume();
         }
 

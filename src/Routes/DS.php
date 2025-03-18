@@ -101,7 +101,10 @@ class DS implements IRoute
                 if ($db->singleValue('select ifnull(read_table,"") v from ds where table_name = {tablename} and use_insert_for_update=1', ['tablename' => $tablename], 'v') != '') {
                     $o = ['useInsertUpdate' => true];
                 }
+
                 if (($result = $table->update($input, $o)) !== false) {
+
+
                     if ($table->error()) {
                         throw new \Exception($table->errorMessage());
                     }

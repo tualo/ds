@@ -7,8 +7,8 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.cmp_ds_definition_command',
     requires: [
-       // 'Ext.exporter.excel.Xlsx',
-       // 'Ext.grid.plugin.Exporter'
+        // 'Ext.exporter.excel.Xlsx',
+        // 'Ext.grid.plugin.Exporter'
     ],
     layout: 'fit',
     items: [
@@ -28,8 +28,8 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
                     columns: 2,
                     vertical: true,
                     items: [
-                        { boxLabel: 'aktueller Datensatz', name: 'fav-color', inputValue: 'current' , checked: true},
-                        { boxLabel: 'aktuelle Auswahl', name: 'fav-color', inputValue: 'selection'},
+                        { boxLabel: 'aktueller Datensatz', name: 'fav-color', inputValue: 'current', checked: true },
+                        { boxLabel: 'aktuelle Auswahl', name: 'fav-color', inputValue: 'selection' },
                         { boxLabel: 'aktuelle Liste', name: 'fav-color', inputValue: 'list' }
                     ]
                 }
@@ -64,13 +64,14 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
 
         for (let i = 0; i < tasks.length; i++) {
             let config = {
-                url: './dssetup/export/definition/'+tasks[i].get('table_name')+'',
+                url: './dssetup/export/definition/' + tasks[i].get('table_name') + '',
                 scope: this,
                 showWait: true,
                 timeout: 300000
             };
+
             Tualo.Ajax.download(config);
         }
-        
+
     }
 });
