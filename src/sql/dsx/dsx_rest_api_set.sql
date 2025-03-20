@@ -12,6 +12,26 @@ BEGIN
 END //
 
 
+CREATE OR REPLACE FUNCTION `fixBackslashBug`(in_json json) RETURNS longtext
+    DETERMINISTIC
+BEGIN 
+    declare test json;
+    set test ='{                                                                                                                                              
+        "data": [
+            {
+                "template": "A\\B"
+            }
+        ]
+    }';
+
+    if ( exists( select template from json_table(test,"$.data[*]" columns( template longtext  path "$.template")) x where template='AB' ) ) then
+        return in_json;
+    else
+        return replace(in_json,'\\\\','\\');
+    end if;
+
+END //
+
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set`( IN  request JSON , OUT  result JSON)
 `whole_proc`:
 BEGIN 
@@ -25,6 +45,13 @@ BEGIN
     DECLARE ref_sql_command LONGTEXT;
     DECLARE i integer;
     DECLARE l integer;
+
+    create table if not exists ds_test (id int primary key auto_increment, data json);
+
+    insert into ds_test (data) values (request);
+    SET request = fixBackslashBug(request);
+    insert into ds_test (data) values (request);
+
     IF (JSON_EXISTS(request,'$.tablename')=0) THEN 
         SET msg = 'tablename not found';
         SET result = JSON_OBJECT('error',msg,'success',0);

@@ -159,8 +159,10 @@ class DSTable
         $data = json_encode(array_merge([
             'tablename' => $this->tablename,
             'data' => $input
-        ], $merge), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        ], $merge), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
+
+        // return  str_replace(chr(92) . chr(92), chr(92), $data);
         return  $data;
     }
 
@@ -195,7 +197,7 @@ class DSTable
     {
         try {
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = JSON_UNQUOTE({d})', [
+            $this->db->direct('set @request = {d}', [
                 'd' => $this->requestData(
                     $input,
                     array_merge(['type' => 'delete'], $options)
@@ -216,7 +218,7 @@ class DSTable
         try {
 
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = JSON_UNQUOTE({d})', [
+            $this->db->direct('set @request = {d}', [
                 'd' => $this->requestData(
                     $input,
                     array_merge(['type' => 'update'], $options)
@@ -243,7 +245,7 @@ class DSTable
     {
         try {
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = JSON_UNQUOTE({d})', [
+            $this->db->direct('set @request = {d}', [
                 'd' => $this->requestData(
                     $input,
                     array_merge(['type' => 'insert', 'update' => true], $options)
