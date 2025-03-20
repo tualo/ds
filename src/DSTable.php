@@ -247,6 +247,7 @@ class DSTable
                 )
             ]);
 
+
             //$this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'insert','update'=>true]) ]);
             return $this->dsx_rest_api_set();
         } catch (\Exception $e) {
