@@ -42,6 +42,7 @@ class DS implements IRoute
 
 
                 $read = DSReadRoute::read($db, $tablename, $_REQUEST);
+
                 App::result('data', $read['data']);
                 App::result('total', $read['total']);
                 App::result('success', true);
