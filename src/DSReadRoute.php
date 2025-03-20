@@ -18,6 +18,7 @@ class DSReadRoute
 
     public static function read($db, $tablename, $request)
     {
+        $db->tinyIntAsBoolean(true);
         TualoApplication::deferredTrigger();
         $config = (TualoApplication::get('configuration'));
         if (!isset($request['shortfieldnames'])) {
@@ -103,6 +104,8 @@ class DSReadRoute
             TualoApplication::result('sqlq', $o['query']);
         }
 
+        $db->tinyIntAsBoolean(true);
+        TualoApplication::result('sqlq', $o['query']);
         $o['data'] = $db->direct($o['query'] . ' ' . $o['order_by'] . ' ' . $o['limitterm']);
 
 

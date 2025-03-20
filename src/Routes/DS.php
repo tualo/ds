@@ -22,6 +22,7 @@ class DS implements IRoute
     {
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
             $db = App::get('session')->getDB();
+            $db->tinyIntAsBoolean(true);
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
             try {
@@ -61,6 +62,7 @@ class DS implements IRoute
 
         Route::add('/ds/(?P<tablename>\w+)/read/(?P<id>.+)', function ($matches) {
             $db = App::get('session')->getDB();
+            $db->tinyIntAsBoolean(true);
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
             try {
@@ -69,6 +71,7 @@ class DS implements IRoute
                 //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 $table = new DSTable($db, $tablename);
                 $read = $table->f('__id', 'eq', $matches['id'])->read()->get();
+
 
                 App::result('data', $read);
                 //App::result('total', $read['total']);
@@ -89,6 +92,7 @@ class DS implements IRoute
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
+            $db->tinyIntAsBoolean(true);
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             $tablename = $matches['tablename'];
@@ -151,6 +155,7 @@ class DS implements IRoute
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
+            $db->tinyIntAsBoolean(true);
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             $tablename = $matches['tablename'];
@@ -199,6 +204,7 @@ class DS implements IRoute
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
+            $db->tinyIntAsBoolean(true);
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             try {

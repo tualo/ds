@@ -649,6 +649,12 @@ BEGIN
             PREPARE stmt FROM sql_command;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
+
+            call debug_message(concat('use_table_name: ',use_table_name));
+            if (@log_dsx_commands=1) THEN
+                drop table if exists test_ds_cmd;
+                create table test_ds_cmd as select sql_command;
+            END IF;
 /*
             select 
                 concat('JSON_OBJECT( "__table_name", ',doublequote(JSON_VALUE(request,'$.tablename')),
@@ -744,6 +750,11 @@ BEGIN
                                 update `',use_table_name,'` 
                                 set file_id=',quote(rec.__file_id),'  
                                 where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data where __id=',quote(rec.__id),')');
+
+                                if (@log_dsx_commands=1) THEN
+                drop table if exists test_ds_cmd;
+                create table test_ds_cmd as select sql_command;
+            END IF;
                             PREPARE stmt FROM sql_command;
                             EXECUTE stmt;
                             DEALLOCATE PREPARE stmt;
