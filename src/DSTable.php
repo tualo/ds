@@ -195,7 +195,7 @@ class DSTable
     {
         try {
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [
+            $this->db->direct('set @request = JSON_UNQUOTE({d})', [
                 'd' => $this->requestData(
                     $input,
                     array_merge(['type' => 'delete'], $options)
@@ -215,7 +215,7 @@ class DSTable
     {
         try {
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [
+            $this->db->direct('set @request = JSON_UNQUOTE({d})', [
                 'd' => $this->requestData(
                     $input,
                     array_merge(['type' => 'update'], $options)
