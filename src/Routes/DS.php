@@ -100,6 +100,7 @@ class DS implements IRoute
             try {
 
                 $input = json_decode(file_get_contents('php://input'), true);
+
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);
                 $table = new DSTable($db, $tablename);
                 $o = [];
@@ -116,7 +117,7 @@ class DS implements IRoute
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
                     App::deferredTrigger();
-                    if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
+                    // if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
 
@@ -124,6 +125,7 @@ class DS implements IRoute
                         'tablename' => $tablename,
                         'concat_set_table' => 1
                     ]);
+
                     App::result('data', $read['data']);
                 } else {
                     App::result('success', false);

@@ -214,6 +214,7 @@ class DSTable
     public function update(mixed $record = [], mixed $options = []): mixed
     {
         try {
+
             $input = $this->prepareRecords($record);
             $this->db->direct('set @request = JSON_UNQUOTE({d})', [
                 'd' => $this->requestData(
@@ -222,6 +223,8 @@ class DSTable
                 )
             ]);
 
+            TualoApplication::result('r', $record);
+            TualoApplication::result('i', $input);
 
             TualoApplication::result('o', json_decode($this->requestData(
                 $input,
