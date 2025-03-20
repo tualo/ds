@@ -146,67 +146,27 @@ class DSTable
         if ($this->differentRows($records)) {
             // throw new \Exception('Different keys in rows');
         }
-        /*
-        $recs = [];
-        foreach($records as $record){
-            $rec = [];
-
-            foreach($record as $key=>$value){
-                if (
-                    ( strpos($key,'__') === false ) &&
-                    ( strpos($key,$this->tablename.'__') === false )
-                ){
-                    $rec[$this->tablename.'__'.$key]=$value;
-                }else{
-                    $rec[$key]=$value;
-                }
-            }
-            $recs[] =$rec;
-        }
-        */
         return $records;
     }
 
-    /*
+
+
+
     private function requestData(array $input, array $merge): string
     {
+
 
         $data = json_encode(array_merge([
             'tablename' => $this->tablename,
             'data' => $input
         ], $merge), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        //if(strlen($data)>1000000) throw new \Exception('Request data too long');
-        return str_replace(chr(92) . chr(92), chr(92), $data);
-    }
-    */
 
-
-    private function requestData(array $input, array $merge): string
-    {
-
-        //print_r($input);
-        $data = json_encode(array_merge([
-            'tablename' => $this->tablename,
-            'data' => $input
-        ], $merge), JSON_UNESCAPED_UNICODE); //, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        /*
-        echo ($data);
-        echo __LINE__;
-        exit();
-        */
-
-        //if(strlen($data)>1000000) throw new \Exception('Request data too long');
         return  $data;
     }
 
     private function dsx_rest_api_set(): mixed
     {
-        // $this->db->direct('set @log_dsx_commands=1',[],'r');
-        // echo $this->db->singleValue('select @request r',[],'r').PHP_EOL;
-        /*
-        echo $this->db->singleValue('select @request r', [], 'r');
-        exit();
-        */
+
         $this->db->direct('call dsx_rest_api_set(@request,@result)');
         $this->readWarnings();
         $this->readMoreResults();
@@ -280,7 +240,7 @@ class DSTable
     {
         try {
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [
+            $this->db->direct('set @request = JSON_UNQUOTE({d})', [
                 'd' => $this->requestData(
                     $input,
                     array_merge(['type' => 'insert', 'update' => true], $options)
