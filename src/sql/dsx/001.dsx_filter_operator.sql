@@ -13,5 +13,7 @@ BEGIN
     IF operator='like' THEN SET result='like'; END IF;
     IF operator='in' THEN SET result='in'; END IF;
     IF operator='not in' THEN SET result='not in'; END IF;
+    IF operator='is null' THEN SET result='is null'; END IF;
+    IF operator='is not null' THEN SET result='is not null'; END IF;
     RETURN result;
 END //

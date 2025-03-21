@@ -28,21 +28,26 @@ class DS implements IRoute
             try {
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
-                if (isset($_REQUEST['filter_by_search']) && ($_REQUEST['filter_by_search'] == 1) && !isset($_REQUEST['fulltext'])) {
+                $input = json_decode(file_get_contents('php://input'), true);
+                if (is_null($input)) {
+                    $input = $_REQUEST;
+                }
+
+                if (isset($input['filter_by_search']) && ($input['filter_by_search'] == 1) && !isset($input['fulltext'])) {
                     $sql = "select count(*) c from ds where table_name = 'ds_ftsearch_" . $tablename . "'";
                     $count = $db->singleValue($sql, [], 'c');
                     if ($count > 0) {
-                        $_REQUEST['filter_by_search'] = 2;
-                        $_REQUEST['fulltext'] = 2;
+                        $input['filter_by_search'] = 2;
+                        $input['fulltext'] = 2;
                     }
                 }
 
-                if (isset($_REQUEST['search'])) {
-                    $_REQUEST['search'] = DS::sanitizeInput($_REQUEST['search']);
+                if (isset($input['search'])) {
+                    $input['search'] = DS::sanitizeInput($input['search']);
                 }
 
 
-                $read = DSReadRoute::read($db, $tablename, $_REQUEST);
+                $read = DSReadRoute::read($db, $tablename, $input);
 
                 App::result('data', $read['data']);
                 App::result('total', $read['total']);

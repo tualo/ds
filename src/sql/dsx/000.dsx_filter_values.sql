@@ -182,6 +182,26 @@ BEGIN
          
         (
 
+
+        select
+                REGEXP_REPLACE(property,concat('^',JSON_VALUE(request,'$.tablename'),'__'),'') `property`,
+                `operator`,
+                '' `value`
+            from
+
+                JSON_TABLE( filterObject , '$[*]'  COLUMNS (
+
+                        `property` varchar(128) path '$.property',
+                        `operator` varchar(15) path '$.operator' -- ,
+                        -- `value`    JSON path '$.value'
+                        
+                    ) 
+                ) as jtx
+            where 
+                `property` is not null
+                and `operator` in ('is not null','is null')
+
+        union
             
             select 
                 
@@ -207,6 +227,7 @@ BEGIN
                 where 
                     `property` is not null
                     and `value` is not null
+                    and `operator` not in ('is not null','is null')
             ) jt
 
             join ds_column 
@@ -239,7 +260,8 @@ BEGIN
                 ) as jtx
                 where 
                     `property` is not null
-                                    and `value` is not null
+                    and `value` is not null
+                    and `operator` not in ('is not null','is null')
             ) jt
 
             where    `property` = '__id'
@@ -304,9 +326,12 @@ BEGIN
             
             and `property` is not null
             and `operator` in ('in','not in')
+            and `operator` not in ('is not null','is null')
         ) c group by        
             `property`,
             `operator`    
+
+
 
         ) FILTER_TABLE
 

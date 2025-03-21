@@ -46,11 +46,7 @@ BEGIN
     DECLARE i integer;
     DECLARE l integer;
 
-    create table if not exists ds_test (id int primary key auto_increment, data json);
-
-    insert into ds_test (data) values (request);
     SET request = fixBackslashBug(request);
-    insert into ds_test (data) values (request);
 
     IF (JSON_EXISTS(request,'$.tablename')=0) THEN 
         SET msg = 'tablename not found';
