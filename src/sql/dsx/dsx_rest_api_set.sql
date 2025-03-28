@@ -726,7 +726,7 @@ BEGIN
                         where __file_data is not null
                     ) do
 
-                        if length(rec.__file_data) <> 0 then
+                        
                         
                             insert into ds_files    
                             (
@@ -753,21 +753,30 @@ BEGIN
                                 md5(rec.__file_data),
                                 @sessionuser
                             ) on duplicate key update
-                                mtime=now(),
-                                size=length(rec.__file_data),
-                                hash=md5(rec.__file_data),
+                                -- ,
+                                -- size=length(rec.__file_data),
+                                -- hash=md5(rec.__file_data),
+
+                                -- name=rec.__file_name,
+
                                 login=@sessionuser;
                             
-                            insert into ds_files_data
-                            (
-                                file_id,
-                                data
-                            ) values
-                            (
-                                rec.__file_id,
-                                rec.__file_data
-                            ) on duplicate key update
-                                data=rec.__file_data;
+                            
+                            if length(rec.__file_data) <> 0 then
+                                insert into ds_files_data
+                                (
+                                    file_id,
+                                    data
+                                ) values
+                                (
+                                    rec.__file_id,
+                                    rec.__file_data
+                                ) on duplicate key update
+                                    data=rec.__file_data;
+
+                                update ds_files set size=length(rec.__file_data), hash=md5(rec.__file_data),mtime=now() where file_id=rec.__file_id;
+                                
+                            end if;
 
                             set sql_command = concat('
                                 update `',use_table_name,'` 
@@ -775,15 +784,14 @@ BEGIN
                                 where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data where __id=',quote(rec.__id),')');
 
                                 if (@log_dsx_commands=1) THEN
-                drop table if exists test_ds_cmd;
-                create table test_ds_cmd as select sql_command;
-            END IF;
+                                    drop table if exists test_ds_cmd;
+                                    create table test_ds_cmd as select sql_command;
+                                END IF;
                             PREPARE stmt FROM sql_command;
                             EXECUTE stmt;
                             DEALLOCATE PREPARE stmt;
 
                             call ds_files_cleanup(use_table_name);
-                        end if;
                     end for;
 
 
