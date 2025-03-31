@@ -37,7 +37,7 @@ class DumpDS implements ICommandline
         $sessiondb = $session->db;
         $dbs = $sessiondb->direct('select username db_user, password db_pass, id db_name, host db_host, port db_port from macc_clients ');
         foreach ($dbs as $db) {
-            if (($clientName != '') && ($clientName != $db['dbname'])) {
+            if (($clientName != '') && ($clientName != $db['db_name'])) {
                 continue;
             } else {
                 App::set('clientDB', $session->newDBByRow($db));
@@ -57,9 +57,9 @@ class DumpDS implements ICommandline
             if ($clientDBCredentials['dbport'] != '') $p  = ' -P' . $clientDBCredentials['dbport'];
             if ($clientDBCredentials['dbpass'] != '') $p .= ' -p"' . $clientDBCredentials['dbpass'] . '"';
 
-            exec(dirname(__DIR__, 1) . "/sqlexport/dump_ds_definition \"" . App::get('dataset') . "\" -h" . $clientDBCredentials['dbhost'] . " -u" . $clientDBCredentials['dbuser'] . " " . $p . " " . $clientDBCredentials['dbname'] . " ", $output, $return);
+            exec(dirname(__DIR__, 1) . "/sqlexport/dump_ds_definition \"" . App::get('dataset') . "\" -h" . $clientDBCredentials['db_host'] . " -u" . $clientDBCredentials['db_user'] . " " . $p . " " . $clientDBCredentials['db_name'] . " ", $output, $return);
             echo implode(PHP_EOL, $output);
-            exec(dirname(__DIR__, 1) . "/sqlexport/dump_ds_access \"" . App::get('dataset') . "\" -h" . $clientDBCredentials['dbhost'] . " -u" . $clientDBCredentials['dbuser'] . " " . $p . " " . $clientDBCredentials['dbname'] . " ", $output, $return);
+            exec(dirname(__DIR__, 1) . "/sqlexport/dump_ds_access \"" . App::get('dataset') . "\" -h" . $clientDBCredentials['db_host'] . " -u" . $clientDBCredentials['db_user'] . " " . $p . " " . $clientDBCredentials['db_name'] . " ", $output, $return);
             echo implode(PHP_EOL, $output);
         };
         App::set('dataset', $args->getArg('dataset'));
