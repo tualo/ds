@@ -77,7 +77,8 @@ class DSReadRoute
 
         $db->direct('set @request = {request};', ['request' => json_encode($request)]);
         $db->direct('call dsx_rest_api_get(@request,@result);');
-        $mysqlresults = [];
+        $mysqlresults = $db->moreResults();
+        /*
         do {
             if ($result = $db->mysqli->use_result()) {
                 $mysqlresults[] = $result->fetch_all(MYSQLI_ASSOC);
@@ -87,6 +88,7 @@ class DSReadRoute
                 $mysqlresults[] = '----------';
             }
         } while ($db->mysqli->next_result());
+        */
         // if (isset($config['__RETURN_DS_QUERY_PROCRESULTS__'])&&($config['__RETURN_DS_QUERY_PROCRESULTS__']==1)){
         if (TualoApplication::configuration('ds', 'debug_results', '0') == '1') {
             TualoApplication::result('m', $db->direct('select @request'));
