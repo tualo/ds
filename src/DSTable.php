@@ -217,6 +217,8 @@ class DSTable
     {
         try {
 
+            $this->db->direct('set @log_dsx_commands=1');
+
             $input = $this->prepareRecords($record);
             $this->db->direct('set @request = {d}', [
                 'd' => $this->requestData(

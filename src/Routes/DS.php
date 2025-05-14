@@ -133,6 +133,7 @@ class DS implements IRoute
 
                     App::result('data', $read['data']);
                 } else {
+                    App::result('last_sql', $db->last_sql);
                     App::result('success', false);
                     App::result('warnings',  $db->getWarnings());
 
@@ -153,6 +154,7 @@ class DS implements IRoute
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
                 }
+                App::result('last_sql', $db->last_sql);
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;

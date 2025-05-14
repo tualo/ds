@@ -1,76 +1,87 @@
 <?php
+
 namespace Tualo\Office\DS;
+
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\DS\DataRenderer;
 use Tualo\Office\DS\DSTable;
 
-class DSSetup {
+class DSSetup
+{
     private mixed $db = "";
     private mixed $tablename = "";
     private array $tables = [
-        'ds'=>['insert_command'=>'INSERT INTO','update_command'=>'ON DUPLICATE KEY UPDATE'],
-        'ds_column'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_column_list_label'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_column_form_label'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_dropdownfields'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_reference_tables'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_addcommands'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_access'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>'','where'=>['role','in',['administration','_default_',]]],
-        'ds_renderer'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
-        'ds_listroutes'=>['insert_command'=>'INSERT IGNORE INTO','update_command'=>''],
+        'ds' => ['insert_command' => 'INSERT INTO', 'update_command' => 'ON DUPLICATE KEY UPDATE'],
+        'ds_column' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_column_list_label' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_column_form_label' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_dropdownfields' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_reference_tables' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_addcommands' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_access' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => '', 'where' => ['role', 'in', ['administration', '_default_',]]],
+        'ds_renderer' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        'ds_listroutes' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
     ];
-    function __construct(mixed $db,string $tablename){
-        $this->db=$db;
+    function __construct(mixed $db, string $tablename)
+    {
+        $this->db = $db;
         $this->tablename = $tablename;
     }
-    public function table($tablename):DSSetup{
-        return new DSSetup($this->db,$tablename);
+    public function table($tablename): DSSetup
+    {
+        return new DSSetup($this->db, $tablename);
     }
 
-    public function export(){
+    public function export()
+    {
         $data = [];
-        foreach($this->tables as $tablename=>$info){
+        foreach ($this->tables as $tablename => $info) {
             $table = DSTable::init($this->db)
                 ->t('ds_column')
-                ->f('table_name','=',$tablename)
-                ->f('writeable','=',1)
-                ->f('existsreal','=',1);
-                
+                ->f('table_name', '=', $tablename)
+                ->f('writeable', '=', 1)
+                ->f('existsreal', '=', 1);
+
             $this->tables[$tablename]['config'] = $table->get();
         }
-        foreach($this->tables as $tablename=>$info){
+        foreach ($this->tables as $tablename => $info) {
             $table = DSTable::init($this->db)
                 ->t($tablename)
-                ->f('table_name','=',$this->tablename);
-            if (isset($info['where'])){
-                $table->f($info['where'][0],$info['where'][1],$info['where'][2]);
+                ->f('table_name', '=', $this->tablename);
+            if (isset($info['where'])) {
+                $table->f($info['where'][0], $info['where'][1], $info['where'][2]);
             }
-                
+
             $values = $table->get();
 
 
-            if ($table->error()){
+            if ($table->error()) {
                 throw new \Exception($table->errorMessage());
             }
-            foreach($values as $key=>$value){
+            foreach ($values as $key => $value) {
                 $flds = [];
                 $vals = [];
                 $upds = [];
-                foreach($info['config'] as $config){
-                    $config['column_name']=strtolower($config['column_name']);
-                    if (isset($value[$config['column_name']])){
-                        $flds[] = '`'.$config['column_name'].'`';
-                        $upds[] = '`'.$config['column_name'].'`=values(`'.$config['column_name'].'`)';
-                        $vals[] = $this->db->escape_string($value[$config['column_name']]);
+                $types = [];
+                foreach ($info['config'] as $config) {
+                    $config['column_name'] = strtolower($config['column_name']);
+                    if (isset($value[$config['column_name']])) {
+                        $flds[] = '`' . $config['column_name'] . '`';
+                        $upds[] = '`' . $config['column_name'] . '`=values(`' . $config['column_name'] . '`)';
+                        if (gettype($value[$config['column_name']]) == 'boolean') {
+                            $vals[] = ($value[$config['column_name']]) ? 1 : 0;
+                        } else {
+                            $vals[] = $this->db->escape_string($value[$config['column_name']]);
+                        }
+                        $types[] = $config['data_type'] . ' ' . gettype($value[$config['column_name']]);
                     }
                 }
                 $cmd = $info['insert_command'];
                 $update_command = $info['update_command'];
-                if ($update_command!=''){
-                    $update_command = 'ON DUPLICATE KEY UPDATE '.implode(',',$upds);
+                if ($update_command != '') {
+                    $update_command = 'ON DUPLICATE KEY UPDATE ' . implode(',', $upds);
                 }
-                $data[] = "$cmd `$tablename` (".implode(',',$flds).") VALUES ('".implode("','",$vals)."') $update_command; ";
-            
+                $data[] = "$cmd `$tablename` (" . implode(',', $flds) . ") VALUES ('" . implode("','", $vals) . "') $update_command; ";
             }
         }
         //print_r($this->tables);

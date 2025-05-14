@@ -62,9 +62,11 @@ BEGIN
 
     if (@log_dsx_commands=1) THEN
         drop table if exists test_ds_request;
-        create table test_ds_request as select request;
+        create table test_ds_request (
+            id int auto_increment primary key,
+            note longtext
+        );
     END IF;
-
     IF 
         (JSON_VALUE(request,'$.type')='update') 
         and 
@@ -76,7 +78,8 @@ BEGIN
         SET request=JSON_SET(request,'$.type','insert');
         SET request=JSON_SET(request,'$.update',true);
     END IF;
-    
+
+
 
     IF (
         JSON_VALUE(request,'$.type')='update'
@@ -125,7 +128,9 @@ BEGIN
     select JSON_TYPE(request ) into @json_request_type;
 
 
+
     IF JSON_TYPE(JSON_EXTRACT(request,'$.data'))='ARRAY' THEN 
+ 
         SET use_table_name = JSON_VALUE(request,'$.tablename');
 
         select 
@@ -166,7 +171,8 @@ BEGIN
                 and column_type <> ''
             ;
 
-            
+            select 3,use_fields,use_table_name;
+
 
             drop table if exists temp_dsx_rest_data;
             set sql_command = concat( 
@@ -189,6 +195,7 @@ BEGIN
             if (@log_dsx_commands=1) THEN
                 drop table if exists test_ds_cmd;
                 create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
             END IF;
 
 
@@ -218,6 +225,7 @@ BEGIN
                 if (@log_dsx_commands=1) THEN
                     drop table if exists test_ds_cmd;
                     create table test_ds_cmd as select record.s;
+                insert into test_ds_request (note) values (record.s);
                 END IF;
 
                     PREPARE stmt FROM record.s;
@@ -230,6 +238,7 @@ BEGIN
                 if (@log_dsx_commands=1) THEN
                     drop table if exists test_ds_cmd;
                     create table test_ds_cmd as select '208' s;
+                insert into test_ds_request (note) values ('208');
                 END IF;
 
             FOR record IN (
@@ -280,6 +289,7 @@ BEGIN
                 if (@log_dsx_commands=1) THEN
                     drop table if exists test_ds_cmd;
                     create table test_ds_cmd as select record.s;
+                insert into test_ds_request (note) values (record.s);
                 END IF;
                 PREPARE stmt FROM record.s;
                 EXECUTE stmt;
@@ -397,6 +407,7 @@ BEGIN
                     if (@log_dsx_commands=1) THEN
                         drop table if exists test_ds_cmd;
                         create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
                     END IF;
                     PREPARE stmt FROM sql_command;
                     EXECUTE stmt;
@@ -436,6 +447,7 @@ BEGIN
                     if (@log_dsx_commands=1) THEN
                         drop table if exists test_ds_cmd;
                         create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
                     END IF;
 
                     PREPARE stmt FROM sql_command;
@@ -472,6 +484,7 @@ BEGIN
                     if (@log_dsx_commands=1) THEN
                         drop table if exists test_ds_cmd;
                         create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
                     END IF;
 
                     PREPARE stmt FROM sql_command;
@@ -618,6 +631,7 @@ BEGIN
             if (@log_dsx_commands=1) THEN
                 drop table if exists test_ds_cmd;
                 create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
             END IF;
 
 
@@ -659,7 +673,6 @@ BEGIN
             PREPARE stmt FROM sql_command;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
-            
 
             alter table temp_dsx_rest_data add __clientId text;
             set sql_command = concat('update temp_dsx_rest_data set __clientid = __id');
@@ -677,6 +690,7 @@ BEGIN
             if (@log_dsx_commands=1) THEN
                 drop table if exists test_ds_cmd;
                 create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
             END IF;
 /*
             select 
@@ -786,6 +800,7 @@ BEGIN
                                 if (@log_dsx_commands=1) THEN
                                     drop table if exists test_ds_cmd;
                                     create table test_ds_cmd as select sql_command;
+                insert into test_ds_request (note) values (sql_command);
                                 END IF;
                             PREPARE stmt FROM sql_command;
                             EXECUTE stmt;
