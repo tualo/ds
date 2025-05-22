@@ -115,7 +115,7 @@ class DSTable
 
 
 
-    public function appenFileFromUploadForm(array $record, string $attribute): array
+    public function appendFileFromUploadForm(array $record, string $attribute): array
     {
         $record = array_merge($record, DSFiles::fromUploadForm($attribute));
         return $record;
