@@ -79,6 +79,18 @@ class DSFiles
         return $this->db->singleRow("select * from ds_files where file_id = {__file_id} and table_name= {tablename}", $record);
     }
 
+    public function decode(string $dbcontent): string
+    {
+        if (strpos($dbcontent, 'data:') === 0) {
+            $parts = explode(',', $dbcontent, 2);
+            if (count($parts) == 2) {
+                return base64_decode($parts[1]);
+            }
+        }
+        return base64_decode($dbcontent);
+    }
+
+
     public function getBase64(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
     {
 
