@@ -67,7 +67,7 @@ class DSFiles
     }
 
 
-    public function getInfo(string $fieldName, string $fieldValue, bool $emptyOnError = false, array $record = []): array
+    public function getInfo(string $fieldName, string $fieldValue, bool $emptyOnError = false, array $record = []): array|false
     {
         if (empty($record)) {
             $record = $this->getRecord($fieldName, $fieldValue, $emptyOnError);
