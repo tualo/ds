@@ -53,20 +53,38 @@ class DSFiles
     // :php
     //    $logodata = \Tualo\Office\DS\DSFiles::instance('tualocms_bilder')->getBase64('titel','Wahllogo'));
 
-    public function getBase64(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
+    public function getRecord(string $fieldName, string $fieldValue, bool $emptyOnError = false): array
     {
-
         $table = new DSTable($this->db, $this->tablename);
         $table->filter($fieldName, '=', $fieldValue);
         $table->read();
         if ($table->empty()) {
             $this->error = 'File not found! (in ' . $this->tablename . ')';
-            if ($emptyOnError) return '';
+            if ($emptyOnError) return [];
             throw new \Exception('File not found!');
         }
+        return $table->getSingle();
+    }
 
-        $record = $table->getSingle();
+
+    public function getInfo(string $fieldName, string $fieldValue, bool $emptyOnError = false, array $record = []): array
+    {
+        if (empty($record)) {
+            $record = $this->getRecord($fieldName, $fieldValue, $emptyOnError);
+            if (!isset($record['__file_id'])) {
+                throw new \Exception('__file_id not found!');
+            }
+        }
         $record['tablename'] = $this->tablename;
+        return $this->db->singleRow("select * from ds_files where file_id = {__file_id} and table_name= {tablename}", $record, 'type');
+    }
+
+    public function getBase64(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
+    {
+
+        $record = $this->getRecord($fieldName, $fieldValue, $emptyOnError);
+        $record['tablename'] = $this->tablename;
+        $info = $this->getInfo($fieldName, $fieldValue, $emptyOnError, $record);
 
         if (($mime = $this->db->singleValue("select type from ds_files where file_id = {__file_id} and table_name= {tablename}", $record, 'type')) === false) {
 
