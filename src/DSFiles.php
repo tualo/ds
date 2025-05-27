@@ -76,7 +76,7 @@ class DSFiles
             }
         }
         $record['tablename'] = $this->tablename;
-        return $this->db->singleRow("select * from ds_files where file_id = {__file_id} and table_name= {tablename}", $record, 'type');
+        return $this->db->singleRow("select * from ds_files where file_id = {__file_id} and table_name= {tablename}", $record);
     }
 
     public function getBase64(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
