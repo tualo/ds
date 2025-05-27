@@ -90,6 +90,13 @@ class DSFiles
         return base64_decode($dbcontent);
     }
 
+    public function getDecoded(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
+    {
+        return $this->decode($this->getBase64($fieldName, $fieldValue, $emptyOnError));
+    }
+
+
+
 
     public function getBase64(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
     {
