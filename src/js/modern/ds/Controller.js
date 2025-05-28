@@ -178,7 +178,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         let me = this,
             model = me.getViewModel(),
             store = me.getStore();
-        console.debug('onDataChanged', 'getModifiedRecords', store.getModifiedRecords());
+        // console.debug('onDataChanged', 'getModifiedRecords', store.getModifiedRecords());
         model.set('isModified', store.getModifiedRecords().length !== 0);
     },
 
