@@ -25,7 +25,7 @@ class StoredProcedures extends PostCheck
             'dsx_get_key_sql_prefix' => '9d2af627f43fc988f26cd4902eabe998',
             'dsx_filter_term' => '54352cc2aef440d4d30e111106907d51',
             'dsx_filter_values_extract' => '302f4d9815bb7b237bf32afb75c522db',
-            'dsx_rest_api_get' => '04db0a71970137c98f4c2e2342b2ae69',
+            'dsx_rest_api_get' => 'ee98268f7b89e9d3a628a68302126411',
             'dsx_rest_api_set' => 'ac69f194061d93c7d5f8b945d5e202d4',
             'ds_create_fulltext_search' => '4a247175446edccbc654941dfba42dd7'
         ];
