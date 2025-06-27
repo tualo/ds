@@ -81,33 +81,31 @@ group by
 order by
     min_position;
 
-create
-or replace view view_ds_formtabs as
-select
-    `ds_column_form_label`.`table_name`,
-    JSON_OBJECT(
-        "xtype",
-        "panel",
-        "title",
-        `view_ds_formtabs_fieldsets`.`tab_title`,
-        "padding",
-        12,
-        "scrollable",
-        "y",
-        "items",
-        JSON_MERGE('[]', `view_ds_formtabs_fieldsets`.`js`)
-    ) js,
-    min(ds_column_form_label.position) position
-from
-    `ds_column_form_label`
-    join `view_ds_formtabs_fieldsets` on 
-    
-    `ds_column_form_label`.`table_name` = `view_ds_formtabs_fieldsets`.`table_name`
-    and SUBSTRING_INDEX(`field_path`, '/', 1) = `view_ds_formtabs_fieldsets`.`tab_title`
-    and `ds_column_form_label`.`active` = 1
-group by
-    `ds_column_form_label`.`table_name`,
-    `view_ds_formtabs_fieldsets`.`tab_title`
+create or replace view view_ds_formtabs as
+
+    select
+        `ds_column_form_label`.`table_name`,
+        JSON_OBJECT(
+            "xtype", "tualodsform",
+            "title",  `view_ds_formtabs_fieldsets`.`tab_title` ,
+            "padding",  12,
+            "scrollable",  "y",
+            "items", JSON_MERGE('[]', `view_ds_formtabs_fieldsets`.`js`)
+        ) js,
+        min(ds_column_form_label.position) position
+    from
+        `ds_column_form_label`
+        join `view_ds_formtabs_fieldsets` on 
+        
+        `ds_column_form_label`.`table_name` = `view_ds_formtabs_fieldsets`.`table_name`
+        and SUBSTRING_INDEX(`field_path`, '/', 1) = `view_ds_formtabs_fieldsets`.`tab_title`
+        and `ds_column_form_label`.`active` = 1
+    group by
+        `ds_column_form_label`.`table_name`,
+        `view_ds_formtabs_fieldsets`.`tab_title`
+
+
+
 union
 select
     ds_reference_tables.reference_table_name `table_name`,

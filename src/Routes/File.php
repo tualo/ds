@@ -1,69 +1,68 @@
 <?php
+
 namespace Tualo\Office\DS\Routes;
+
 use Exception;
 use Tualo\Office\Basic\TualoApplication as App;
-use Tualo\Office\Basic\Route ;
+use Tualo\Office\Basic\Route;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSFileHelper;
 
 
-class File implements IRoute{
-    public static function register(){
+class File implements IRoute
+{
+    public static function register()
+    {
 
-        Route::add('/dsfile/download',function(){
+        Route::add('/dsfile/download', function () {
 
             $db = App::get('session')->getDB();
             $session = App::get('session');
             try {
-                
+
                 $tablename = $_REQUEST['t'];
                 $id = intval($_REQUEST['id']);
-                $direct=false;
-                $base64=false;
-                $maxwidth=-1;
-                $maxheight=-1;
-                $result = DSFileHelper::getFile( $db,$tablename,$id, $direct,$base64,$maxwidth,$maxheight );
-                foreach($result as $k=>$v){
-                    App::result($k,$v);
+                $direct = false;
+                $base64 = false;
+                $maxwidth = -1;
+                $maxheight = -1;
+                $result = DSFileHelper::getFile($db, $tablename, $id, $direct, $base64, $maxwidth, $maxheight);
+                foreach ($result as $k => $v) {
+                    App::result($k, $v);
                 }
-                
-            }catch(\Exception $e){
+            } catch (\Exception $e) {
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        
-        },array('get','post'),true);
+        }, array('get', 'post'), true);
 
-        Route::add('/dsfile/upload',function(){
+        Route::add('/dsfile/upload', function () {
             DSFileHelper::uploadRoute($tablename = $_REQUEST['t']);
-        },array('get','post'),true);
+        }, array('get', 'post'), true);
 
-        Route::add('/dsfile/(?P<tablename>[\w\-\_\|]+)/upload',function($matches){
+        Route::add('/dsfile/(?P<tablename>[\w\-\_\|]+)/upload', function ($matches) {
             DSFileHelper::uploadRoute($tablename = $matches['tablename']);
-        });
+        }, ['post'], true);
 
-        Route::add('/dsfile/mime',function(){
+        Route::add('/dsfile/mime', function () {
 
             $db = App::get('session')->getDB();
             try {
-                
+
                 $tablename = $_REQUEST['t'];
-        
-                if (isset($_REQUEST['id']) && ($tablename!='') ) {
+
+                if (isset($_REQUEST['id']) && ($tablename != '')) {
                     $id = intval($_REQUEST['id']);
-                    $result = DSFileHelper::getFileMimeType( $db,$tablename,$id );
-                    foreach($result as $k=>$v){
-                        App::result($k,$v);
+                    $result = DSFileHelper::getFileMimeType($db, $tablename, $id);
+                    foreach ($result as $k => $v) {
+                        App::result($k, $v);
                     }
                 }
-        
-                
-            }catch(Exception $e){
+            } catch (Exception $e) {
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        
-        },array('get','post'),true);
+        }, array('get', 'post'), true);
     }
 }

@@ -20,13 +20,13 @@ class StoredProcedures extends PostCheck
             'dsx_filter_proc' => 'a5fcad4fb7ac60a5cead96de31794ac4',
             'dsx_read_order' => '8163802ef4b62bdd5294b853e36d26ca',
             'create_or_upgrade_hstr_table' => 'ad429a9b1ae27217a536bede47edaf2e',
-            'dsx_filter_operator' => '8841e1840ec0dff0a44c1ea43020687e',
-            'dsx_get_key_sql' => 'f452ab71edbfa2adf7b16867bdfa0077',
-            'dsx_get_key_sql_prefix' => '535002a61e8621194e93820b9dea7a16',
+            'dsx_filter_operator' => '02052d4b2764748d2dd99d70902a4f18',
+            'dsx_get_key_sql' => '9dd4bf05f039f4f8cbd447c16df05cfe',
+            'dsx_get_key_sql_prefix' => '9d2af627f43fc988f26cd4902eabe998',
             'dsx_filter_term' => '54352cc2aef440d4d30e111106907d51',
             'dsx_filter_values_extract' => '302f4d9815bb7b237bf32afb75c522db',
-            'dsx_rest_api_get' => '3f0eaa8c845f2065502577aac69478fd',
-            'dsx_rest_api_set' => 'a653001210590673730607ab42d8db78',
+            'dsx_rest_api_get' => '04db0a71970137c98f4c2e2342b2ae69',
+            'dsx_rest_api_set' => 'ac69f194061d93c7d5f8b945d5e202d4',
             'ds_create_fulltext_search' => '4a247175446edccbc654941dfba42dd7'
         ];
         self::procedureCheck(
