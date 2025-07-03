@@ -1,3 +1,3 @@
 # ds
 
-Datenstämme
+Datenstämme, Verwalten von Tabellen und Zugriffsrechten
