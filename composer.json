@@ -19,10 +19,10 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "tualo/extjscmplr": "*",
-    "phpoffice/phpspreadsheet": "*",
-    "ramsey/uuid": "*",
-    "tualo/tualo-ext-shim": "*"
+    "tualo/extjscmplr": "^1.0.2",
+    "phpoffice/phpspreadsheet": "^4.4.0",
+    "ramsey/uuid": "~4.9.0",
+    "tualo/tualo-ext-shim": "^1.0.1"
   },
-  "version": "1.0.1"
+  "version": "1.0.2"
 }
