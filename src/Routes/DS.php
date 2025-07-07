@@ -62,7 +62,39 @@ class DS implements IRoute
 
             Route::$finished = true;
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [
+            'errorOnUnexpected' => true,
+            'errorOnInvalid' => true,
+            'fields' => [
+                'page' => [
+                    'required' => false,
+                    'type' => 'int',
+                    'min' => 0,
+                    'max' => 10000000
+                ],
+                'start' => [
+                    'required' => false,
+                    'type' => 'int',
+                    'min' => 0,
+                    'max' => 10000000
+                ],
+
+                'limit' => [
+                    'required' => false,
+                    'type' => 'int',
+                    'min' => 0,
+                    'max' => 10000000
+                ],
+                'sort' => [
+                    'required' => false,
+                    'type' => 'array|string',
+                ],
+                'filter' => [
+                    'required' => false,
+                    'type' => 'array|string',
+                ]
+            ]
+        ]);
 
 
         Route::add('/ds/(?P<tablename>\w+)/read/(?P<id>.+)', function ($matches) {
@@ -91,7 +123,7 @@ class DS implements IRoute
 
             Route::$finished = true;
             App::contenttype('application/json');
-        }, ['get'], true);
+        }, ['get'], true, []);
 
         Route::add('/ds/(?P<tablename>\w+)/update', function ($matches) {
             App::contenttype('application/json');
