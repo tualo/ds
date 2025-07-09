@@ -93,6 +93,7 @@ class DS implements IRoute
                     'required' => false,
                     'type' => 'array|string',
                 ],
+
                 'filter_by_search' => [
                     'required' => false,
                     'type' => 'int',
@@ -118,10 +119,10 @@ class DS implements IRoute
                     'max' => 1
                 ],
                 'tablename' => [
-                    'required' => true,
+                    'required' => false,
                     'type' => 'string',
                     'minlength' => 1,
-                    'maxlength' => 64,
+                    'maxlength' => 128,
                     'pattern' => '/^[a-zA-Z0-9_]+$/'
                 ],
             ]
