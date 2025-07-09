@@ -92,7 +92,38 @@ class DS implements IRoute
                 'filter' => [
                     'required' => false,
                     'type' => 'array|string',
-                ]
+                ],
+                'filter_by_search' => [
+                    'required' => false,
+                    'type' => 'int',
+                    'min' => 0,
+                    'max' => 2
+                ],
+                'search' => [
+                    'required' => false,
+                    'type' => 'string',
+                    'minlength' => 0,
+                    'maxlength' => 1000
+                ],
+                'fulltext' => [
+                    'required' => false,
+                    'type' => 'int',
+                    'min' => 0,
+                    'max' => 2
+                ],
+                'concat_set_table' => [
+                    'required' => false,
+                    'type' => 'int',
+                    'min' => 0,
+                    'max' => 1
+                ],
+                'tablename' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'minlength' => 1,
+                    'maxlength' => 64,
+                    'pattern' => '/^[a-zA-Z0-9_]+$/'
+                ],
             ]
         ]);
 
