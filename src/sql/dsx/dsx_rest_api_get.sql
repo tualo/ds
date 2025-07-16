@@ -272,7 +272,7 @@ BEGIN
     if not exists (select ds_access.table_name from ds_access join view_session_groups on ds_access.role = view_session_groups.group where ds_access.table_name=JSON_VALUE(userequest,'$.tablename') and `read`=1) then
         set @msg=concat('Sie haben kein Leserecht für `',JSON_VALUE(userequest,'$.tablename'),'`.');
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = @msg, MYSQL_ERRNO = 1001;
+        SET MESSAGE_TEXT = @msg, MYSQL_ERRNO = 15403;
     end if;
 
     SELECT concat( dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),ds.table_name) ,' '), concat('`',JSON_VALUE(userequest,'$.tablename'),'`.','`',ds.displayfield,'` '), if( ifnull(ds.read_table,'')='',ds.table_name,ds.read_table ),ds.searchany 

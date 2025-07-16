@@ -109,7 +109,6 @@ class DSReadRoute
         }
 
         $db->tinyIntAsBoolean(true);
-        TualoApplication::result('sqlq', $o['query']);
         $o['data'] = $db->direct($o['query'] . ' ' . $o['order_by'] . ' ' . $o['limitterm']);
 
 
