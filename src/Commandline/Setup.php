@@ -4,12 +4,8 @@ namespace Tualo\Office\DS\Commandline;
 
 use Garden\Cli\Cli;
 use Garden\Cli\Args;
-use phpseclib3\Math\BigInteger\Engines\PHP;
-use Tualo\Office\Basic\ISetupCommandline;
-use Tualo\Office\ExtJSCompiler\Helper;
-use Tualo\Office\Basic\TualoApplication as App;
-use Tualo\Office\Basic\PostCheck;
-use Tualo\Office\Basic\CommandLineInstallSessionSQL;
+
+
 use Tualo\Office\Basic\BaseSetupCommand as BaseSetup;
 
 class Setup extends BaseSetup
