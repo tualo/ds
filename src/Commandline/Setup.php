@@ -25,6 +25,7 @@ class Setup extends BaseSetup
             'install-sql-ds-dsx',
             'install-sql-ds-privacy',
             'install-sql-ds-docsystem',
+            'install-sql-ds-main',
         ];
     }
 
