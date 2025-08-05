@@ -1,3 +1,4 @@
+
 Ext.define('Tualo.DataSets.model.Basic', {
     extend: 'Ext.data.Model',
     requires: [
@@ -5,17 +6,18 @@ Ext.define('Tualo.DataSets.model.Basic', {
         'Ext.data.reader.Json',
         'Ext.data.writer.Json'
     ],
-    
+
 
     fields: [
-        {name: '__id',  type: 'string'}
+        { name: '__id', type: 'string' }
     ],
-    
-    get: function(fieldName) {
-        if (Ext.isEmpty(fieldName)) return null; 
+
+    get: function (fieldName) {
+        if (Ext.isEmpty(fieldName)) return null;
         if (this.data.hasOwnProperty(fieldName)) return this.data[fieldName];
-        if (this.data.hasOwnProperty("__table_name") && this.data.hasOwnProperty(this.data["__table_name"]+"__"+fieldName)) return this.data[this.data["__table_name"]+"__"+fieldName];
-        if (this.data.hasOwnProperty("__table_name") && this.data.hasOwnProperty(fieldName.replace(this.data["__table_name"]+"__",''))) return this.data[fieldName.replace(this.data["__table_name"]+"__",'')];
+        if (this.data.hasOwnProperty("__table_name") && this.data.hasOwnProperty(this.data["__table_name"] + "__" + fieldName)) return this.data[this.data["__table_name"] + "__" + fieldName];
+        if (typeof fieldName != 'string') return fieldName + ' not a string';
+        if (this.data.hasOwnProperty("__table_name") && this.data.hasOwnProperty(fieldName.replace(this.data["__table_name"] + "__", ''))) return this.data[fieldName.replace(this.data["__table_name"] + "__", '')];
         return this.data[fieldName];
     }
 });
