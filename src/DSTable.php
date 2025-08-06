@@ -305,13 +305,18 @@ class DSTable
     {
         return $this->get($hashKey);
     }
-    public function get(string $hashKey = ''): array
+    public function get(string $hashKey = '', string $valueKey = ''): array
     {
         $this->read();
         if ($hashKey !== '') {
             $hash = [];
             foreach ($this->data as $record) {
-                $hash[$record[$hashKey]] = $record;
+
+                if ($valueKey !== '' && isset($record[$valueKey])) {
+                    $hash[$record[$hashKey]] = $record[$valueKey];
+                } else {
+                    $hash[$record[$hashKey]] = $record;
+                }
             }
             return $hash;
         }
