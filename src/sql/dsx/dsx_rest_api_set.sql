@@ -148,7 +148,7 @@ BEGIN
                     separator ','
                 ) c,
                 group_concat(
-                    concat('`',column_name,'` ',column_type,' path "$.', column_name,'" ',/*if( is_nullable='YES','NULL','ERROR')*/'NULL' ,' ON EMPTY ')
+                    concat('`',column_name,'` ',if(INSTR(column_type,'enum')=1,'varchar(255)', column_type),' path "$.', column_name,'" ',/*if( is_nullable='YES','NULL','ERROR')*/'NULL' ,' ON EMPTY ')
                     order by column_name
                     separator ','
                 ) x,
