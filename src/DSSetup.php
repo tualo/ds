@@ -11,16 +11,17 @@ class DSSetup
     private mixed $db = "";
     private mixed $tablename = "";
     private array $tables = [
-        'ds' => ['insert_command' => 'INSERT INTO', 'update_command' => 'ON DUPLICATE KEY UPDATE'],
-        'ds_column' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        //'ds' => ['insert_command' => 'INSERT INTO', 'update_command' => 'ON DUPLICATE KEY UPDATE'],
+        //'ds_column' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_column_list_label' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
-        'ds_column_form_label' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        /*'ds_column_form_label' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_dropdownfields' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_reference_tables' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_addcommands' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_access' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => '', 'where' => ['role', 'in', ['administration', '_default_',]]],
         'ds_renderer' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_listroutes' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
+        */
     ];
     function __construct(mixed $db, string $tablename)
     {
@@ -84,7 +85,6 @@ class DSSetup
                 $data[] = "$cmd `$tablename` (" . implode(',', $flds) . ") VALUES ('" . implode("','", $vals) . "') $update_command; ";
             }
         }
-        //print_r($this->tables);
         return $data;
     }
 }
