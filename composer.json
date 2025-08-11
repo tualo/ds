@@ -22,7 +22,9 @@
     "tualo/extjscmplr": "^1.0.2",
     "phpoffice/phpspreadsheet": "^4.4.0",
     "ramsey/uuid": "~4.9.0",
-    "tualo/tualo-ext-shim": "^1.0.1"
+    "tualo/tualo-ext-shim": "^1.0.1",
+    "tualo/tualojs": "^1.0",
+    "tualo/monacoeditor": "^1.0"
   },
   "version": "1.4.1"
 }

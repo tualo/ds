@@ -26,6 +26,8 @@ class Setup extends BaseSetup
             'install-sql-ds-privacy',
             'install-sql-ds-docsystem',
             'install-sql-ds-main',
+            'install-sql-monaco',
+            'install-sql-tualojs',
         ];
     }
 
