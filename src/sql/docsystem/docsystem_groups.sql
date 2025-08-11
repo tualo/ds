@@ -6,6 +6,13 @@ CREATE TABLE IF NOT EXISTS `docsystem_groups` (
     PRIMARY KEY (`group`)
 );
 
+
+CREATE TABLE IF NOT EXISTS `custom_docsystem_groups` (
+    `group` varchar(100) NOT NULL,
+    `text` longtext DEFAULT NULL,
+    PRIMARY KEY (`group`)
+);
+
 CREATE OR REPLACE VIEW `view_readtable_docsystem_groups` AS
 select
     `view_session_groups`.`group` AS `group`,

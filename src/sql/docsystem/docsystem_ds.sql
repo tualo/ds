@@ -7,6 +7,15 @@ CREATE TABLE IF NOT EXISTS `docsystem_ds` (
     CONSTRAINT `fk_docsystem_ds_ds` FOREIGN KEY (`table_name`) REFERENCES `ds` (`table_name`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
+CREATE TABLE IF NOT EXISTS `custom_docsystem_ds` (
+    `table_name` varchar(128) NOT NULL,
+    `text` longtext DEFAULT NULL,
+    PRIMARY KEY (`table_name`),
+    CONSTRAINT `fk_custom_docsystem_ds_ds` FOREIGN KEY (`table_name`) REFERENCES `ds` (`table_name`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
 CREATE OR REPLACE VIEW `view_readtable_docsystem_ds` AS
 select
     `ds`.`table_name` AS `table_name`,

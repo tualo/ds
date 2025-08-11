@@ -12,6 +12,19 @@ CREATE TABLE IF NOT EXISTS `docsystem_ds_column` (
     CONSTRAINT `fk_docsystem_ds_column_ds` FOREIGN KEY (`table_name`, `column_name`) REFERENCES `ds_column` (`table_name`, `column_name`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
+CREATE TABLE IF NOT EXISTS `custom_docsystem_ds_column` (
+    `table_name` varchar(128) NOT NULL,
+    `column_name` varchar(100) NOT NULL,
+    `text` longtext DEFAULT NULL,
+    `id` varchar(36) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_custom_docsystem_ds_column_docsystem_ds` (`table_name`),
+    KEY `fk_custom_docsystem_ds_column_ds` (`table_name`, `column_name`),
+    CONSTRAINT `fk_custom_docsystem_ds_column_docsystem_ds` FOREIGN KEY (`table_name`) REFERENCES `docsystem_ds` (`table_name`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_custom_docsystem_ds_column_ds` FOREIGN KEY (`table_name`, `column_name`) REFERENCES `ds_column` (`table_name`, `column_name`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE OR REPLACE VIEW `view_readtable_docsystem_ds_column` AS
 select
     ifnull(`docsystem_ds_column`.`id`, uuid()) AS `id`,

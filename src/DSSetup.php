@@ -23,6 +23,7 @@ class DSSetup
         'ds_listroutes' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
 
         'docsystem_ds' => ['insert_command' => 'REPLACE INTO', 'update_command' => ''],
+        'docsystem_ds_column' => ['insert_command' => 'REPLACE INTO', 'update_command' => ''],
 
     ];
     function __construct(mixed $db, string $tablename)
