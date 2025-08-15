@@ -20,7 +20,7 @@ class DSColumnCheck extends SystemCheck
 
     public static function getModuleName(): string
     {
-        return 'cms auth tokens';
+        return 'ds table type check';
     }
 
     public static function testSessionDB(array $config): int
