@@ -48,6 +48,8 @@ class DSColumnCheck extends SystemCheck
             return 2;
         }
 
+        $tablestatus = $clientdb->direct('show table status', [], 'name');
+
         $key = 'tables_in_' . $clientdb->dbname;
         foreach ($tables as $table) {
             foreach ($table as $k => $v) {
@@ -67,15 +69,23 @@ class DSColumnCheck extends SystemCheck
                 self::intent();
                 self::formatPrintLn(['blue'], 'Table found: ' . $tablename);
 
-                $ds_columns = $clientdb->direct('select * from ds_column where table_name = {table_name}', ['table_name' => $tablename]);
+                $isView = false;
+                if (isset($tablestatus[$tablename])) {
+                    $status = $tablestatus[$tablename];
+                    if ($status['comment'] == 'VIEW') {
+                        $isView = true;
+                    }
+                }
+
+                $ds_columns = $clientdb->direct('select * from ds_column where table_name = {table_name} and existsreal=1 ', ['table_name' => $tablename]);
                 $explained_columns = $clientdb->direct('explain ' . $tablename);
                 if (count($ds_columns) == 0) {
-                    self::formatPrintLn(['red'], 'No DS Columns found for table: ' . $tablename);
+                    self::formatPrintLn([$isView ? 'yellow' : 'red'], 'No DS Columns found for table: ' . $tablename);
                     //self::unintent();
 
                     $return_value = 2;
                 } else {
-                    self::formatPrintLn(['green'], 'DS Columns found for table: ' . $tablename);
+                    // self::formatPrintLn(['green'], 'DS Columns found for table: ' . $tablename);
                 }
                 $missing_columns = [];
                 foreach ($ds_columns as $column) {
@@ -92,12 +102,12 @@ class DSColumnCheck extends SystemCheck
                     }
                 }
                 if (count($missing_columns) > 0) {
-                    self::formatPrintLn(['red'], 'Missing columns in table ' . $tablename . ': ' . implode(', ', $missing_columns));
+                    self::formatPrintLn([$isView ? 'yellow' : 'red'], 'Missing columns in table ' . $tablename . ': ' . implode(', ', $missing_columns));
                     //self::unintent();
 
                     $return_value = 2;
                 } else {
-                    self::formatPrintLn(['green'], 'All DS Columns found in table: ' . $tablename);
+                    // self::formatPrintLn(['green'], 'All DS Columns found in table: ' . $tablename);
                 }
                 $missing_ds_columns = [];
                 foreach ($explained_columns as $explained_column) {
@@ -114,12 +124,12 @@ class DSColumnCheck extends SystemCheck
                     }
                 }
                 if (count($missing_ds_columns) > 0) {
-                    self::formatPrintLn(['red'], 'Missing DS Columns in ds_columns for table ' . $tablename . ': ' . implode(', ', $missing_ds_columns));
+                    self::formatPrintLn([$isView ? 'yellow' : 'red'], 'Missing DS Columns in ds_column for table ' . $tablename . ': ' . implode(', ', $missing_ds_columns));
                     // self::unintent();
 
                     $return_value = 2;
                 } else {
-                    self::formatPrintLn(['green'], 'All DS Columns found in ds_columns for table: ' . $tablename);
+                    // self::formatPrintLn(['green'], 'All DS Columns found in ds_column for table: ' . $tablename);
                 }
 
 
@@ -143,11 +153,11 @@ class DSColumnCheck extends SystemCheck
                     }
                 }
                 if (count($wrong_types) > 0) {
-                    self::formatPrintLn(['red'], 'Wrong types in ds_columns for table ' . $tablename . ': ' . implode(', ', $wrong_types));
+                    self::formatPrintLn([$isView ? 'yellow' : 'red'], 'Wrong types in ds_columns for table ' . $tablename . ': ' . implode(', ', $wrong_types));
                     //self::unintent();
                     $return_value = 2;
                 } else {
-                    self::formatPrintLn(['green'], 'All DS Column types match in ds_columns for table: ' . $tablename);
+                    // self::formatPrintLn(['green'], 'All DS Column types match in ds_columns for table: ' . $tablename);
                 }
                 self::unintent();
             }
