@@ -22,8 +22,8 @@ class DSSetup
         'ds_renderer' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
         'ds_listroutes' => ['insert_command' => 'INSERT IGNORE INTO', 'update_command' => ''],
 
-        'docsystem_ds' => ['insert_command' => 'REPLACE INTO', 'update_command' => ''],
-        'docsystem_ds_column' => ['insert_command' => 'REPLACE INTO', 'update_command' => ''],
+        'docsystem_ds' => ['insert_command' => 'REPLACE INTO', 'update_command' => '', 'ignoreError' => true],
+        'docsystem_ds_column' => ['insert_command' => 'REPLACE INTO', 'update_command' => '', 'ignoreError' => true],
 
     ];
     function __construct(mixed $db, string $tablename)
@@ -60,6 +60,9 @@ class DSSetup
 
 
             if ($table->error()) {
+                if (isset($info['ignoreError']) && $info['ignoreError']) {
+                    continue;
+                }
                 throw new \Exception($table->errorMessage());
             }
             foreach ($values as $key => $value) {
