@@ -77,7 +77,7 @@ class DSColumnCheck extends SystemCheck
                     }
                 }
 
-                $ds_columns = $clientdb->direct('select * from ds_column where table_name = {table_name} and existsreal=1 ', ['table_name' => $tablename]);
+                $ds_columns = $clientdb->direct('select * from ds_column where table_name = {table_name} and existsreal=1 and writeable=1', ['table_name' => $tablename]);
                 $explained_columns = $clientdb->direct('explain ' . $tablename);
                 if (count($ds_columns) == 0) {
                     self::formatPrintLn([$isView ? 'yellow' : 'red'], 'No DS Columns found for table: ' . $tablename);
