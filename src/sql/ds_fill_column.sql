@@ -1,3 +1,4 @@
+delimiter //    
 CREATE OR REPLACE PROCEDURE `fill_ds_column`( in use_table_name varchar(128) )
     MODIFIES SQL DATA
 BEGIN
@@ -220,4 +221,4 @@ END FOR;
 
 update ds_column_list_label set listfiltertype='' where listfiltertype="''";
 
-END
+END //

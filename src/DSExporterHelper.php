@@ -1,10 +1,12 @@
 <?php
 
 namespace Tualo\Office\DS;
+
 use Ramsey\Uuid\Uuid;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Tualo\Office\DS\Routes\Export;
 
 class DSExporterHelper
 {
@@ -35,28 +37,144 @@ class DSExporterHelper
     public static function function($str, $how = '-')
     {
         $search = array(
-            "ä", "ö", "ü", "ß", "Ä", "Ö",
-            "Ü", "&", "é", "á", "ó",
-            " :)", " :D", " :-)", " :P",
-            " :O", " ;D", " ;)", " ^^",
-            " :|", " :-/", ":)", ":D",
-            ":-)", ":P", ":O", ";D", ";)",
-            "^^", ":|", ":-/", "(", ")", "[", "]",
-            "<", ">", "!", "\"", "§", "$", "%", "&",
-            "/", "(", ")", "=", "?", "`", "´", "*", "'",
-            "_", ":", ";", "²", "³", "{", "}",
-            "\\", "~", "#", "+", ".", ",",
-            "=", ":", "=)"
+            "ä",
+            "ö",
+            "ü",
+            "ß",
+            "Ä",
+            "Ö",
+            "Ü",
+            "&",
+            "é",
+            "á",
+            "ó",
+            " :)",
+            " :D",
+            " :-)",
+            " :P",
+            " :O",
+            " ;D",
+            " ;)",
+            " ^^",
+            " :|",
+            " :-/",
+            ":)",
+            ":D",
+            ":-)",
+            ":P",
+            ":O",
+            ";D",
+            ";)",
+            "^^",
+            ":|",
+            ":-/",
+            "(",
+            ")",
+            "[",
+            "]",
+            "<",
+            ">",
+            "!",
+            "\"",
+            "§",
+            "$",
+            "%",
+            "&",
+            "/",
+            "(",
+            ")",
+            "=",
+            "?",
+            "`",
+            "´",
+            "*",
+            "'",
+            "_",
+            ":",
+            ";",
+            "²",
+            "³",
+            "{",
+            "}",
+            "\\",
+            "~",
+            "#",
+            "+",
+            ".",
+            ",",
+            "=",
+            ":",
+            "=)"
         );
         $replace = array(
-            "ae", "oe", "ue", "ss", "Ae", "Oe",
-            "Ue", "und", "e", "a", "o", "", "",
-            "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "", ""
+            "ae",
+            "oe",
+            "ue",
+            "ss",
+            "Ae",
+            "Oe",
+            "Ue",
+            "und",
+            "e",
+            "a",
+            "o",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
         );
         $str = str_replace($search, $replace, $str);
         $str = strtolower(preg_replace("/[^a-zA-Z0-9]+/", trim($how), $str));
@@ -80,10 +198,10 @@ class DSExporterHelper
                 $res = $db->singleRow('select phpexporterfilename from ds where table_name={table_name}', array('table_name' => $tablename));
                 if ($res !== false) {
                     $dsrenderer = new DataRenderer($tablename, $db);
-                    if (is_null($res['phpexporterfilename'])||($res['phpexporterfilename']=='')){
+                    if (is_null($res['phpexporterfilename']) || ($res['phpexporterfilename'] == '')) {
                         $res['phpexporterfilename'] = (Uuid::uuid4())->toString();
                     }
-                    $dateiname = $dsrenderer->renderTemplate($res['phpexporterfilename'], array_merge($_REQUEST,$liste[0]));
+                    $dateiname = Export::filesystemName($dsrenderer->renderTemplate($res['phpexporterfilename'], array_merge($_REQUEST, $liste[0])));
                 }
             } catch (\Exception $e) {
             }
@@ -114,11 +232,11 @@ class DSExporterHelper
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, '"WINDOWS-1255');
         } else if ($fn == 'CSV-DATEV-EXTF') {
             $dateiname .= '.csv';
-            DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns,'utf-8',';','EXTF');
+            DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', ';', 'EXTF');
         } else {
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns);
-//            throw new \Exception("No Library defined");
+            //            throw new \Exception("No Library defined");
         }
     }
 
@@ -235,11 +353,11 @@ class DSExporterHelper
             $x = 0;
             $row = array();
             foreach ($hcolumns as $key => $value) {
-                if (isset($zeile[  $key])) {
-                    $ivalue = $zeile[  $key];
+                if (isset($zeile[$key])) {
+                    $ivalue = $zeile[$key];
 
                     if ($value['data_type'] == 'decimal') {
-                        $ivalue = number_format($ivalue,2,',','.');
+                        $ivalue = number_format($ivalue, 2, ',', '.');
                     }
                     if ($encoding != 'utf-8') {
                         if (function_exists("mb_convert_encoding")) {
@@ -255,7 +373,7 @@ class DSExporterHelper
             $data[] = $row;
             ++$y;
         }
-       //print_r($data);
+        //print_r($data);
         /*
     $csv = '';
 
@@ -272,7 +390,7 @@ class DSExporterHelper
 
         $out = fopen($pathName . $dateiname, 'w');
         if ($extraHeader != '') {
-            fwrite($out, $extraHeader."\r\n");
+            fwrite($out, $extraHeader . "\r\n");
         }
         foreach ($data as $row) {
             fputcsv($out, $row, $delimiter, '"', "\\");
