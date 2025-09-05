@@ -12,7 +12,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
                     xtype = btn.config.xtype,
                     name = btn.name;
 
-                name = xtype.split('tn_').pop();
+                name = xtype.split(tn + '_').pop();
                 let route = "#ds/" + tn + '/' + name + '/' + btn.getValue();
                 window.open(route, '_blank');
             }
