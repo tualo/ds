@@ -9,8 +9,11 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
             tooltip: "Den Datensatz öffnen",
             handler: function (btn) {
                 let tn = btn.getSelectedRecord().get('__table_name'),
-                    name = btn.getValueField(),
-                    route = "#ds/" + tn + '/' + name + '/' + btn.getValue();
+                    xtype = btn.config.xtype,
+                    name = btn.name;
+
+                name = xtype.split('tn_').pop();
+                let route = "#ds/" + tn + '/' + name + '/' + btn.getValue();
                 window.open(route, '_blank');
             }
         }
