@@ -7,23 +7,23 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
         opends: {
             cls: 'x-fa fa-link',
             tooltip: "Den Datensatz öffnen",
-            handler: function(btn) {
+            handler: function (btn) {
                 let tn = btn.getSelectedRecord().get('__table_name'),
-                    name = btn.getName(),
-                    route = "#ds/"+tn+'/'+name+'/'+btn.getValue();
-                window.open(route,'_blank');
+                    name = btn.getValueField(),
+                    route = "#ds/" + tn + '/' + name + '/' + btn.getValue();
+                window.open(route, '_blank');
             }
         }
     },
 
-    constructor: function(config){
+    constructor: function (config) {
         this.callParent([config]);
         let store = this.getStore();
-        store.on('beforeload',this.onBeforeLoad,this);
+        store.on('beforeload', this.onBeforeLoad, this);
         store.load();
     },
-    onBeforeLoad: function(store, operation, eOpts){
-        console.log('onBeforeLoad',store,this,operation,eOpts);          
+    onBeforeLoad: function (store, operation, eOpts) {
+        console.log('onBeforeLoad', store, this, operation, eOpts);
         store.getProxy().setExtraParams({
 
             /*tablename: store.tablename,
@@ -35,12 +35,12 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
         });
     },
 
-    onFocus: function(e) {
+    onFocus: function (e) {
         let me = this;
         this.callParent(e);
-        try{
+        try {
             me.onTriggerClick(me, me.getPickerTrigger(), {});
-        }catch(e){
+        } catch (e) {
 
         }
     }
