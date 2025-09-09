@@ -318,6 +318,36 @@ class DS implements IRoute
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;
-        }, ['post', 'delete'], true);
+        }, ['post'], true);
+
+
+        Route::add('/ds/(?P<tablename>\w+)', function ($matches) {
+            App::contenttype('application/json');
+
+            $db = App::get('session')->getDB();
+            $db->tinyIntAsBoolean(true);
+            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            $tablename = $matches['tablename'];
+            try {
+
+                $input = json_decode(file_get_contents('php://input'), true);
+                if (is_null($input)) throw new Exception("Error Processing Request", 1);
+                $table = new DSTable($db, $tablename);
+                if ($table->delete($input) !== false) {
+                    if ($table->error()) {
+                        throw new \Exception($table->errorMessage());
+                    }
+                    App::deferredTrigger();
+                    App::result('success', true);
+                } else {
+                    App::result('success', false);
+                    App::result('msg', $table->errorMessage());
+                }
+            } catch (\Exception $e) {
+
+                App::result('msg', $e->getMessage());
+            }
+            Route::$finished = true;
+        }, ['delete'], true);
     }
 };
