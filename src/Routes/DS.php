@@ -318,6 +318,6 @@ class DS implements IRoute
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;
-        }, ['post'], true);
+        }, ['post', 'delete'], true);
     }
 };
