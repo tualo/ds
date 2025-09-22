@@ -19,6 +19,7 @@ class Install extends CommandLineInstallSQL  implements ICommandline
         'addcommand' => 'load addcommand ',
         'ds_files' => 'add ds files ',
         'install/ds/ds_listroutes' => 'setup ds_listroutes',
+        'install/ds_form_groups' => 'setup ds_form_groups',
 
         'ds_renderer_stylesheet_attributes_dd' => 'setup ds_renderer_stylesheet_attributes_dd  ',
         'ds_renderer_stylesheet_attributes_dd.ds' => 'setup ds_renderer_stylesheet_attributes_dd  ds ',

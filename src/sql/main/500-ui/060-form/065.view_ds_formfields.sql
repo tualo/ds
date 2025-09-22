@@ -45,36 +45,47 @@ or replace view view_ds_formtabs_fieldsets as
 select
     `ds_column_form_label`.`table_name`,
     `view_ds_formfields`.`tab_title`,
+    ds_form_groups_ds.config,
     group_concat(
         distinct `view_ds_formfields`.`cols` separator ' | '
     ) cols,
     min(ds_column_form_label.position) min_position,
     json_arrayagg(
         distinct 
-        JSON_OBJECT(
-            "xtype",
-            "fieldset",
-            /*
-            "layout",
-            'anchor',
-            */
-            "title",
-            `view_ds_formfields`.`fieldset_title`,
-            "defaults",
-            JSON_OBJECT("anchor", "100%"),
-            --            "scrollable", "y",
-            "items",
-            JSON_MERGE('[]', `view_ds_formfields`.`js`)
+        json_merge(
+            ifnull(ds_form_groups_ds.config,'{}'),
+
+            JSON_OBJECT(
+                "xtype",
+                "fieldset",
+                /*
+                "layout",
+                'anchor',
+                */
+                "title",
+                `view_ds_formfields`.`fieldset_title`,
+                "defaults",
+                JSON_OBJECT("anchor", "100%"),
+                --            "scrollable", "y",
+                "items",
+                JSON_MERGE('[]', `view_ds_formfields`.`js`)
+            )
         )
         order by
             view_ds_formfields.position  
     ) js
 from
     `ds_column_form_label`
-    join `view_ds_formfields` on `ds_column_form_label`.`table_name` = `view_ds_formfields`.`table_name`
-    and SUBSTRING_INDEX(ds_column_form_label.`field_path`, '/', 1) = `view_ds_formfields`.`tab_title`
-    and SUBSTRING_INDEX(ds_column_form_label.`field_path`, '/', -1) = `view_ds_formfields`.`fieldset_title`
-    and `ds_column_form_label`.`active` = 1
+    join `view_ds_formfields` on 
+        `ds_column_form_label`.`table_name` = `view_ds_formfields`.`table_name`
+        and SUBSTRING_INDEX(ds_column_form_label.`field_path`, '/', 1) = `view_ds_formfields`.`tab_title`
+        and SUBSTRING_INDEX(ds_column_form_label.`field_path`, '/', -1) = `view_ds_formfields`.`fieldset_title`
+        and `ds_column_form_label`.`active` = 1
+    left join `ds_form_groups_ds`
+        on `view_ds_formfields`.`table_name` = `ds_form_groups_ds`.`table_name`
+        and `view_ds_formfields`.`fieldset_title` = SUBSTRING_INDEX(`ds_form_groups_ds`.`name`, '/', -1)
+
+-- where `ds_column_form_label`.`table_name` = 'adressen'
 group by
     `ds_column_form_label`.`table_name`,
     `view_ds_formfields`.`tab_title`
