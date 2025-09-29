@@ -53,7 +53,11 @@ select
     json_arrayagg(
         distinct 
         json_merge(
-            ifnull(ds_form_groups_ds.config,'{}'),
+            ifnull(ds_form_groups_ds.config,
+            JSON_OBJECT(
+                "defaults",
+                JSON_OBJECT("anchor", "100%")
+            )),
 
             JSON_OBJECT(
                 "xtype",
@@ -64,8 +68,8 @@ select
                 */
                 "title",
                 `view_ds_formfields`.`fieldset_title`,
-                "defaults",
-                JSON_OBJECT("anchor", "100%"),
+                -- "defaults",
+                -- JSON_OBJECT("anchor", "100%"),
                 --            "scrollable", "y",
                 "items",
                 JSON_MERGE('[]', `view_ds_formfields`.`js`)

@@ -33,6 +33,8 @@ from ds_column
     )
 where ds_column.existsreal = 1 -- ds_column.data_type in ('date','datetime','time')
 ;
+
+
 create or replace view view_ds_formfieldgroups as
 select `ds_column_form_label`.`table_name`,
     `ds_column_form_label`.`column_name`,
@@ -41,7 +43,8 @@ select `ds_column_form_label`.`table_name`,
     `ds_column_form_label`.`active`,
     `ds_column_form_label`.`position`,
     count(*) c,
-    if(
+    json_merge(config, 
+        if(
         count(*) = 1,
         JSON_OBJECT(
             'fieldLabel',
@@ -137,30 +140,38 @@ select `ds_column_form_label`.`table_name`,
                 )
             )
         )
+    )
     ) jsfield
 from (
-        select table_name,
-            column_name,
-            language,
-            label,
-            ifnull(xtype, 'displayfield') xtype,
-            field_path,
-            position,
-            hidden,
-            flex,
-            active,
-            allowempty,
+        select 
+        
+            ds_column_form_label.table_name,
+            ds_column_form_label.column_name,
+            ds_column_form_label.language,
+            ds_column_form_label.label,
+            ifnull(ds_column_form_label.xtype, 'displayfield') xtype,
+            ifnull(ds_form_field_additional_config.config,'{}') config,
+            ds_column_form_label.field_path,
+            ds_column_form_label.position,
+            ds_column_form_label.hidden,
+            ds_column_form_label.flex,
+            ds_column_form_label.active,
+            ds_column_form_label.allowempty,
             concat(
-                table_name,
+                ds_column_form_label.table_name,
                 if(
-                    fieldgroup is null
-                    or fieldgroup = ""
-                    or fieldgroup = "1",
-                    column_name,
-                    fieldgroup
+                    ds_column_form_label.fieldgroup is null
+                    or ds_column_form_label.fieldgroup = ""
+                    or ds_column_form_label.fieldgroup = "1",
+                    ds_column_form_label.column_name,
+                    ds_column_form_label.fieldgroup
                 )
             ) fieldgroup
         from `ds_column_form_label`
+            left join ds_form_field_additional_config on (ds_form_field_additional_config.table_name, ds_form_field_additional_config.column_name) = (
+                `ds_column_form_label`.`table_name`,
+                `ds_column_form_label`.`column_name`
+            )
     ) ds_column_form_label
     /*join view_ds_formfield_merge
      on view_ds_formfield_merge.table_name = `ds_column_form_label`.`table_name`
