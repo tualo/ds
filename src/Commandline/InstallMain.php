@@ -44,7 +44,7 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline
         'main/500-ui/050-list/054.view_ds_list' => 'setup 054.view_ds_list ',
         'main/500-ui/050-list/view_dd_column' => 'setup view_dd_column ',
 
-        'install/ds/ds_form_groups' => 'setup ds_form_groups', // quickfix
+        'install/ds_form_groups' => 'setup ds_form_groups', // quickfix
 
         'main/500-ui/060-form/064.view_ds_formfieldgroups' => 'setup 064.view_ds_formfieldgroups ',
         'main/500-ui/060-form/065.view_ds_formfields' => 'setup 065.view_ds_formfields ',
