@@ -43,7 +43,7 @@ class Setup extends BaseSetup
     {
         $cli->command(self::getCommandName())
             ->description(self::getCommandDescription())
-            ->opt('client', 'only use this client', true, 'string')
-            ->opt('user', 'only use this user', true, 'string');
+            ->opt('client', 'only use this client', true, 'string');
+        // ->opt('user', 'only use this user', true, 'string');
     }
 }
