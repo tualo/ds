@@ -16,6 +16,22 @@ join ds
 join view_ds_access_by_role ds_access
 on ds.table_name = ds_access.table_name
 union 
+
+
+select
+
+lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_tagfield_filter')) `id`,
+(concat('Tagfilter ',ds.title,' ',ds_dropdownfields.name,'')) `name`
+from 
+
+ds_dropdownfields
+join ds
+    on ds_dropdownfields.table_name = ds.table_name
+    and ds.existsreal=1
+join view_ds_access_by_role ds_access
+on ds.table_name = ds_access.table_name
+union 
+
 select '' `id`, 'Standard' `name`
 
 union 
