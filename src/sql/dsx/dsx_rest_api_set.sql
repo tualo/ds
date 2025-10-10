@@ -540,7 +540,7 @@ BEGIN
                 
 
 
-
+                
             ELSEIF
                 JSON_VALUE(request,'$.type')='delete' THEN
                 set sql_command = concat('
@@ -800,7 +800,7 @@ BEGIN
                                 if (@log_dsx_commands=1) THEN
                                     drop table if exists test_ds_cmd;
                                     create table test_ds_cmd as select sql_command;
-                insert into test_ds_request (note) values (sql_command);
+                                    insert into test_ds_request (note) values (sql_command);
                                 END IF;
                             PREPARE stmt FROM sql_command;
                             EXECUTE stmt;
