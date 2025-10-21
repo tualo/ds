@@ -274,7 +274,11 @@ Ext.define('Tualo.DS.panel.Controller', {
         model.set('disablePrev', model.get('selectRecordRecordNumber') <= 1);
         model.set('disableNext', model.get('selectRecordRecordNumber') >= store.getCount());
         model.set('pagerText', model.get('selectRecordRecordNumber') + '/' + store.getCount());
+
+        this.getView().fireEvent('recordselect', record);
         Ext.getApplication().updateWindowTitle();
+
+
     },
 
     onListSelectionChange: function (selModel, selected, eOpts) {
