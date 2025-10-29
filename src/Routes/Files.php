@@ -11,7 +11,7 @@ use Tualo\Office\DS\DSFileHelper;
 use Tualo\Office\DS\DSTable;
 
 
-class Files implements IRoute
+class Files extends \Tualo\Office\Basic\RouteWrapper
 {
     public static function register()
     {

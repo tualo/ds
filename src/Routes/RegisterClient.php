@@ -11,7 +11,7 @@ use Tualo\Office\DS\DSFileHelper;
 
 
 
-class RegisterClient implements IRoute
+class RegisterClient extends \Tualo\Office\Basic\RouteWrapper
 {
     public static function register()
     {

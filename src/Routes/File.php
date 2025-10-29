@@ -10,7 +10,7 @@ use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSFileHelper;
 
 
-class File implements IRoute
+class File extends \Tualo\Office\Basic\RouteWrapper
 {
     public static function register()
     {

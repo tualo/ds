@@ -9,7 +9,7 @@ use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSExporterHelper;
 
 
-class Export implements IRoute
+class Export extends \Tualo\Office\Basic\RouteWrapper
 {
 
     public static function filesystemName($string)

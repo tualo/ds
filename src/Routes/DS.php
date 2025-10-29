@@ -10,7 +10,7 @@ use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSTable;
 
 
-class DS implements IRoute
+class DS extends \Tualo\Office\Basic\RouteWrapper
 {
     const DefaultExpectedFields  = [
         'page' => [
@@ -112,6 +112,13 @@ class DS implements IRoute
                 if (is_null($input)) {
                     $input = $_REQUEST;
                 }
+
+
+                if (!isset($input['request_options'])) {
+                    $input['request_options'] = [];
+                }
+                $db->direct('set @request_options = {request_options};', ['request_options' => json_encode($input['request_options'])]);
+
 
                 if (isset($input['filter_by_search']) && ($input['filter_by_search'] == 1) && !isset($input['fulltext'])) {
                     $sql = "select count(*) c from ds where table_name = 'ds_ftsearch_" . $tablename . "'";

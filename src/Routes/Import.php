@@ -9,7 +9,7 @@ use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSTable;
 
 
-class Import implements IRoute
+class Import extends \Tualo\Office\Basic\RouteWrapper
 {
 
 
@@ -38,18 +38,18 @@ class Import implements IRoute
     public static function makeISODate(string $date): string
     {
         $time = '';
-        if (strpos($date,' ')>0){
-            $x = explode(' ',$date);
+        if (strpos($date, ' ') > 0) {
+            $x = explode(' ', $date);
             $date = $x[0];
-            $time = ' '.$x[1];
+            $time = ' ' . $x[1];
         }
         if (strpos($date, '/') !== false) {
             $l = explode('/', $date);
             if (count($l) == 3) {
-                $date = str_pad($l[1],2,'0',STR_PAD_LEFT) .'.'. str_pad($l[0],2,'0',STR_PAD_LEFT) .'.'. str_pad($l[2],4,'0');
+                $date = str_pad($l[1], 2, '0', STR_PAD_LEFT) . '.' . str_pad($l[0], 2, '0', STR_PAD_LEFT) . '.' . str_pad($l[2], 4, '0');
             }
         }
-        return str_replace('.', '-', self::makeDate($date)).$time;
+        return str_replace('.', '-', self::makeDate($date)) . $time;
     }
     /**
      * This function returns the maximum files size that can be uploaded 
@@ -398,7 +398,7 @@ class Import implements IRoute
                                     }
                                 }
 
-                                
+
                                 $idx = 0;
                                 foreach ($d['header'][1] as $d) {
                                     if (is_null($d)) $d = '*NOT SET*';
@@ -488,28 +488,28 @@ class Import implements IRoute
                     foreach ($config as $key => $value) {
                         if (strpos($value, 'COLINDEX') !== false) {
                             $fieldindex = intval(str_replace('COLINDEX', '', $value));
-                            $dataRecord[/* $tablename . '__' . */ $key] = $data_row[$fieldindex];
+                            $dataRecord[/* $tablename . '__' . */$key] = $data_row[$fieldindex];
                         } else {
                             if (($value != '') && ($value != '{#serial}')) {
-                                $dataRecord[/* $tablename . '__' . */ $key] = $value;
+                                $dataRecord[/* $tablename . '__' . */$key] = $value;
                             }
                         }
                         if ((isset($columns[$key])) && ($columns[$key]['data_type'] == 'date')) {
-                            if (isset($dataRecord[/* $tablename . '__' . */ $key])) $dataRecord[/* $tablename . '__' . */ $key] = self::makeISODate($dataRecord[/* $tablename . '__' . */ $key]);
+                            if (isset($dataRecord[/* $tablename . '__' . */$key])) $dataRecord[/* $tablename . '__' . */$key] = self::makeISODate($dataRecord[/* $tablename . '__' . */$key]);
                         }
                         if ((isset($columns[$key])) && ($columns[$key]['data_type'] == 'datetime')) {
-                            if (isset($dataRecord[/* $tablename . '__' . */ $key])) $dataRecord[/* $tablename . '__' . */ $key] = self::makeISODate($dataRecord[/* $tablename . '__' . */ $key]);
+                            if (isset($dataRecord[/* $tablename . '__' . */$key])) $dataRecord[/* $tablename . '__' . */$key] = self::makeISODate($dataRecord[/* $tablename . '__' . */$key]);
                         }
                     }
-                    
+
 
                     $dataset[] = $dataRecord;
                 }
                 $table = DSTable::init($db)->t($tablename);
                 // options replace ignore update
-                $table->insert($dataset,['check_foreign_key'=>1]);
-                if ($table->error()){ 
-                    throw new \Exception( $table->errorMessage());
+                $table->insert($dataset, ['check_foreign_key' => 1]);
+                if ($table->error()) {
+                    throw new \Exception($table->errorMessage());
                 }
                 $_index += count($dataset);
                 App::result('index', $_index + 1);

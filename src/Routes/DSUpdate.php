@@ -8,7 +8,7 @@ use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSSetup;
 
 
-class DSUpdate implements IRoute
+class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
 {
     public static function register()
     {

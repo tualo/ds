@@ -1,37 +1,40 @@
 <?php
+
 namespace Tualo\Office\DS\Routes;
+
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\Basic\Route;
 use Tualo\Office\Basic\IRoute;
 
 
-class DSLibrary implements IRoute{
-    public static function register(){
+class DSLibrary extends \Tualo\Office\Basic\RouteWrapper
+{
+    public static function register()
+    {
 
-        Route::add('/dslibrary/Routes.js',function($matches){
-            try{
-                if (file_exists(dirname(__DIR__).'/js/Routes.js')){  
-                    TualoApplication::etagFile(dirname(__DIR__).'/js/Routes.js'); 
+        Route::add('/dslibrary/Routes.js', function ($matches) {
+            try {
+                if (file_exists(dirname(__DIR__) . '/js/Routes.js')) {
+                    TualoApplication::etagFile(dirname(__DIR__) . '/js/Routes.js');
                     return;
-                }else{
-                    echo dirname(__DIR__).'/js/Routes.js';
+                } else {
+                    echo dirname(__DIR__) . '/js/Routes.js';
                 }
-            }catch(\Exception $e){
-        
+            } catch (\Exception $e) {
             }
             TualoApplication::contenttype('application/javascript');
-        },array('get'),false);
+        }, array('get'), false);
 
 
-        Route::add('/dslibrary/all.js',function($matches){
-            try{
+        Route::add('/dslibrary/all.js', function ($matches) {
+            try {
                 $session = TualoApplication::get('session');
                 $db = TualoApplication::get('session')->getDB();
-                if (!is_null($db)){
+                if (!is_null($db)) {
                     $db->direct('set @suppressRequires=1');
                     $data = $db->direct(
-                        implode(' union ',[
-//                            'select js from view_ds_custom',
+                        implode(' union ', [
+                            //                            'select js from view_ds_custom',
                             'select js from view_ds_model limit 10',
                             /*
                             'select js from view_ds_store',
@@ -45,16 +48,13 @@ class DSLibrary implements IRoute{
                             */
                         ])
                     );
-                    foreach($data as $row){
-                        TualoApplication::body( $row['js']."\n");
+                    foreach ($data as $row) {
+                        TualoApplication::body($row['js'] . "\n");
                     }
                 }
-            }catch(\Exception $e){
-        
+            } catch (\Exception $e) {
             }
             TualoApplication::contenttype('application/javascript');
-        },array('get'),false);
-
-        
+        }, array('get'), false);
     }
 }
