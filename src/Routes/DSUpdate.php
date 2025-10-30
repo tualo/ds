@@ -14,10 +14,16 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
     {
         Route::add('/dssetup/ds-update', function ($matches) {
 
-            $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            $session = App::getSession();
+
 
             try {
+                $db = $session->getDB();
+                if (!$session->isMaster()) {
+                    http_response_code(403);
+                    throw new \Exception('Keine Berechtigung');
+                }
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 $tn = isset($_REQUEST['table_name']) ? $_REQUEST['table_name'] : '';
 
                 $db->direct('call fill_ds({table_name})', ['table_name' => $tn]);
