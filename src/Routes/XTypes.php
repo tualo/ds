@@ -9,6 +9,10 @@ use Tualo\Office\Basic\IRoute;
 
 class XTypes extends \Tualo\Office\Basic\RouteWrapper
 {
+    public static function scope(): string
+    {
+        return 'ds.xtypes';
+    }
     public static function register()
     {
 
