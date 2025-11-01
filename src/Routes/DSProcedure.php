@@ -8,7 +8,7 @@ use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSSetup;
 
 
-class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
+class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
 {
     public static function scope(): string
     {
