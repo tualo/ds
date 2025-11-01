@@ -19,27 +19,54 @@ class File extends \Tualo\Office\Basic\RouteWrapper
     public static function register()
     {
 
-        Route::add('/dsfile/download', function () {
+        Route::add(
+            '/dsfile/download',
+            function () {
 
-            $db = App::get('session')->getDB();
-            $session = App::get('session');
-            try {
+                $db = App::get('session')->getDB();
+                $session = App::get('session');
+                try {
 
-                $tablename = $_REQUEST['t'];
-                $id = intval($_REQUEST['id']);
-                $direct = false;
-                $base64 = false;
-                $maxwidth = -1;
-                $maxheight = -1;
-                $result = DSFileHelper::getFile($db, $tablename, $id, $direct, $base64, $maxwidth, $maxheight);
-                foreach ($result as $k => $v) {
-                    App::result($k, $v);
+                    $tablename = $_REQUEST['t'];
+                    $id = intval($_REQUEST['id']);
+                    $direct = false;
+                    $base64 = false;
+                    $maxwidth = -1;
+                    $maxheight = -1;
+                    $result = DSFileHelper::getFile($db, $tablename, $id, $direct, $base64, $maxwidth, $maxheight);
+                    foreach ($result as $k => $v) {
+                        App::result($k, $v);
+                    }
+                } catch (\Exception $e) {
+                    App::result('msg', $e->getMessage());
                 }
-            } catch (\Exception $e) {
-                App::result('msg', $e->getMessage());
-            }
-            App::contenttype('application/json');
-        }, array('get', 'post'), true, [], self::scope());
+                App::contenttype('application/json');
+            },
+            array('get', 'post'),
+            true,
+            [
+                'errorOnUnexpected' => true,
+                'errorOnInvalid' => true,
+                'fields' =>
+                [
+                    't' => [
+                        'required' => true,
+                        'type' => 'string',
+                        'max_length' => 128,
+                        'pattern' => '/^[0-9a-zA-ZäöüÄÖÜß\s\-]+$/u',  // nur Buchstaben, Ziffern, Leerzeichen, Bindestriche
+                        'min' => 0,
+                        'max' => 10000000
+                    ],
+                    'id' => [
+                        'required' => true,
+                        'type' => 'integer',
+                        'min' => 0,
+                        'max' => 1000000000
+                    ]
+                ]
+            ],
+            self::scope()
+        );
 
         Route::add('/dsfile/upload', function () {
             DSFileHelper::uploadRoute($tablename = $_REQUEST['t']);
