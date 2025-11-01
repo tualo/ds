@@ -11,6 +11,10 @@ use Tualo\Office\DS\DSTable;
 
 class Import extends \Tualo\Office\Basic\RouteWrapper
 {
+    public static function scope(): string
+    {
+        return 'ds.import';
+    }
 
 
     public static function makeDate(string $date): string
@@ -97,12 +101,13 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
 
     public static function register()
     {
+
         Route::add('/dsimport/maxfilesize', function ($matches) {
             App::result('success', true);
             App::result('size', Import::getMaximumFileUploadSize());
 
             App::contenttype('application/json');
-        }, ['post', 'get'], true);
+        }, ['post', 'get'], true, [], self::scope());
         Route::add('/dsimport/upload', function ($matches) {
             $db = App::get('session')->getDB();
             try {
@@ -163,7 +168,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['post', 'get'], true);
+        }, ['post', 'get'], true, [], self::scope());
 
 
         Route::add('/dsimport/check', function () {
@@ -199,7 +204,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
 
@@ -279,7 +284,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
 
@@ -332,7 +337,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
 
@@ -442,7 +447,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
         Route::add('/dsimport/import', function () {
@@ -529,6 +534,6 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['post'], true);
+        }, ['post'], true, [], self::scope());
     }
 }

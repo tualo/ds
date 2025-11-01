@@ -12,6 +12,10 @@ use Tualo\Office\DS\DSFileHelper;
 
 class File extends \Tualo\Office\Basic\RouteWrapper
 {
+    public static function scope(): string
+    {
+        return 'ds.file';
+    }
     public static function register()
     {
 
@@ -35,15 +39,15 @@ class File extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, array('get', 'post'), true);
+        }, array('get', 'post'), true, [], self::scope());
 
         Route::add('/dsfile/upload', function () {
             DSFileHelper::uploadRoute($tablename = $_REQUEST['t']);
-        }, array('get', 'post'), true);
+        }, array('get', 'post'), true, [], self::scope());
 
         Route::add('/dsfile/(?P<tablename>[\w\-\_\|]+)/upload', function ($matches) {
             DSFileHelper::uploadRoute($tablename = $matches['tablename']);
-        }, ['post'], true);
+        }, ['post'], true, [], self::scope());
 
         Route::add('/dsfile/mime', function () {
 
@@ -63,6 +67,6 @@ class File extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, array('get', 'post'), true);
+        }, array('get', 'post'), true, [], self::scope());
     }
 }
