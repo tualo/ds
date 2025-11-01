@@ -18,6 +18,9 @@ class DSReadRoute
 
     public static function read($db, $tablename, $request)
     {
+        if (is_null($db)) {
+            throw new \Exception('no db connection');
+        }
         $db->tinyIntAsBoolean(true);
         TualoApplication::deferredTrigger();
         $config = (TualoApplication::get('configuration'));

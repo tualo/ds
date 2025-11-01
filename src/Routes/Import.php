@@ -174,6 +174,9 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dsimport/check', function () {
             $db = App::get('session')->getDB();
             try {
+                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                    throw new \Exception('Keine Importdatei gefunden');
+                }
                 $result = [];
                 $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result['d'] = $d;
@@ -213,7 +216,9 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             $db = App::get('session')->getDB();
 
             try {
-
+                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                    throw new \Exception('Keine Importdatei gefunden');
+                }
 
                 $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result = [];
@@ -294,7 +299,9 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             $db = App::get('session')->getDB();
 
             try {
-
+                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                    throw new \Exception('Keine Importdatei gefunden');
+                }
                 $result = [];
                 $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result['d'] = $d;
@@ -347,7 +354,9 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
 
             try {
 
-
+                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                    throw new \Exception('Keine Importdatei gefunden');
+                }
                 $result = ['data' => []];
                 $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result['d'] = $d;
@@ -455,7 +464,9 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             $db = App::get('session')->getDB();
 
             try {
-
+                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                    throw new \Exception('Keine Importdatei gefunden');
+                }
 
                 $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
 
@@ -534,6 +545,38 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
-        }, ['post'], true, [], self::scope());
+        }, ['post'], true, [
+            'errorOnUnexpected' => true,
+            'errorOnInvalid' => true,
+            'fields' =>
+            [
+                't' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'max_length' => 128,
+                    'pattern' => '/^[0-9a-zA-ZäöüÄÖÜß\s\-]+$/u',  // nur Buchstaben, Ziffern, Leerzeichen, Bindestriche
+                    'min' => 0,
+                    'max' => 10000000
+                ],
+                'index' => [
+                    'required' => true,
+                    'type' => 'integer',
+                    'min' => 0,
+                    'max' => 1000000000
+                ],
+                'offset' => [
+                    'required' => true,
+                    'type' => 'integer',
+                    'min' => 0,
+                    'max' => 1000000000
+                ],
+                'config' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'min_length' => 2,
+                    'max_length' => 1000000
+                ]
+            ]
+        ], self::scope());
     }
 }
