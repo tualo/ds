@@ -301,9 +301,9 @@ class DSTable
     }
 
 
-    public function g(string $hashKey = ''): array
+    public function g(string $hashKey = '', string $valueKey = ''): array
     {
-        return $this->get($hashKey);
+        return $this->get($hashKey, $valueKey);
     }
     public function get(string $hashKey = '', string $valueKey = ''): array
     {
