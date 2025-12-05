@@ -546,7 +546,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             }
             App::contenttype('application/json');
         }, ['post'], true, [
-            'errorOnUnexpected' => true,
+            'errorOnUnexpected' => false,
             'errorOnInvalid' => true,
             'fields' =>
             [
