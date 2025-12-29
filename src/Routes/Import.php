@@ -575,6 +575,12 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                     'type' => 'string',
                     'min_length' => 2,
                     'max_length' => 1000000
+                ],
+                'tbl' => [
+                    'required' => false,
+                    'type' => 'integer',
+                    'min' => 0,
+                    'max' => 1000000000
                 ]
             ]
         ], self::scope());
