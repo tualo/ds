@@ -554,7 +554,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                     'required' => true,
                     'type' => 'string',
                     'max_length' => 128,
-                    'pattern' => '/^[0-9a-zA-ZäöüÄÖÜß\s\-]+$/u',  // nur Buchstaben, Ziffern, Leerzeichen, Bindestriche
+                    'pattern' => '/^[0-9a-zA-ZäöüÄÖÜß\s\-_]+$/u',  // nur Buchstaben, Ziffern, Leerzeichen, Bindestriche
                     'min' => 0,
                     'max' => 10000000
                 ],
