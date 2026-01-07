@@ -502,6 +502,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 foreach ($dataChunkForImport as $data_row) {
                     $dataRecord = [];
                     foreach ($config as $key => $value) {
+                        $key = strtolower($key);
                         if (strpos($value, 'COLINDEX') !== false) {
                             $fieldindex = intval(str_replace('COLINDEX', '', $value));
                             $dataRecord[/* $tablename . '__' . */$key] = $data_row[$fieldindex];
