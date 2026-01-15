@@ -142,7 +142,7 @@ class DSColumnCheck extends SystemCheck
                     foreach ($explained_columns as $explained_column) {
                         if ($explained_column['field'] == $column_name) {
                             if ($explained_column['type'] != $column_type) {
-                                if ($explained_column['type'] != 'mediumtext' && $column_type != 'longtext') {
+                                if ($explained_column['type'] == 'mediumtext' && $column_type == 'longtext') {
                                     // allow mediumtext vs longtext difference
 
                                 } else {
