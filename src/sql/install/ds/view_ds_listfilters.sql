@@ -51,51 +51,16 @@ select 'boolean' `id`, 'Wahrheitswerte' `name`
 
 ;
 
-
--- BEGIN DS view_ds_listfilters
--- NAME: Listenfilter
-
-insert into `ds`
-                    (`table_name`)
-                    values
-                    ('view_ds_listfilters')
-                    on duplicate key update `table_name`=values(`table_name`);
-update `ds` set `title`='Listenfilter',`reorderfield`='',`use_history`='0',`searchfield`='id',`displayfield`='id',`sortfield`='id',`searchany`='1',`hint`='',`overview_tpl`='',`sync_table`='',`writetable`='',`globalsearch`='0',`listselectionmodel`='cellmodel',`sync_view`='',`syncable`='0',`cssstyle`='',`alternativeformxtype`='',`read_table`='',`class_name`='Unklassifiziert',`special_add_panel`='',`existsreal`='1',`character_set_name`='',`read_filter`='',`listxtypeprefix`='listview',`phpexporter`='XlsxWriter',`phpexporterfilename`='',`combined`='0',`default_pagesize`='100',`allowForm`='0',`listviewbaseclass`='Tualo.DataSets.ListView',`showactionbtn`='1' where `table_name`='view_ds_listfilters';
-insert into `ds_column`
-                    (`table_name`,`column_name`)
-                    values
-                    ('view_ds_listfilters','id')
-                    on duplicate key update `table_name`=values(`table_name`),`column_name`=values(`column_name`);
-update `ds_column` set `default_value`='',`default_max_value`='10000000',`default_min_value`='0',`update_value`='',`is_primary`='0',`syncable`='0',`referenced_table`='',`referenced_column_name`='',`is_nullable`='YES',`is_referenced`='',`writeable`='1',`note`='',`data_type`='varchar',`column_key`='',`column_type`='varchar(240)',`character_maximum_length`='240',`numeric_precision`='0',`numeric_scale`='0',`character_set_name`='utf8',`privileges`='select,insert,update,references',`existsreal`='1',`deferedload`='0' where `table_name`='view_ds_listfilters' and `column_name`='id';
-insert into `ds_column`
-                    (`table_name`,`column_name`)
-                    values
-                    ('view_ds_listfilters','name')
-                    on duplicate key update `table_name`=values(`table_name`),`column_name`=values(`column_name`);
-update `ds_column` set `default_value`='',`default_max_value`='10000000',`default_min_value`='0',`update_value`='',`is_primary`='0',`syncable`='0',`referenced_table`='',`referenced_column_name`='',`is_nullable`='YES',`is_referenced`='',`writeable`='1',`note`='',`data_type`='varchar',`column_key`='',`column_type`='varchar(356)',`character_maximum_length`='356',`numeric_precision`='0',`numeric_scale`='0',`character_set_name`='utf8',`privileges`='select,insert,update,references',`existsreal`='1',`deferedload`='0' where `table_name`='view_ds_listfilters' and `column_name`='name';
-insert into `ds_access`
-                    (`role`,`table_name`)
-                    values
-                    ('_default_','view_ds_listfilters')
-                    on duplicate key update `role`=values(`role`),`table_name`=values(`table_name`);
-update `ds_access` set `read`='1',`write`='0',`delete`='0',`append`='0',`existsreal`='0' where `role`='_default_' and `table_name`='view_ds_listfilters';
-insert into `ds_column_list_label`
-                    (`table_name`,`column_name`,`language`,`label`)
-                    values
-                    ('view_ds_listfilters','id','DE','id')
-                    on duplicate key update `table_name`=values(`table_name`),`column_name`=values(`column_name`),`language`=values(`language`),`label`=values(`label`);
-update `ds_column_list_label` set `xtype`='gridcolumn',`editor`='',`position`='999',`summaryrenderer`='',`renderer`='',`summarytype`='',`hidden`='0',`active`='1',`filterstore`='',`grouped`='0',`flex`='1.00',`direction`='',`align`='',`listfiltertype`='' where `table_name`='view_ds_listfilters' and `column_name`='id' and `language`='DE';
-insert into `ds_column_list_label`
-                    (`table_name`,`column_name`,`language`,`label`)
-                    values
-                    ('view_ds_listfilters','name','DE','name')
-                    on duplicate key update `table_name`=values(`table_name`),`column_name`=values(`column_name`),`language`=values(`language`),`label`=values(`label`);
-update `ds_column_list_label` set `xtype`='gridcolumn',`editor`='',`position`='999',`summaryrenderer`='',`renderer`='',`summarytype`='',`hidden`='0',`active`='1',`filterstore`='',`grouped`='0',`flex`='1.00',`direction`='',`align`='',`listfiltertype`='' where `table_name`='view_ds_listfilters' and `column_name`='name' and `language`='DE';
-insert into `ds_dropdownfields`
-                    (`table_name`,`name`)
-                    values
-                    ('view_ds_listfilters','id')
-                    on duplicate key update `table_name`=values(`table_name`),`name`=values(`name`);
-update `ds_dropdownfields` set `idfield`='id',`displayfield`='name',`filterconfig`='' where `table_name`='view_ds_listfilters' and `name`='id';
--- END DS view_ds_listfilters
-
+SET FOREIGN_KEY_CHECKS=0;
+INSERT INTO `ds` (`allowform`,`alternativeformxtype`,`autosave`,`base_store_class`,`character_set_name`,`class_name`,`combined`,`cssstyle`,`default_pagesize`,`displayfield`,`existsreal`,`globalsearch`,`hint`,`listselectionmodel`,`listviewbaseclass`,`listxtypeprefix`,`modelbaseclass`,`overview_tpl`,`phpexporter`,`phpexporterfilename`,`read_filter`,`read_table`,`reorderfield`,`searchany`,`searchfield`,`showactionbtn`,`sortfield`,`special_add_panel`,`syncable`,`sync_table`,`sync_view`,`table_name`,`title`,`use_history`,`use_insert_for_update`,`writetable`) VALUES ('0','','0','Tualo.DataSets.data.Store','','Unklassifiziert','0','','100','id','1','0','','cellmodel','Tualo.DataSets.ListView','listview','Tualo.DataSets.model.Basic','','XlsxWriter','','','','','1','id','1','id','','0','','','view_ds_listfilters','Listenfilter','0','0','') ON DUPLICATE KEY UPDATE `allowform`=values(`allowform`),`alternativeformxtype`=values(`alternativeformxtype`),`autosave`=values(`autosave`),`base_store_class`=values(`base_store_class`),`character_set_name`=values(`character_set_name`),`class_name`=values(`class_name`),`combined`=values(`combined`),`cssstyle`=values(`cssstyle`),`default_pagesize`=values(`default_pagesize`),`displayfield`=values(`displayfield`),`existsreal`=values(`existsreal`),`globalsearch`=values(`globalsearch`),`hint`=values(`hint`),`listselectionmodel`=values(`listselectionmodel`),`listviewbaseclass`=values(`listviewbaseclass`),`listxtypeprefix`=values(`listxtypeprefix`),`modelbaseclass`=values(`modelbaseclass`),`overview_tpl`=values(`overview_tpl`),`phpexporter`=values(`phpexporter`),`phpexporterfilename`=values(`phpexporterfilename`),`read_filter`=values(`read_filter`),`read_table`=values(`read_table`),`reorderfield`=values(`reorderfield`),`searchany`=values(`searchany`),`searchfield`=values(`searchfield`),`showactionbtn`=values(`showactionbtn`),`sortfield`=values(`sortfield`),`special_add_panel`=values(`special_add_panel`),`syncable`=values(`syncable`),`sync_table`=values(`sync_table`),`sync_view`=values(`sync_view`),`table_name`=values(`table_name`),`title`=values(`title`),`use_history`=values(`use_history`),`use_insert_for_update`=values(`use_insert_for_update`),`writetable`=values(`writetable`); 
+INSERT IGNORE INTO `ds_column` (`character_maximum_length`,`character_set_name`,`column_key`,`column_name`,`column_type`,`data_type`,`default_max_value`,`default_min_value`,`default_value`,`deferedload`,`existsreal`,`fieldtype`,`hint`,`is_generated`,`is_nullable`,`is_primary`,`is_referenced`,`note`,`numeric_precision`,`numeric_scale`,`privileges`,`referenced_column_name`,`referenced_table`,`syncable`,`table_name`,`update_value`,`writeable`) VALUES ('245','utf8mb3','','id','varchar(245)','varchar','10000000','0','','0','1','','','NEVER','YES','1','','','0','0','select,insert,update,references','','','0','view_ds_listfilters','','1') ; 
+INSERT IGNORE INTO `ds_column` (`character_maximum_length`,`character_set_name`,`column_key`,`column_name`,`column_type`,`data_type`,`default_max_value`,`default_min_value`,`default_value`,`deferedload`,`existsreal`,`fieldtype`,`is_generated`,`is_nullable`,`is_primary`,`is_referenced`,`note`,`numeric_precision`,`numeric_scale`,`privileges`,`referenced_column_name`,`referenced_table`,`syncable`,`table_name`,`update_value`,`writeable`) VALUES ('366','utf8mb3','','name','varchar(366)','varchar','10000000','0','','0','1','','NEVER','YES','0','','','0','0','select,insert,update,references','','','0','view_ds_listfilters','','1') ; 
+INSERT IGNORE INTO `ds_column_list_label` (`active`,`align`,`column_name`,`editor`,`filterstore`,`flex`,`grouped`,`hidden`,`label`,`language`,`listfiltertype`,`position`,`renderer`,`summaryrenderer`,`summarytype`,`table_name`,`xtype`) VALUES ('1','','id','','','1','0','0','id','DE','','999','','','','view_ds_listfilters','gridcolumn') ; 
+INSERT IGNORE INTO `ds_column_list_label` (`active`,`align`,`column_name`,`editor`,`filterstore`,`flex`,`grouped`,`hidden`,`label`,`language`,`listfiltertype`,`position`,`renderer`,`summaryrenderer`,`summarytype`,`table_name`,`xtype`) VALUES ('1','','name','','','1','0','0','name','DE','','999','','','','view_ds_listfilters','gridcolumn') ; 
+INSERT IGNORE INTO `ds_column_form_label` (`active`,`allowempty`,`column_name`,`field_path`,`flex`,`hidden`,`label`,`language`,`position`,`table_name`,`xtype`) VALUES ('0','0','id','Allgemein','1','1','id','DE','999','view_ds_listfilters','displayfield') ; 
+INSERT IGNORE INTO `ds_column_form_label` (`active`,`allowempty`,`column_name`,`field_path`,`flex`,`hidden`,`label`,`language`,`position`,`table_name`,`xtype`) VALUES ('0','0','name','Allgemein','1','1','name','DE','999','view_ds_listfilters','displayfield') ; 
+INSERT IGNORE INTO `ds_dropdownfields` (`displayfield`,`filterconfig`,`idfield`,`name`,`table_name`) VALUES ('name','','id','id','view_ds_listfilters') ; 
+INSERT IGNORE INTO `ds_access` (`append`,`delete`,`read`,`role`,`table_name`,`write`) VALUES ('0','0','1','_default_','view_ds_listfilters','0') ; 
+INSERT IGNORE INTO `ds_access` (`append`,`delete`,`read`,`role`,`table_name`,`write`) VALUES ('0','0','0','administration','view_ds_listfilters','0') ; 
+REPLACE INTO `docsystem_ds` (`table_name`) VALUES ('view_ds_listfilters') ; 
+SET FOREIGN_KEY_CHECKS=1;
