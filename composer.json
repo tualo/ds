@@ -20,11 +20,11 @@
   "minimum-stability": "dev",
   "require": {
     "tualo/extjscmplr": "^1.0.6",
-    "phpoffice/phpspreadsheet": "^5.1",
+    "phpoffice/phpspreadsheet": "^5.4",
     "ramsey/uuid": "~4.9.0",
     "tualo/tualo-ext-shim": "^1.0.1",
     "tualo/tualojs": "^1.0",
     "tualo/monacoeditor": "^1.0"
   },
-  "version": "1.5.27"
+  "version": "1.5.28"
 }
