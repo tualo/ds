@@ -3,6 +3,7 @@ insert ignore into ds_addcommands_xtypes (id,name) values ('compiler_command','K
 insert ignore into ds_addcommands_xtypes (id,name) values ('ds_batch_command','Batchupdate');
 insert ignore into ds_addcommands_xtypes (id,name) values ('ds_refresh_information_schema_command','DDL-Refresh');
 insert ignore into ds_addcommands_xtypes (id,name) values ('cmp_ds_definition_command','DS-Refresh');
+insert ignore into ds_addcommands_xtypes (id,name) values ('cmp_ds_pugtemplateexport_command','PUG Template exportieren');
 
 
 

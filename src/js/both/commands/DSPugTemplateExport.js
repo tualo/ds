@@ -1,11 +1,11 @@
 
-Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
+Ext.define('Tualo.cmp.cmp_ds.commands.DSPugTemplateExport', {
     statics: {
         glyph: 'wrench',
-        title: 'Definition exportieren'
+        title: 'PUG Template exportieren'
     },
     extend: 'Ext.panel.Panel',
-    alias: 'widget.cmp_ds_definition_command',
+    alias: 'widget.cmp_ds_pugtemplateexport_command',
     requires: [
         // 'Ext.exporter.excel.Xlsx',
         // 'Ext.grid.plugin.Exporter'
