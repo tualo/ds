@@ -133,7 +133,7 @@ class DSColumnCheck extends SystemCheck
                 }
 
 
-                // compare explain type with ds_column coluzmn_type
+                // compare explain type with ds_column column_type
                 $wrong_types = [];
                 foreach ($ds_columns as $ds_column) {
                     $column_name = $ds_column['column_name'];
@@ -142,7 +142,12 @@ class DSColumnCheck extends SystemCheck
                     foreach ($explained_columns as $explained_column) {
                         if ($explained_column['field'] == $column_name) {
                             if ($explained_column['type'] != $column_type) {
-                                $wrong_types[] = $column_name . ' (' . $explained_column['type'] . ' != ' . $column_type . ')';
+                                if ($explained_column['type'] != 'mediumtext' && $column_type != 'longtext') {
+                                    // allow mediumtext vs longtext difference
+
+                                } else {
+                                    $wrong_types[] = $column_name . ' (' . $explained_column['type'] . ' != ' . $column_type . ')';
+                                }
                             }
                             $found = true;
                             break;
