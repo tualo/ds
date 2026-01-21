@@ -62,8 +62,7 @@ where ds_column.existsreal = 1
 
 
 call addfieldifnotexists('ds_column','fieldtype','varchar(100) default ""');
-CREATE
-OR REPLACE VIEW `view_ds_model` AS
+CREATE OR REPLACE VIEW `view_ds_model` AS
 select
     concat(
         'Tualo.DataSets.model.',
@@ -112,6 +111,7 @@ select
                                 json_object(
                                     'name',
                                     concat(`ds_column`.`column_name`),
+                                    -- 'allowNull',1=1,
                                     'type',
                                     if(
                                         `ds_column`.`fieldtype` <> '',

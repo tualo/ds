@@ -124,6 +124,9 @@ class Install extends CommandLineInstallSQL  implements ICommandline
 
         'install/ds/fix.use_insert_for_update' => 'setup fix.use_insert_for_update',
 
+        'install/view_ds_store_sort_directions' => 'setup view_ds_store_sort_directions',
+        'install/ds/view_ds_store_sort_directions.ds' => 'setup view_ds_store_sort_directions.ds',
+
 
     ];
 }

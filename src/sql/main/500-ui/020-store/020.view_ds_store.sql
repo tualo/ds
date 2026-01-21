@@ -3,6 +3,11 @@ delimiter ;
 alter table ds add column if not exists autosave tinyint(1) default 0;
 alter table ds add column if not exists base_store_class varchar(50) default 'Tualo.DataSets.data.Store';
 
+
+
+
+alter table ds add column if not exists sortdirection varchar(10) default 'ASC';
+
 create or replace view view_ds_store as
 select 
     concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) name,
@@ -23,7 +28,7 @@ select
             "sorters", JSON_ARRAY(
                 JSON_OBJECT(
                     "property", if(sortfield<>'',sortfield,'__id'),
-                    "direction", "ASC"
+                    "direction", if(sortdirection<>'',sortdirection,'ASC')
                 )
             )
         ),')',char(59)
