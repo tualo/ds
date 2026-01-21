@@ -7,33 +7,41 @@ create or replace view view_ds_column_merge as
 select
     `ds_column`.`table_name`, 
     `ds_column`.`column_name`,
-    if (ds_column.data_type in ('date','datetime','time'),
+    if ( ds_column.column_type in ('date','datetime','time','timestamp'),
         JSON_OBJECT(
             "dateFormat", 
             if (
-                ds_column.data_type ='date',
+                ds_column.column_type ='date',
                 "Y-m-d",
                 if (
-                    ds_column.data_type ='datetime',
+                    ds_column.column_type ='datetime',
                     "Y-m-d H:i:s",
                     if (
-                        ds_column.data_type ='time',
+                        ds_column.column_type ='time',
                         "H:i:s",
-                        ""
+                        if (
+                            ds_column.column_type ='timestamp',
+                            "Y-m-d H:i:s",
+                            ""
+                        )
                     )
                 )
             ),
             "dateWriteFormat", 
             if (
-                ds_column.data_type ='date',
+                ds_column.column_type ='date',
                 "Y-m-d",
                 if (
-                    ds_column.data_type ='datetime',
+                    ds_column.column_type ='datetime',
                     "Y-m-d H:i:s",
                     if (
-                        ds_column.data_type ='time',
+                        ds_column.column_type ='time',
                         "H:i:s",
-                        ""
+                        if (
+                            ds_column.column_type ='timestamp',
+                            "Y-m-d H:i:s",
+                            ""
+                        )
                     )
                 )
             )
@@ -46,7 +54,8 @@ select
 --        )
     )
      obj
-from ds_column
+from 
+    ds_column
 where ds_column.existsreal = 1
     -- ds_column.data_type in ('date','datetime','time')
 ;

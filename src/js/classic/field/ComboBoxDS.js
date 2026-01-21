@@ -16,14 +16,15 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
     },
     */
 
-    constructor: function(config){
+    constructor: function (config) {
         this.callParent([config]);
         let store = this.getStore();
-        store.on('beforeload',this.onBeforeLoad,this);
+        store.on('beforeload', this.onBeforeLoad, this);
         store.load();
+        console.debug('ComboBoxDS constructed', this.tablename, config, store);
     },
-    onBeforeLoad: function(store, operation, eOpts){
-        console.log('onBeforeLoad',store,this,operation,eOpts);          
+    onBeforeLoad: function (store, operation, eOpts) {
+        console.log('onBeforeLoad', store, this, operation, eOpts);
         store.getProxy().setExtraParams({
 
             /*tablename: store.tablename,
@@ -35,5 +36,5 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
         });
     },
 
-    
+
 })
