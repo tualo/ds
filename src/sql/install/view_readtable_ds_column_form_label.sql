@@ -15,6 +15,8 @@ select
     ifnull(`ds_column_form_label`.`active`,0) AS `active`,
     ifnull(`ds_column_form_label`.`flex`,1) AS `flex`,
     ifnull(`ds_column_form_label`.`allowempty`,0) AS `allowempty`,
+    ifnull(`ds_column_form_label`.`fieldgroup`,'') AS `fieldgroup`,
+    
     if(`ds_column_form_label`.`column_name` is null,1,0) AS `__virtual`
 from (
     `ds_column` `ic` 
