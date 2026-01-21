@@ -48,7 +48,7 @@ Ersetzen Sie auch hier `<tablename>` durch den tatsächlichen Tabellennamen.
 Führen Sie abschließend die Prozedur aus, um die Suchtabelle mit den vorhandenen Daten zu befüllen:
 
 ```sql
-CALL ds_ftsearch_<tablename>();
+CALL refresh_searchft_<tablename>();
 ```
 
 Ersetzen Sie `<tablename>` durch den tatsächlichen Tabellennamen.
@@ -68,7 +68,7 @@ CALL fill_ds('ds_ftsearch_kunden');
 CALL fill_ds_column('ds_ftsearch_kunden');
 
 -- Schritt 5
-CALL ds_ftsearch_kunden();
+CALL refresh_searchft_kunden();
 ```
 
 ## Wartung
