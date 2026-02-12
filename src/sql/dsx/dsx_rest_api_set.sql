@@ -171,7 +171,6 @@ BEGIN
                 and column_type <> ''
             ;
 
-            select 3,use_fields,use_table_name;
 
 
             drop table if exists temp_dsx_rest_data;

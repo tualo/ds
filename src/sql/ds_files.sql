@@ -38,11 +38,30 @@ CREATE TABLE IF NOT EXISTS `ds_files_data_chunks` (
 
 delimiter //
 
+ 
 CREATE OR REPLACE PROCEDURE `ds_files_cleanup`( IN  in_table_name varchar(128))
 BEGIN 
     declare sql_command longtext;
-    set sql_command = concat('delete from ds_files where table_name=',quote(in_table_name),' and  file_id not in (select file_id from `',in_table_name,'`) ');
+    declare _sql_temporary_table longtext;
+
+    drop table if exists cleanup_ds_files_tmp;
+    SET _sql_temporary_table = CONCAT('create temporary table if not exists  cleanup_ds_files_tmp as 
+        select file_id from ds_files where table_name=',quote(in_table_name),' and  file_id not in (select file_id from `',in_table_name,'`)
+    ');
+    PREPARE _sql FROM _sql_temporary_table;
+    EXECUTE _sql;
+    DEALLOCATE PREPARE _sql;
+
+    for rec in ( select * from cleanup_ds_files_tmp  ) do
+        -- start transaction;
+        delete from ds_files where file_id = rec.file_id;
+        -- commit;
+    end for;
+
+    /*
+    set sql_command = concat('delete from ds_files where table_name=',quote(in_table_name),' and  file_id not in (select file_id from `',in_table_name,'`) limit 10');
     PREPARE stmt FROM sql_command;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
+    */
 END //
