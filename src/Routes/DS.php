@@ -98,6 +98,19 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
         return preg_replace('/[\'";#]/', '', $input);
     }
 
+    public static function setRequestParameter()
+    {
+        $db = App::get('session')->getDB();
+        if (isset($_REQUEST['query_parameter'])) {
+            $json = json_decode($_REQUEST['query_parameter'], true);
+            if (!is_null($json)) {
+                $db->execute('set @request_parameter={request_parameter}', [
+                    'request_parameter' => json_encode($json)
+                ]);
+            }
+        }
+    }
+
     public static function register()
     {
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
@@ -106,6 +119,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
             try {
+                self::setRequestParameter();
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -162,6 +176,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
             try {
+                self::setRequestParameter();
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 // $db->direct( 'SET GLOBAL max_allowed_packet = 50331648 ' . (48 * 1024 * 1024) );
                 //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
@@ -194,6 +209,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $tablename = $matches['tablename'];
             $table = null;
             try {
+                self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -258,6 +274,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
 
             $tablename = $matches['tablename'];
             try {
+                self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);
@@ -306,6 +323,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             try {
+                self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);

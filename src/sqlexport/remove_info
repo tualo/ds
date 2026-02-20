@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "$1" \
+# echo "$1" \
+cat $1 \
 | grep -v "\-\-" \
 | grep -v "!50001 SET" \
 | grep -v "\/\*!40" \

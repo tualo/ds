@@ -76,7 +76,6 @@ class DSReadRoute
         $request['nodata'] = 1;
         //$request['fulltext'] = 0;
 
-        // TualoApplication::result('json_encode', ($request));
 
         $db->direct('set @request = {request};', ['request' => json_encode($request)]);
         // print_r($db->direct('select @request', [], 'request'));
@@ -107,13 +106,34 @@ class DSReadRoute
         }
 
 
+
+        $db->tinyIntAsBoolean(true);
+
+        // reduce the result to the only wanted columns
+        if (isset($request['fields']) && is_string($request['fields'])) {
+            $fields = json_decode($request['fields'], true);
+
+            TualoApplication::result('fields', $fields);
+            if (!is_array($fields)) $fields = [];
+            /*
+            $fields[] = '__id';
+            // $fields[] = '__rownumber';
+            $fields[] = '__displayfield';
+            $fields[] = '__table_name';
+            */
+            $o['query'] = str_replace('select * from ', 'select ' . implode(',', $fields) . ' from ', $o['query']);
+        }
+
         if (TualoApplication::configuration('ds', 'return_sql', '0') == '1') {
             TualoApplication::result('sqlq', $o['query']);
         }
 
-        $db->tinyIntAsBoolean(true);
         $o['data'] = $db->direct($o['query'] . ' ' . $o['order_by'] . ' ' . $o['limitterm']);
 
+        $fields = false;
+        if (isset($request['fields']) && is_string($request['fields'])) {
+            $fields = json_decode($request['fields'], true);
+        }
 
         if ($request['postprocessing'] == 1) {
             $res = [];
@@ -129,11 +149,16 @@ class DSReadRoute
                         $res_elem[$tablename . '__' . $k] = $v;
                     }
                 }
-                $res_elem['__rownumber'] = $row++;
+                if (is_array($fields) && in_array('__rownumber', $fields)) {
+                    $res_elem['__rownumber'] = $row++;
+                }
                 $res[] = $res_elem;
             }
             $o['data'] = $res;
         }
+
+
+
         if (is_null($o['total']) && is_array($o['data'])) $o['total'] = count($o['data']);
         return $o;
     }

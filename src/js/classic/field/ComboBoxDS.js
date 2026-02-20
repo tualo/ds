@@ -25,15 +25,17 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
     },
     onBeforeLoad: function (store, operation, eOpts) {
         console.log('onBeforeLoad', store, this, operation, eOpts);
+        /*
         store.getProxy().setExtraParams({
 
-            /*tablename: store.tablename,
+            / *tablename: store.tablename,
             fieldname: store.fieldname,
             value: store.value,
             query: store.query,
             pageSize: store.pageSize
-            */
+            * /
         });
+        */
     },
 
 

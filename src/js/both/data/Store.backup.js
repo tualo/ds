@@ -12,7 +12,6 @@ Ext.define("Tualo.DataSets.data.Store", {
   },
   constructor: function (config) {
     let me = this;
-    /*
     config = Ext.apply({
 
       proxy: {
@@ -77,7 +76,34 @@ Ext.define("Tualo.DataSets.data.Store", {
                 data = [data];
                 singlerecord = true;
               }
-
+              /*
+              let me=this;
+              data.forEach(function (row) {
+                let rec = me.findRecord('__id', row.__id, 0, false, false, true);
+  
+                if (rec.get('__virtual') && rec.get('__virtual') == 1) {
+                  let r = rec.getData(
+                    {
+                      changes: false,
+                      serialize: true
+                    }
+                  )
+                  Object.keys(r).forEach((k) => {
+                    keySet.indexOf(k) == -1 && keySet.push(k);
+                  });
+                }
+                Object.keys(row).forEach((k) => {
+                  keySet.indexOf(k) == -1 && keySet.push(k);
+                });
+              });
+  
+              data.forEach(function (row) {
+                keySet.forEach((k) => {
+                  if (!row.hasOwnProperty(k))
+                    row[k] = me.findRecord('__id', row.__id, 0, false, false, true).get(k);
+                });
+              });
+              */
               if (singlerecord) {
                 return data[0];
               }
@@ -88,12 +114,9 @@ Ext.define("Tualo.DataSets.data.Store", {
         }
       }
     }, config);
-    */
     console.log('STORECONFIG', config);
-    this.callParent([config]);
-
-    console.log('getExtraParams', this.getProxy().getExtraParams());
     /*
+    this.callParent([config]);
     this.proxy.setTimeout(6000000);
     this.proxy.tablename = this.tablename;
     this.getProxy().setApi({

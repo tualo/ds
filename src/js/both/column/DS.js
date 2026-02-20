@@ -4,7 +4,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
     alias: 'widget.tualo_cmp_ds_column',
 
     renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-
+        /*
         try {
             console.debug(
                 'DS Column Renderer',
@@ -16,6 +16,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
         } catch (e) {
             console.debug(e);
         }
+        */
         try {
 
             let me = this,

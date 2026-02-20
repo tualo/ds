@@ -31,7 +31,9 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline
         'main/500-ui/000-types/001.custom' => 'setup 001.custom ',
         'main/500-ui/000-types/003.dstypes' => 'setup 003.dstypes ',
         'main/500-ui/010-model/010.view_ds_model' => 'setup 010.view_ds_model ',
+        'main/500-ui/010-model/011.view_ds_field_model' => 'setup 011.view_ds_field_model ',
         'main/500-ui/020-store/020.view_ds_store' => 'setup 020.view_ds_store ',
+        'main/500-ui/020-store/021.view_ds_field_store' => 'setup 020.view_ds_field_store ',
         'main/500-ui/030-column/030.view_ds_column' => 'setup 030.view_ds_column ',
         'main/500-ui/030-column/030.view_ds_columnfilters' => 'setup 030.view_ds_columnfilters ',
         'main/500-ui/040-field/040.display' => 'setup 040.display ',
@@ -55,5 +57,8 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline
         'main/500-ui/071-model/071.view_ds_viewmodel' => 'setup 071.view_ds_viewmodel ',
         'main/500-ui/080-dsview/080.view_ds_dsview' => 'setup 080.view_ds_dsview ',
         'main/999-dsbackup/importance' => 'setup importance ',
+
+        'install/func.request_parameter' => 'setup func.request_parameter',
+
     ];
 }

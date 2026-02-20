@@ -25,6 +25,28 @@ select
             "autoLoad", FALSE is true,
             "autoSync", ds.autosave=1,
             "pageSize", ifnull(ds.default_pagesize,1000),
+            "proxy", json_object(
+                "type", 'ajax',
+                "noCache", 1=0,
+                "tablename",ds.table_name,
+                "api", json_object(
+                    "create", concat('./ds/',ds.table_name,'/create'),
+                    "read", concat('./ds/',ds.table_name,'/read'),
+                    "update", concat('./ds/',ds.table_name,'/update'),
+                    "destroy", concat('./ds/',ds.table_name,'/delete')
+                ),
+                "reader", json_object(
+                    "type", 'json',
+                    "rootProperty", 'data',
+                    "idProperty", '__id',
+                    "clientIdProperty", '__clientid'
+                ),
+                "listeners", json_object(
+                    "scope", 'this',
+                    "exception", 'onStoreProxyExecption'
+                )
+
+            ),
             "sorters", JSON_ARRAY(
                 JSON_OBJECT(
                     "property", if(sortfield<>'',sortfield,'__id'),

@@ -246,6 +246,7 @@ BEGIN
     DECLARE searchfield LONGTEXT default '';
     -- DECLARE rownumber LONGTEXT default '';
     DECLARE sorts LONGTEXT default '';
+    DECLARE returncolumns LONGTEXT default '';
     DECLARE wherefilter LONGTEXT default '';
     DECLARE havingfilter LONGTEXT default '';
     DECLARE basequery LONGTEXT default '';
@@ -357,6 +358,20 @@ BEGIN
     SET havingfilter = dsx_filter_values(userequest ,'latefilter');
     IF (havingfilter IS NULL) THEN SET havingfilter='true'; END IF;
 
+    set returncolumns = concat('`',JSON_VALUE(userequest,'$.tablename'),'`.*');
+    /*
+    IF JSON_EXISTS(userequest,'$.fields') IS NOT NULL THEN
+        select 
+            group_concat(concat( ds_column.table_name,'.',ds_column.column_name ) separator ',')
+        into returncolumns
+        from 
+            json_table(JSON_VALUE(userequest,'$.fields'),"$[*]" columns( col varchar(255)  path "$")) x
+            join ds_column  on
+                ds_column.table_name = JSON_VALUE(userequest,'$.tablename')
+                and ds_column.column_name = x.col;
+    END IF;
+    */
+
 
     SET basequery = concat(
         'SELECT ',
@@ -369,8 +384,8 @@ BEGIN
             '__clientid, ',
             ''
         ),
-
-         ' `',JSON_VALUE(userequest,'$.tablename'),'`.* ',
+        returncolumns,
+        -- ' `',JSON_VALUE(userequest,'$.tablename'),'`.* ',
         'FROM ',
 
             if(
