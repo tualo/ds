@@ -19,6 +19,7 @@ select
             )
 
         ),
+        /*,
         "features", JSON_ARRAY(
             JSON_OBJECT(
                 "ftype", 'summary',
@@ -28,13 +29,15 @@ select
             JSON_OBJECT(
                 "ftype","grouping",
                 "showSummaryRow", 1=1
-            ),
+            )
+            
             JSON_OBJECT(
                 "ftype","tualofixedsummary",
                 "showSummaryRow", 1=1
             )
             
         ),
+        */
         "listeners", JSON_OBJECT(
             "drop", "onDropGrid",
             "itemdblclick", 'onItemDblClick'
