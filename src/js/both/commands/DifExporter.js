@@ -209,8 +209,15 @@ Ext.define('Tualo.commands.DIFExporter', {
         this.parent = parent;
         this.selectedrecords = selectedrecords;
         this.list = parent.getComponent('list');
+        if (!(typeof this.list.saveDocumentAs == 'function')) {
+            alert('Das Exporter-Plugin fehlt');
+        }
     },
     run: function () {
+        if (!(typeof this.list.saveDocumentAs == 'function')) {
+            alert('Das Exporter-Plugin fehlt');
+            return;
+        }
         this.list.saveDocumentAs({
             type: 'dif',
             fileName: this.parent.getViewModel().get('dsname') + '.dif'
