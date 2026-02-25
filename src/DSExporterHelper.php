@@ -448,8 +448,9 @@ class DSExporterHelper
                             $ivalue = ($ivalue);
                         }
                     }
+                    $ivalue = str_replace('"', '', preg_replace('/[^[:print:]]/u', '', $ivalue . ""));
 
-                    $row[] = $ivalue;
+                    $row[] = '"' . $ivalue . '"';
                 } else {
                     $row[] = "";
                 }
@@ -470,10 +471,10 @@ class DSExporterHelper
         */
         $text = "";
         foreach ($data as $row) {
-            $text .= implode("\t", $row);
+            $text .= implode("\t", $row) . "\x0D\x0A";
         }
 
-        $utf32String = mb_convert_encoding("\0xFF\0xFE" . $text, 'UTF-32LE', 'UTF-8');
+        $utf32String  = "\xFF\xFE\x00\x00" . mb_convert_encoding(/*"\0xFF\0xFE" .*/$text, 'UTF-32LE', 'UTF-8');
 
         // Speichern der Datei
         file_put_contents($pathName . $dateiname, $utf32String);
