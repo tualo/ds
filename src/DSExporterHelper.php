@@ -425,7 +425,7 @@ class DSExporterHelper
             if ($encoding != 'utf-8') {
             }
 
-            $row[] = $value['label'];
+            $row[] = '"' . $value['label'] . '"';
             $header[] = 'string';
         }
 
@@ -470,7 +470,7 @@ class DSExporterHelper
         */
         $text = "";
         foreach ($data as $row) {
-            $text .= implode($delimiter, $row);
+            $text .= implode("\t", $row);
         }
 
         $utf32String = mb_convert_encoding($text, 'UTF-32LE', 'UTF-8');
