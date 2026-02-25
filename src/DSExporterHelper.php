@@ -473,7 +473,7 @@ class DSExporterHelper
             $text .= implode("\t", $row);
         }
 
-        $utf32String = mb_convert_encoding($text, 'UTF-32LE', 'UTF-8');
+        $utf32String = mb_convert_encoding("\0xFF\0xFE" . $text, 'UTF-32LE', 'UTF-8');
 
         // Speichern der Datei
         file_put_contents($pathName . $dateiname, $utf32String);
