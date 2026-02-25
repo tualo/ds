@@ -208,12 +208,12 @@ Ext.define('Tualo.commands.DIFExporter', {
         this.records = records;
         this.parent = parent;
         this.selectedrecords = selectedrecords;
-        this.list = parent.getList();
+        this.list = parent.getComponent('list');
     },
     run: function () {
         this.list.saveDocumentAs({
-            type: 'xlsx',
-            fileName: this.parent.getViewModel().get('dsname') + '.xlsx'
+            type: 'dif',
+            fileName: this.parent.getViewModel().get('dsname') + '.dif'
         });
 
     }
