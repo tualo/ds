@@ -3,7 +3,54 @@ Ext.define('Tualo.util.DIF', {
 
     singleton: true,
 
-    delimiter: "\0x00\0x00"
+    delimiter: "\0x00\0x00",
+    lineBreak: "\n\n",
+    quote: '"',
+
+
+    encode: function (input, delimiter, quoteChar) {
+        /* eslint-enable max-len */
+        var me = this,
+            delim = delimiter || me.delimiter,
+            dateFormat = me.dateFormat,
+            quote = quoteChar !== undefined ? quoteChar : me.quote,
+            twoQuotes = quote + quote,
+            rowIndex = input.length,
+            lineBreakRe = me.lineBreakRe,
+            result = [],
+            outputRow = [],
+            col, columnIndex, inputRow;
+
+        while (rowIndex-- > 0) {
+            inputRow = input[rowIndex];
+            outputRow.length = columnIndex = inputRow.length;
+
+            while (columnIndex-- > 0) {
+                col = inputRow[columnIndex];
+
+                if (col == null) { // == null || === undefined
+                    col = '';
+                }
+                else if (typeof col === 'string') {
+                    col = quote + col + quote;
+                }
+                else if (Ext.isDate(col)) {
+                    col = Ext.Date.format(col, dateFormat);
+                }
+                //<debug>
+                else if (col && (isNaN(col) || Ext.isArray(col))) {
+                    Ext.raise('Cannot serialize ' + Ext.typeOf(col) + ' into CSV');
+                }
+                //</debug>
+
+                outputRow[columnIndex] = col;
+            }
+
+            result[rowIndex] = outputRow.join(delim);
+        }
+        console.log(result.join(me.lineBreak));
+        return result.join(me.lineBreak);
+    }
 });
 
 /**
