@@ -233,6 +233,9 @@ class DSExporterHelper
         } else if ($fn == 'CSV-DATEV-EXTF') {
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', ';', 'EXTF');
+        } else if ($fn == 'DIF') {
+            $dateiname .= '.dif';
+            DSExporterHelper::exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', '\t', '');
         } else {
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns);
@@ -405,6 +408,78 @@ class DSExporterHelper
     file_put_contents( $pathName.$dateiname, $csv );
     */
     }
+
+
+
+
+    public static function exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = '\t', $extraHeader = '')
+    {
+        $header = array();
+        $data = array();
+        $x = 0;
+        $y = 0;
+        $row = array();
+        //foreach ($columns as $key => $value) {
+        foreach ($hcolumns as $key => $value) {
+
+            if ($encoding != 'utf-8') {
+            }
+
+            $row[] = $value['label'];
+            $header[] = 'string';
+        }
+
+        $data[] = $row;
+        ++$y;
+
+
+        foreach ($liste as $key => $zeile) {
+            $x = 0;
+            $row = array();
+            foreach ($hcolumns as $key => $value) {
+                if (isset($zeile[$key])) {
+                    $ivalue = $zeile[$key];
+
+                    if ($value['data_type'] == 'decimal') {
+                        $ivalue = number_format($ivalue, 2, ',', '.');
+                    }
+                    if ($encoding != 'utf-8') {
+                        if (function_exists("mb_convert_encoding")) {
+                            $ivalue = ($ivalue);
+                        }
+                    }
+
+                    $row[] = $ivalue;
+                } else {
+                    $row[] = "";
+                }
+            }
+            $data[] = $row;
+            ++$y;
+        }
+
+        /*
+        $out = fopen($pathName . $dateiname, 'w');
+        if ($extraHeader != '') {
+            fwrite($out, $extraHeader . "\r\n");
+        }
+        foreach ($data as $row) {
+            fputcsv($out, $row, $delimiter, '"', "\\");
+        }
+        fclose($out);
+        */
+        $text = "";
+        foreach ($data as $row) {
+            $text .= implode($delimiter, $row);
+        }
+
+        $utf32String = mb_convert_encoding($text, 'UTF-32LE', 'UTF-8');
+
+        // Speichern der Datei
+        file_put_contents($pathName . $dateiname, $utf32String);
+    }
+
+
 
 
 

@@ -3,7 +3,7 @@ Ext.define('Tualo.util.DIF', {
 
     singleton: true,
 
-    delimiter: "\0x00\0x00",
+    delimiter: "\t",
     lineBreak: "\n\n",
     quote: '"',
 
@@ -39,7 +39,7 @@ Ext.define('Tualo.util.DIF', {
                 }
                 //<debug>
                 else if (col && (isNaN(col) || Ext.isArray(col))) {
-                    Ext.raise('Cannot serialize ' + Ext.typeOf(col) + ' into CSV');
+                    Ext.raise('Cannot serialize ' + Ext.typeOf(col) + ' into DIF');
                 }
                 //</debug>
 
@@ -48,8 +48,9 @@ Ext.define('Tualo.util.DIF', {
 
             result[rowIndex] = outputRow.join(delim);
         }
-        console.log(result.join(me.lineBreak));
-        return result.join(me.lineBreak);
+        let str = result.join(me.lineBreak);
+        str = "\ufffe\u0000\u0000" + str.split('').join("\u0000\u0000\u0000")
+        return str;
     }
 });
 
