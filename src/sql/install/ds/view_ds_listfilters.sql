@@ -1,6 +1,8 @@
 delimiter ;
 
-CREATE OR REPLACE VIEW  `view_ds_access_by_role` AS select `ds_access`.`table_name` AS `table_name` from `ds_access` where `ds_access`.`role` in (select `view_session_groups`.`group` from `view_session_groups`) and `ds_access`.`read` + `ds_access`.`write` + `ds_access`.`delete` + `ds_access`.`append` > 0 group by `ds_access`.`table_name` ;
+CREATE OR REPLACE VIEW  `view_ds_access_by_role` AS select `ds_access`.`table_name` AS `table_name` from `ds_access` where `ds_access`.`role`
+ in (select `view_session_groups`.`group` from `view_session_groups`) and
+ (ifnull(`ds_access`.`read`,0) + ifnull(`ds_access`.`write`,0) + ifnull(`ds_access`.`delete`,0) + ifnull(`ds_access`.`append`,0)) > 0 group by `ds_access`.`table_name` ;
 
 create or replace view view_ds_listfilters as
 select

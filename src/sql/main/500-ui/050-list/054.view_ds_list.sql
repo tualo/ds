@@ -92,15 +92,15 @@ select
                 
                 "selModel",ds.listselectionmodel,
                 "features", JSON_ARRAY(
-                    /*
+                    
                     JSON_OBJECT(
-                        "ftype", 'summary',
+                        "ftype", 'advancedgroupingsummary',
                         "dock", 'bottom'
                     ),
-                    */
                     JSON_OBJECT(
                         "ftype","grouping"
                     )
+                    
                 ),
                 
                 "plugins",  ifnull(viewPlugins.plugins,JSON_ARRAY()),

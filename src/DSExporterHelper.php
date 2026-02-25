@@ -323,6 +323,9 @@ class DSExporterHelper
 
 
 
+
+
+
     public static function exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = ';', $extraHeader = '')
     {
         $header = array();
