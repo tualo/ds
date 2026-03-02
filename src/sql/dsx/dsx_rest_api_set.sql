@@ -173,7 +173,7 @@ BEGIN
 
 
 
-            drop table if exists temp_dsx_rest_data;
+            -- drop table if exists temp_dsx_rest_data;
             set sql_command = concat( 
                 'create temporary table `temp_dsx_rest_data` as ',
                 'select _rownumber,`__id`,',

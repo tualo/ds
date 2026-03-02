@@ -287,8 +287,6 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
 
-                    App::result('temp_dsx_rest_data', $db->direct('select * from temp_dsx_rest_data'));
-                    App::result('insret_result', $db->direct('select * from temp_dsx_rest_data'));
 
 
 
