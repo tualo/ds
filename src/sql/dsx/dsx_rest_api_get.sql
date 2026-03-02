@@ -422,8 +422,8 @@ BEGIN
         if(
             JSON_EXISTS(userequest,'$.concat_set_table') = 1,
             concat(
-                ' join temp_dsx_rest_data on ',
-                dsx_get_key_sql_prefix('temp_dsx_rest_data',JSON_VALUE(userequest,'$.tablename')),'=',
+                ' join ',JSON_VALUE(userequest,'$.temporary_table_name'),' as `temp_alias` on ',
+                dsx_get_key_sql_prefix('`temp_alias`',JSON_VALUE(userequest,'$.tablename')),'=',
                 dsx_get_key_sql_prefix(JSON_VALUE(userequest,'$.tablename'),JSON_VALUE(userequest,'$.tablename'))
             ),
             ' '
