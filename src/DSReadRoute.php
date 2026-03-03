@@ -79,7 +79,7 @@ class DSReadRoute
 
         $db->direct('set @request = {request};', ['request' => json_encode($request)]);
         // print_r($db->direct('select @request', [], 'request'));
-        $db->direct('call dsx_rest_api_get(@request,@result);');
+        $db->direct('call dsx_rest_api_get_v032026(@request,@result);');
 
         $mysqlresults = $db->moreResults();
         /*

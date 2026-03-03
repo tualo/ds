@@ -219,6 +219,9 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                 if ($db->singleValue('select ifnull(read_table,"") v from ds where table_name = {tablename} and use_insert_for_update=1', ['tablename' => $tablename], 'v') != '') {
                     $o = ['useInsertUpdate' => true];
                 }
+
+                App::result('line', __LINE__);
+
                 if (($result = $table->update($input, $o)) !== false) {
 
                     App::result('temporary_table_name',  $result['temporary_table_name']);
@@ -241,6 +244,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
 
                     App::result('data', $read['data']);
                 } else {
+
                     App::result('success', false);
                     App::result('warnings',  $db->getWarnings());
 
@@ -255,6 +259,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     App::result('msg', $table->errorMessage());
                 }
             } catch (\Exception $e) {
+
                 if (!is_null($table)) {
                     $table->readMoreResults();
                     $table->readWarnings();
