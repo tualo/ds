@@ -3,6 +3,8 @@ require_once "Compiler.php";
 require_once "Checks/Tables.php";
 require_once "Checks/StoredProcedures.php";
 require_once "Checks/PrimaryKey.php";
+require_once "Checks/CheckEncodings.php";
+
 
 require_once "Commandline/DumpDS.php";
 require_once "Commandline/Install.php";

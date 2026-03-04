@@ -99,7 +99,7 @@ BEGIN
     SET use_table_name = JSON_VALUE(request,'$.tablename');
     select if(ifnull(writetable,'') = '',use_table_name,writetable)  into use_table_name from ds where table_name = use_table_name and existsreal=1;
     IF use_table_name is  null THEN  
-        set msg=concat('error on (write-) tablename.');
+        set msg=concat('error on (write-) tablename. tablename: `',ifnull(JSON_VALUE(request,'$.tablename'),'NULL'),'`');
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = msg, MYSQL_ERRNO = 1001;
     END IF;

@@ -12,7 +12,7 @@ CREATE OR REPLACE PROCEDURE `delete_clustersafe`(
 	IN table_name varchar(128), 
 	in filter_by longtext,
     in counts integer
-) COMMENT = '
+) COMMENT '
 	Löscht Datensätze aus einer Tabelle in sicheren Batches,
 	um Locking-Probleme zu vermeiden.
 	Parameter:
@@ -39,7 +39,7 @@ CREATE  OR REPLACE PROCEDURE `create_materialized_table`(
 	IN  table_name varchar(128), 
 	in filter varchar(255),
 	in us_as_primary varchar(255)
-) COMMENT = 'Erstellt eine materialisierte Kopie einer Tabelle oder View
+) COMMENT 'Erstellt eine materialisierte Kopie einer Tabelle oder View
 	mit hochperformanter Batch-Verarbeitung.
 	Parameter:
 	  - table_name: Name der Quell-Tabelle oder View
