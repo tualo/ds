@@ -26,7 +26,9 @@ Ext.define('Tualo.DS.Panel', {
             if (this.getComponent('list').collapsed !== false) {
                 return 'ds/' + this.tablename + '/__id/' + this.getComponent('list').getSelection()[0].getId();
             } else {
-                return 'ds/' + this.tablename;
+                // achtung: der filter muss ggf zurück gegeben werden
+                return Ext.History.currentToken;
+                // return 'ds/' + this.tablename;
             }
         } catch (e) {
             return false;
