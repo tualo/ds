@@ -13,9 +13,9 @@ Ext.define('Tualo.DS.Panel', {
     },
     getWindowTitle: function () {
         if (this.getComponent('list').collapsed !== false) {
-            return this.getViewModel().get('title');
-        } else {
             return this.getViewModel().get('currentWindowTitle');
+        } else {
+            return this.getViewModel().get('title');
         }
     },
 
