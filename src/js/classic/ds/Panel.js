@@ -15,6 +15,20 @@ Ext.define('Tualo.DS.Panel', {
         return this.getViewModel().get('currentWindowTitle');
     },
 
+
+
+    getCurrentToken: function () {
+        try {
+            if (this.getComponent('list').collapsed === false) {
+                return 'ds/' + this.tablename + '/__id/' + this.getComponent('list').getSelection()[0].getId();
+            } else {
+                return 'ds/' + this.tablename;
+            }
+        } catch (e) {
+            return false;
+        }
+    },
+
     bind: {
         disabled: "{datatransmissions}"
     },

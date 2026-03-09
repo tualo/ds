@@ -12,135 +12,144 @@ delimiter;
  */
 alter table ds_column_list_label add if not exists width integer default 0;
 
+alter table ds_column_list_label add if not exists config json default '{}';
+update ds_column_list_label set config= '{}' where config is null;
+
 create
 or replace view view_ds_listcolumn as
 select
     json_arrayagg(
-        distinct JSON_OBJECT(
-            'text',
-            `ds_column_list_label`.`label`,
-            'xtype',
-            if(
-                types.type is null,
-                'gridcolumn',
-                `ds_column_list_label`.`xtype`
-            ),
-            'dataIndex',
-            concat(
-                /*`ds_column`.`table_name`,'__',*/
-                `ds_column`.`column_name`
-            ),
-            'groupable', 1=1,
-            'align',
-            if(
-                ifnull(`ds_column_list_label`.`align`, '') <> '',
-                `ds_column_list_label`.`align`,
-                'start'
-            ),
-            'formatter',
-            if(
-                ifnull(`ds_column_list_label`.`renderer`, '') <> '',
-                `ds_column_list_label`.`renderer`,
-                ''
-            ),
-            'summaryType',
-            if(
-                ifnull(`ds_column_list_label`.`summarytype`, '') <> '',
-                `ds_column_list_label`.`summarytype`,
-                null
-            ),
-            'summaryRenderer',
-            if(
-                ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
-                `ds_column_list_label`.`summaryrenderer`,
-                null
-            ),
-            -- if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
-            'summaryFormatter',
-            if(
-                ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
-                `ds_column_list_label`.`summaryrenderer`,
-                null
-            ),
-            'hidden',
-            if (
-                `ds_column_list_label`.`hidden` = 1,
-                true = true,
-                false = true
-            ),
-            'editor',
-            if(
-                (ifnull(ds_column_list_label.editor, '') = ''),
-                null,
-                if (
+        distinct 
+
+        JSON_MERGE(
+            ifnull(ds_column_list_label.config,json_object()),
+            JSON_OBJECT(
+                'text',
+                `ds_column_list_label`.`label`,
+                'xtype',
+                if(
                     types.type is null,
-                    'missedxtypefield',
-                    ds_column_list_label.editor
-                )
-            ),
-
-            if(
-                ds_column_list_label.width > 0,
-                'width','flex'
-            ) , 
-            if(
-                ds_column_list_label.width > 0,
-                ds_column_list_label.width,
-                ds_column_list_label.flex
-            ),
-
-            'filter',
-            if (
-                ds_column_list_label.listfiltertype <> '',
-                JSON_OBJECT(
-                    'type',
-                    ds_column_list_label.listfiltertype
+                    'gridcolumn',
+                    `ds_column_list_label`.`xtype`
                 ),
-                CASE
-                    ds_column.data_type
-                    WHEN 'date' THEN JSON_OBJECT(
+                'dataIndex',
+                concat(
+                    /*`ds_column`.`table_name`,'__',*/
+                    `ds_column`.`column_name`
+                ),
+                'groupable', 1=1,
+                'align',
+                if(
+                    ifnull(`ds_column_list_label`.`align`, '') <> '',
+                    `ds_column_list_label`.`align`,
+                    'start'
+                ),
+                'formatter',
+                if(
+                    ifnull(`ds_column_list_label`.`renderer`, '') <> '',
+                    `ds_column_list_label`.`renderer`,
+                    ''
+                ),
+                'summaryType',
+                if(
+                    ifnull(`ds_column_list_label`.`summarytype`, '') <> '',
+                    `ds_column_list_label`.`summarytype`,
+                    null
+                ),
+                'summaryRenderer',
+                if(
+                    ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
+                    `ds_column_list_label`.`summaryrenderer`,
+                    null
+                ),
+                -- if(ifnull(`ds_column_list_label`.`summaryrenderer`,'')<>'',`ds_column_list_label`.`summaryrenderer`,null),
+                'summaryFormatter',
+                if(
+                    ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
+                    `ds_column_list_label`.`summaryrenderer`,
+                    null
+                ),
+                'hidden',
+                if (
+                    `ds_column_list_label`.`hidden` = 1,
+                    true = true,
+                    false = true
+                ),
+                'editor',
+                if(
+                    (ifnull(ds_column_list_label.editor, '') = ''),
+                    null,
+                    if (
+                        types.type is null,
+                        'missedxtypefield',
+                        ds_column_list_label.editor
+                    )
+                ),
+
+                if(
+                    ds_column_list_label.width > 0,
+                    'width',
+                    'flex'
+                ) , 
+                if(
+                    ds_column_list_label.width > 0,
+                    ds_column_list_label.width,
+                    ds_column_list_label.flex
+                ),
+
+                'filter',
+                if (
+                    ds_column_list_label.listfiltertype <> '',
+                    JSON_OBJECT(
                         'type',
-                        'date',
-                        'dateFormat',
-                        'Y-m-d',
-                        'pickerDefaults', JSON_OBJECT(
-                            'xtype', 'datepicker',
-                            'border', 0,
-                            'format',
+                        ds_column_list_label.listfiltertype
+                    ),
+                    CASE
+                        ds_column.data_type
+                        WHEN 'date' THEN JSON_OBJECT(
+                            'type',
+                            'date',
+                            'dateFormat',
+                            'Y-m-d',
+                            'pickerDefaults', JSON_OBJECT(
+                                'xtype', 'datepicker',
+                                'border', 0,
+                                'format',
+                                'Y-m-d'
+                            )
+                        )
+                        WHEN 'datetime' THEN JSON_OBJECT(
+                            'type',
+                            'date',
+                            'dateFormat',
                             'Y-m-d'
                         )
-                    )
-                    WHEN 'datetime' THEN JSON_OBJECT(
-                        'type',
-                        'date',
-                        'dateFormat',
-                        'Y-m-d'
-                    )
-                    WHEN 'number' THEN JSON_OBJECT(
-                        'type',
-                        'number'
-                    )
-                    WHEN 'boolean' THEN JSON_OBJECT(
-                        'type',
-                        'boolean',
-                        'yesText',
-                        'Ja',
-                        'noText',
-                        'Nein'
-                    )
-                    WHEN 'tinyint' THEN JSON_OBJECT(
-                        'type',
-                        'boolean',
-                        'yesText',
-                        'Ja',
-                        'noText',
-                        'Nein'
-                    )
-                    ELSE JSON_OBJECT(
-                        'type',
-                        'string'
-                    )
-                END
+                        WHEN 'number' THEN JSON_OBJECT(
+                            'type',
+                            'number'
+                        )
+                        WHEN 'boolean' THEN JSON_OBJECT(
+                            'type',
+                            'boolean',
+                            'yesText',
+                            'Ja',
+                            'noText',
+                            'Nein'
+                        )
+                        WHEN 'tinyint' THEN JSON_OBJECT(
+                            'type',
+                            'boolean',
+                            'yesText',
+                            'Ja',
+                            'noText',
+                            'Nein'
+                        )
+                        ELSE JSON_OBJECT(
+                            'type',
+                            'string'
+                        )
+                    END
+                )
             )
         )
         order by
