@@ -79,6 +79,7 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
 
             try {
 
+
                 //$db->direct('call UPDATE_DS_SETUP()');
                 App::result('success', true);
                 $temporary_folder = App::get("tempPath") . '/';
@@ -93,6 +94,31 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
             }
             App::contenttype('application/json');
         }, ['get', 'post'], true, [], self::scope());
+
+
+        Route::add('/dssetup/export/definition_direct/(?P<table_name>[\w\_\-]+)', function ($matches) {
+
+            $db = App::get('session')->getDB();
+            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+
+            try {
+
+
+                $fname = $matches['table_name'] . '.ds.sql';
+                $data = (new DSSetup($db, $matches['table_name']))->export();
+                $data = array_merge(['DELIMITER;', 'SET FOREIGN_KEY_CHECKS=0;'], $data, ['SET FOREIGN_KEY_CHECKS=1;']);
+
+                App::contenttype('application/sql');
+                header('Content-Disposition: attachment; filename="' . $fname . '"');
+
+                App::body(implode("\n", $data));
+                Route::$finished = true;
+            } catch (\Exception $e) {
+                App::result('last_sql', $db->last_sql);
+                App::result('msg', $e->getMessage());
+            }
+        }, ['get', 'post'], true, [], self::scope());
+
 
 
         Route::add('/pugtemplates/export/(?P<id>[\w\_\-]+)', function ($matches) {

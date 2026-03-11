@@ -25,7 +25,7 @@ BEGIN
 
         select 
                 if (c=1,
-                    ifnull(concat(' ',group_concat(concat(in_prefix,prefix_separator, FIELDQUOTE(ds_column.column_name),'') order by column_name separator ',\'|\','),' '),'null'),
+                    ifnull(concat(' concat(',group_concat(concat(in_prefix,prefix_separator, FIELDQUOTE(ds_column.column_name),'') order by column_name separator ',\'|\','),') '),'null'),
                     ifnull(concat('concat(',group_concat(concat(in_prefix,prefix_separator, FIELDQUOTE(ds_column.column_name),'') order by column_name separator ',\'|\','),')'),'null')
                 
                 ) xy

@@ -62,6 +62,7 @@ where ds_column.existsreal = 1
 
 
 call addfieldifnotexists('ds_column','fieldtype','varchar(100) default ""');
+
 CREATE OR REPLACE VIEW `view_ds_model` AS
 select
     concat(
@@ -142,11 +143,13 @@ select
                                         if (
                                              ( `ds_column`.`default_value` <> '{#serial}'),
                                                 `ds_column`.`default_value`,
-                                                -1
+                                                null
                                         )
                                         
                                     )
                                 ),
+                                -- if ( ( `ds_column`.`default_value` = '{#serial}'), json_object( 'allowNull', true), '{}'),
+
                                 if(
                                     `ds_column`.`is_primary` = 1,
                                     '{"critical": true}',

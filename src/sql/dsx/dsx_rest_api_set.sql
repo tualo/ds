@@ -109,13 +109,15 @@ END //
 
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_loop_set_serial`( IN  temp_table_name varchar(128), IN  use_table_name varchar(128) )
 BEGIN
+    DECLARE sql_command LONGTEXT;
+    set @serial=null;
     FOR record IN (
         select
             concat(
-                'update ',temp_table_name,' temp_alias,`',use_table_name,'` set temp_alias.`',column_name,'`= @serial + _rownumber ',
-                ' where (temp_alias.`',column_name,'` is null ) ',
-                ' and ',dsx_get_key_sql_prefix(use_table_name,use_table_name),'= temp_alias.__id'
-            ) s
+                'update ',temp_table_name,' temp_alias set temp_alias.`',column_name,'`= @serial + _rownumber ',
+                ' where (temp_alias.`',column_name,'` is null  ) ' 
+            ) s,
+            column_name
         from 
             ds_column
         where 
@@ -127,6 +129,13 @@ BEGIN
             and ds_column.column_type <> ''
                 
     ) DO
+        if (@serial is null ) then
+
+            set sql_command = concat('select ifnull( max(`',record.column_name,'`) , 0) m into @serial from `',use_table_name,'`');
+            PREPARE stmt FROM sql_command;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+        end if;
         PREPARE stmt FROM record.s;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -451,7 +460,7 @@ BEGIN
             concat(
                 'update ',temp_table_name,' as `temp_alias`,`',use_table_name,'` set temp_alias.`',column_name,'`= `',use_table_name,'`.`',column_name,'` ',
                 ' where temp_alias.`',column_name,'` is null ',
-                'and ',dsx_get_key_sql_prefix(use_table_name,use_table_name),' = temp_alias.__id'
+                'and ',dsx_get_key_sql_prefix(use_table_name,use_table_name),'  = temp_alias.__id'
             ) s
         from 
             ds_column
@@ -643,6 +652,13 @@ BEGIN
             set subtype='update';
         END IF;
         SET sql_command = dsx_rest_api_set_get_insert_statement(subtype,use_template_fields,use_template_update_fields, temp_table_name,use_table_name);
+        insert into logs_dsx_rest_api_set
+        (
+            cmd
+        ) values
+        (
+            sql_command,
+        );
     END IF;
 
     -- check_foreign_key not active 
