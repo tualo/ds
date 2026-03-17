@@ -652,13 +652,13 @@ BEGIN
             set subtype='update';
         END IF;
         SET sql_command = dsx_rest_api_set_get_insert_statement(subtype,use_template_fields,use_template_update_fields, temp_table_name,use_table_name);
-        insert into logs_dsx_rest_api_set
+        /*insert into logs_dsx_rest_api_set
         (
             cmd
         ) values
         (
-            sql_command,
-        );
+            sql_command
+        );*/
     END IF;
 
     -- check_foreign_key not active 
