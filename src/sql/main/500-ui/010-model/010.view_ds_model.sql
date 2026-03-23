@@ -112,7 +112,7 @@ select
                                 json_object(
                                     'name',
                                     concat(`ds_column`.`column_name`),
-                                    -- 'allowNull',1=1,
+                                    'allowNull', if(`ds_column`.`is_nullable` = 'YES', true, if(`ds_column`.`default_value` <> '', true, false)),
                                     'type',
                                     if(
                                         `ds_column`.`fieldtype` <> '',

@@ -8,6 +8,7 @@ update ds_column set writeable = 0 where (use_table_name=''  or table_name = use
 
 
 
+
 FOR record IN ( with cte_ds (table_name,read_table,real_table_name) as (select table_name,read_table,table_name real_table_name from ds where ds.read_table<>ds.table_name and ds.read_table<>'' and ds.read_table is not null )
 select 
         cte_ds.table_name,
@@ -221,4 +222,7 @@ END FOR;
 
 update ds_column_list_label set listfiltertype='' where listfiltertype="''";
 
+for rec in (select table_name from ds where (use_table_name=''  or table_name = use_table_name)) do
+    call fill_ds_create_enum_views(use_table_name);
+end for;
 END //
