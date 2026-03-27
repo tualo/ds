@@ -28,6 +28,7 @@ class Setup extends BaseSetup
             'install-sql-ds-main',
             'install-sql-monaco',
             'install-sql-tualojs',
+            'install-sql-systemfile',
         ];
     }
 
