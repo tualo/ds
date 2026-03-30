@@ -18,6 +18,19 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
     },
+    onExceptionStore: function (proxy, response, operation, eOpts) {
+        console.error('onExceptionStore', proxy, response, operation, eOpts);
+        if (response.responseJson) {
+            let msg = response.responseJson.msg;
+            if (!msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+            Ext.toast({
+                html: msg,
+                title: 'Fehler',
+                width: 200,
+                align: 't'
+            });
+        }
+    },
     toolbarBoxReady: function (toolbar) {
         let id = this.getView().getId(),
             tn = this.getViewModel().get('table_name');
