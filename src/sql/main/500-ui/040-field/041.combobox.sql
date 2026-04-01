@@ -28,7 +28,7 @@ select
                             "destroy", concat('./ds/',ds_dropdownfields.table_name,'/delete')
                         ),
                         "extraParams", json_object(
-                            "fields", concat('["',ds_dropdownfields.displayfield,'","',ds_dropdownfields.idfield,'"]')
+                            "fields", concat("",JSON_MERGE(ds_dropdownfields.additional_fields, JSON_ARRAY(ds_dropdownfields.displayfield, ds_dropdownfields.idfield)))
                         ),
 
                         "reader", json_object(
