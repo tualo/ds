@@ -1,6 +1,6 @@
 delimiter //
 
-SET NAMES 'utf8mb4' COLLATE 'utf8mb4_general_ci' //
+-- SET NAMES 'utf8mb4' COLLATE 'utf8mb4_general_ci' //
 
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_checks`( IN  request JSON )
 BEGIN 
