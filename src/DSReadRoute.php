@@ -121,7 +121,9 @@ class DSReadRoute
             $fields[] = '__displayfield';
             $fields[] = '__table_name';
             */
-            $o['query'] = str_replace('select * from ', 'select ' . implode(',', $fields) . ' from ', $o['query']);
+            if (count($fields) != 0) {
+                $o['query'] = str_replace('select * from ', 'select ' . implode(',', $fields) . ' from ', $o['query']);
+            }
         }
 
         if (TualoApplication::configuration('ds', 'return_sql', '0') == '1') {
