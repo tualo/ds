@@ -59,6 +59,7 @@ Ext.define('Tualo.tualo_job.Templates', {
             console.log('res', res);
             res.data.forEach((record) => {
                 let newRecord = store.add({
+                    template_link: record.template_link,
                     position: record.pos,
                     name: record.column1,
                     value: record.column2
@@ -74,7 +75,7 @@ Ext.define('Tualo.tualo_job.Templates', {
         }
         //});
 
-        window.btn = btn;
+        //window.btn = btn;
         /*btn.getView().down('dslist_tech_data_template').getSelectionModel().getSelection().forEach((record) => {
             console.log('record', record);
         });*/
