@@ -58,12 +58,13 @@ Ext.define('Tualo.tualo_job.Templates', {
 
         if (res.success == true) {
             console.log('res', res);
-            let newrecord = view.getController().append()
-            newrecord.set('template_link', record.get('urno'));
-            newrecord.set('name', record.get('name'));
-            newrecord.set('description', record.get('description'));
-            newrecord.set('pos', record.get('pos'));
-
+            res.data.forEach((record) => {
+                let newrecord = view.getController().append()
+                newrecord.set('template_link', record.template_link);
+                newrecord.set('name', record.column1);
+                newrecord.set('value', record.column2);
+                newrecord.set('position', record.pos);
+            });
             /*
             res.data.forEach((record) => {
 
