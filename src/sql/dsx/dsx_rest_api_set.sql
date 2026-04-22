@@ -107,7 +107,7 @@ BEGIN
 END //   
 
 
-CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_loop_set_serial`( IN  temp_table_name varchar(128), IN  use_table_name varchar(128) )
+CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_loop_set_serial`( IN  temp_table_name varchar(128), IN  use_table_name varchar(128) ,IN request JSON)
 BEGIN
     DECLARE sql_command LONGTEXT;
     set @serial=null;
@@ -127,6 +127,8 @@ BEGIN
             and ds_column.writeable =1
             and ds_column.is_generated <> 'ALWAYS'
             and ds_column.column_type <> ''
+            and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
                 
     ) DO
         if (@serial is null ) then
@@ -144,7 +146,7 @@ END //
 
 
 
-CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_loop_set_function`( IN  temp_table_name varchar(128), IN  use_table_name varchar(128) )
+CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_loop_set_function`( IN  temp_table_name varchar(128), IN  use_table_name varchar(128) ,IN request JSON)
 BEGIN
 
     DECLARE sql_command LONGTEXT;
@@ -166,6 +168,8 @@ BEGIN
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
+                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
                 and ds_column.column_type <> ''
                 
         union 
@@ -183,6 +187,8 @@ BEGIN
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
+                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
                 and ds_column.column_type <> ''
                 
         union 
@@ -200,6 +206,8 @@ BEGIN
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
                 and ds_column.column_type <> ''
+                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
                 
         
         union 
@@ -217,7 +225,8 @@ BEGIN
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
                 and ds_column.column_type <> ''
-                
+                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
         union 
             select
                 concat('update ',temp_table_name,' set `',column_name,'`=uuid() where `',column_name,'` is null or `',column_name,'`="" ') s,
@@ -233,6 +242,8 @@ BEGIN
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
                 and ds_column.column_type <> ''
+                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
         
 
     ) DO
@@ -261,9 +272,12 @@ BEGIN
         and ds_column.writeable =1
         and ds_column.is_generated <> 'ALWAYS'
         and ds_column.column_type <> ''
-        and JSON_EXISTS(request,concat('$.data[0].', column_name))=1
+        and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        
         
     ;
+
+    
 
     set sql_command = concat('
         update `',use_table_name,'` 
@@ -455,6 +469,7 @@ END //
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_use_old_values`(  IN  temp_table_name varchar(128), IN  use_table_name varchar(128)) 
 BEGIN
     DECLARE x LONGTEXT;
+    /*
     FOR record IN (
         select
             concat(
@@ -477,7 +492,7 @@ BEGIN
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
     END FOR;
-
+    */    
 
 END //
 
@@ -488,6 +503,7 @@ BEGIN
     DECLARE x LONGTEXT;
     DECLARE read_table_name varchar(128);
 
+    /*
     set read_table_name = (select read_table from ds where table_name =use_table_name and read_table<>'' and read_table is not null);
     if read_table_name is not null then 
         FOR record IN (
@@ -515,12 +531,13 @@ BEGIN
         ) DO
 
 
+
             PREPARE stmt FROM record.s;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
         END FOR;
     end if;
-
+    */
 
 END //
 
@@ -541,7 +558,7 @@ BEGIN
 
 
     call dsx_rest_api_set_checks(request);
-
+    set temp_table_name = concat('temp_dsx_rest_data',replace(uuid(),'-',''));
     -- derzeit unsicher, ob noch benötigt
     -- SET request = fixBackslashBug(request); 
 
@@ -574,10 +591,12 @@ BEGIN
         ds_column.table_name = use_table_name
         and ds_column.existsreal=1
         and ds_column.writeable =1
+        and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
         and ds_column.is_generated <> 'ALWAYS'
         and column_type <> ''
     ;
-    set temp_table_name = concat('temp_dsx_rest_data',replace(uuid(),'-',''));
+
+
 
 
     set sql_command = concat( 
@@ -603,27 +622,29 @@ BEGIN
     ' ',use_template_columns,')) as jt');
 
 
-
     PREPARE stmt FROM sql_command;
     EXECUTE stmt USING request;
     DEALLOCATE PREPARE stmt;    
 
-
-
     IF JSON_VALUE(request,'$.type')<>'delete' then
         -- read old values removed
         
+        if false then 
+            call dsx_rest_api_set_use_old_values(temp_table_name,use_table_name);
 
-        call dsx_rest_api_set_use_old_values(temp_table_name,use_table_name);
-        call dsx_rest_api_set_use_old_values_readtable(temp_table_name,use_table_name);
+            IF JSON_VALUE(request,'$.type')<>'insert' then
+                call dsx_rest_api_set_use_old_values_readtable(temp_table_name,use_table_name);
+            end if;
+        end if;
 
 
 
-        call dsx_rest_api_set_loop_set_serial(temp_table_name,use_table_name);
+
+        call dsx_rest_api_set_loop_set_serial(temp_table_name,use_table_name,request);
         -- unescape removed
 
 
-        call dsx_rest_api_set_loop_set_function(temp_table_name,use_table_name);
+        call dsx_rest_api_set_loop_set_function(temp_table_name,use_table_name,request);
 
     END IF;
 
@@ -662,6 +683,7 @@ BEGIN
     END IF;
 
     -- check_foreign_key not active 
+
 
     if sql_command is null THEN
         set msg=concat('generated sql_command is null');
