@@ -59,7 +59,7 @@ Ext.define('Tualo.tualo_job.Templates', {
             console.log('res', res);
             res.data.forEach((record) => {
                 let newRecord = store.add({
-                    pos: record.pos,
+                    position: record.pos,
                     name: record.column1,
                     value: record.column2
                 })[0];
