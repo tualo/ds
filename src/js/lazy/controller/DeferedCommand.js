@@ -1,21 +1,21 @@
 Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.lazy_ds_defered_command',
-    boxready: function(){
-        let me = this,range=[],record=null,sel=null;
-        try{
+    boxready: function () {
+        let me = this, range = [], record = null, sel = null;
+        try {
 
-            if (me.getView().record){
+            if (me.getView().record) {
                 record = me.getView().record;
                 range = [record];
                 sel = [record];
-            }else if (me.getView().calleeId){
+            } else if (me.getView().calleeId) {
                 let parentView = Ext.getCmp(me.getView().calleeId);
 
                 sel = parentView.getList().getSelection();
 
                 range = parentView.getList().getStore().getRange(),
-                record = ((!Ext.isEmpty(sel))?sel[0]:null);
+                    record = ((!Ext.isEmpty(sel)) ? sel[0] : null);
             }
 
             me.c = Ext.create({
@@ -30,42 +30,42 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
 
             });
 
-            me.c.loadRecord(record,range,sel);
+            me.c.loadRecord(record, range, sel);
             me.getView().add(me.c);
             me.getView().setActiveItem(me.c);
-            if (typeof me.c.getNextText == 'function'){
-                
-                
-                me.getViewModel().set('enableNext',true);
-                me.getViewModel().set('nextButtonText',me.c.getNextText());
+            if (typeof me.c.getNextText == 'function') {
+
+
+                me.getViewModel().set('enableNext', true);
+                me.getViewModel().set('nextButtonText', me.c.getNextText());
             }
-        }catch(e){
+        } catch (e) {
             console.log(e);
             window.history.back();
         }
     },
-    enableNext: function(){
+    enableNext: function () {
         console.log('enableNext');
-        this.getViewModel().set('enableNext',true);
-        
+        this.getViewModel().set('enableNext', true);
+
     },
-    disableNext: function(){
+    disableNext: function () {
         console.log('disableNext');
-        this.getViewModel().set('enableNext',false);
+        this.getViewModel().set('enableNext', false);
     },
-    cancel: function(){
+    cancel: function () {
         console.log('cancel');
         window.history.back();
     },
-    prev: function(){
-         
+    prev: function () {
+
 
     },
-    next: async function(){
+    next: async function (btn) {
         var me = this;
-        me.getViewModel().set('enableNext',false);
-        await me.c.run();
+        me.getViewModel().set('enableNext', false);
+        await me.c.run(btn);
         window.history.back();
 
-    }   
+    }
 });
