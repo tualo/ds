@@ -41,10 +41,20 @@ Ext.define('Tualo.tualo_job.Templates', {
 
         // this.down('dslist_tech_data_template').getSelectionModel().getSelection().forEach(async (record) => {
         console.log('record', record.get('urno'));
-        let res = await Tualo.Fetch.post('./ds/tech_data_templates_pos/read', {
-            filter: JSON.stringify([{ property: 'urno', operator: '=', value: record.get('urno') }]),
-            sort: JSON.stringify([{ property: 'pos', direction: 'ASC' }])
-        });
+
+        const formData = new FormData();
+        let filter = [{ property: 'urno', operator: 'eq', value: record.get('urno') }];
+        let sort = [{ property: 'pos', direction: 'ASC' }];
+        formData.append("filter", JSON.stringify(filter));
+        formData.append("sort", JSON.stringify(sort));
+        formData.append("limit", 100);
+
+        let res = await fetch('./ds/tech_data_templates_pos/read', {
+            method: "POST",
+            body: formData,
+        }).then((res) => { return res.json() });
+
+
         if (res.success == true) {
             res.data.forEach((record) => {
                 let newRecord = store.add({
