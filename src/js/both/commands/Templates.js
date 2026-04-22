@@ -63,7 +63,7 @@ Ext.define('Tualo.tualo_job.Templates', {
                     name: record.column1,
                     value: record.column2
                 })[0];
-                newRecord.commit();
+                // newRecord.commit();
             });
         } else {
             Ext.toast({
