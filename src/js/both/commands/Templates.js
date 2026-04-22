@@ -36,31 +36,32 @@ Ext.define('Tualo.tualo_job.Templates', {
     },
     run: async function (btn) {
 
-        let store = Ext.getCmp(this.config.calleeId).getStore();
+        let store = Ext.getCmp(this.config.calleeId).getStore(),
+            record = this.down('dslist_tech_data_template').getSelectionModel().getSelection()[0];
 
-        this.down('dslist_tech_data_template').getSelectionModel().getSelection().forEach(async (record) => {
-            console.log('record', record.get('urno'));
-            let res = await Tualo.Fetch.post('./ds/tech_data_templates_pos/read', {
-                filter: JSON.stringify([{ property: 'urno', operator: '=', value: record.get('urno') }]),
-                sort: JSON.stringify([{ property: 'pos', direction: 'ASC' }])
-            });
-            if (res.success == true) {
-                res.data.forEach((record) => {
-                    let newRecord = store.add({
-                        pos: record.pos,
-                        name: record.name,
-                        value: record.value
-                    })[0];
-                    newRecord.commit();
-                });
-            } else {
-                Ext.toast({
-                    html: res.msg,
-                    title: 'Fehler',
-                    align: 't'
-                });
-            }
+        // this.down('dslist_tech_data_template').getSelectionModel().getSelection().forEach(async (record) => {
+        console.log('record', record.get('urno'));
+        let res = await Tualo.Fetch.post('./ds/tech_data_templates_pos/read', {
+            filter: JSON.stringify([{ property: 'urno', operator: '=', value: record.get('urno') }]),
+            sort: JSON.stringify([{ property: 'pos', direction: 'ASC' }])
         });
+        if (res.success == true) {
+            res.data.forEach((record) => {
+                let newRecord = store.add({
+                    pos: record.pos,
+                    name: record.name,
+                    value: record.value
+                })[0];
+                newRecord.commit();
+            });
+        } else {
+            Ext.toast({
+                html: res.msg,
+                title: 'Fehler',
+                align: 't'
+            });
+        }
+        //});
 
         window.btn = btn;
         /*btn.getView().down('dslist_tech_data_template').getSelectionModel().getSelection().forEach((record) => {
