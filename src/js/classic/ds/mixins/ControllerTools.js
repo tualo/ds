@@ -66,7 +66,6 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
         return record;
     },
 
-
     showSpecialAppend: function () {
         let model = this.getViewModel(),
             store = this.getStore();

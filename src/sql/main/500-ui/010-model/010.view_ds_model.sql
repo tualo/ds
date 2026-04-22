@@ -151,8 +151,9 @@ select
                                 -- if ( ( `ds_column`.`default_value` = '{#serial}'), json_object( 'allowNull', true), '{}'),
 
                                 if(
-                                    `ds_column`.`is_primary` = 1,
+                                    `ds_column`.`is_primary` = 1 or ds.use_insert_for_update = 1,
                                     '{"critical": true}',
+                                    
                                     '{}'
                                 ),
                                 `view_ds_column_merge`.`obj`

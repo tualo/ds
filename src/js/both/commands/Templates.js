@@ -36,7 +36,8 @@ Ext.define('Tualo.tualo_job.Templates', {
     },
     run: async function (btn) {
 
-        let store = Ext.getCmp(this.config.calleeId).getStore(),
+        let view = Ext.getCmp(this.config.calleeId),
+            store = view.getStore(),
             record = this.down('dslist_tech_data_template').getSelectionModel().getSelection()[0];
 
         // this.down('dslist_tech_data_template').getSelectionModel().getSelection().forEach(async (record) => {
@@ -57,15 +58,25 @@ Ext.define('Tualo.tualo_job.Templates', {
 
         if (res.success == true) {
             console.log('res', res);
+            let newrecord = view.getController().append()
+            newrecord.set('template_link', record.get('urno'));
+            newrecord.set('name', record.get('name'));
+            newrecord.set('description', record.get('description'));
+            newrecord.set('pos', record.get('pos'));
+
+            /*
             res.data.forEach((record) => {
+
+
                 let newRecord = store.add({
+                    job_id: this.record.get('id'),
                     template_link: record.template_link,
                     position: record.pos,
                     name: record.column1,
                     value: record.column2
                 })[0];
                 // newRecord.commit();
-            });
+            });*/
         } else {
             Ext.toast({
                 html: res.msg,
@@ -73,9 +84,11 @@ Ext.define('Tualo.tualo_job.Templates', {
                 align: 't'
             });
         }
+
+        view.getController().setViewType('list');
         //});
 
-        //window.btn = btn;
+        window.btn = btn;
         /*btn.getView().down('dslist_tech_data_template').getSelectionModel().getSelection().forEach((record) => {
             console.log('record', record);
         });*/

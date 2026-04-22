@@ -316,6 +316,35 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         this.appendRecord(record);
     },
 
+    getRecordDefaultValues: function () {
+        var model = this.getViewModel(),
+            store = this.lookup('list').getStore(),
+            view = this.getView(),
+            referencedList = model.get('referencedList'),
+            referencedRecord = model.get('referencedRecord'),
+
+            fields = store.getModel().getFields(),
+            values = {};
+
+
+        for (i = 0; i < fields.length; i++) {
+            if (!Ext.isEmpty(fields[i].defaultValue)) {
+                values[fields[i].name] = fields[i].defaultValue;
+            }
+        }
+        if (referencedList == true) {
+            for (var ref in view.referenced) {
+                if (typeof view.referenced[ref] == 'string')
+                    values[ref.toLowerCase()] = referencedRecord.get(view.referenced[ref].toLowerCase());
+                if (typeof view.referenced[ref] == 'object') {
+                    if (typeof view.referenced[ref].v == 'string')
+                        values[ref.toLowerCase()] = view.referenced[ref].v;
+                }
+            }
+        }
+        return values;
+    },
+
     appendRecord: function (record) {
         var model = this.getViewModel(),
             view = this.getView(),
