@@ -43,7 +43,7 @@ Ext.define('Tualo.tualo_job.Templates', {
         console.log('record', record.get('urno'));
 
         const formData = new FormData();
-        let filter = [{ property: 'urno', operator: 'eq', value: record.get('urno') }];
+        let filter = [{ property: 'template_link', operator: 'eq', value: record.get('urno') }];
         let sort = [{ property: 'pos', direction: 'ASC' }];
         formData.append("filter", JSON.stringify(filter));
         formData.append("sort", JSON.stringify(sort));
@@ -60,8 +60,8 @@ Ext.define('Tualo.tualo_job.Templates', {
             res.data.forEach((record) => {
                 let newRecord = store.add({
                     pos: record.pos,
-                    name: record.name,
-                    value: record.value
+                    name: record.column1,
+                    value: record.column2
                 })[0];
                 newRecord.commit();
             });
