@@ -38,7 +38,7 @@ Ext.define('Tualo.tualo_job.Templates', {
 
         let store = Ext.getCmp(this.config.calleeId).getStore();
 
-        this.down('dslist_tech_data_template').getSelectionModel().getSelection().forEach((record) => {
+        this.down('dslist_tech_data_template').getSelectionModel().getSelection().forEach(async (record) => {
             console.log('record', record.get('urno'));
             let res = await Tualo.Fetch.post('./ds/tech_data_templates_pos/read', {
                 filter: JSON.stringify([{ property: 'urno', operator: '=', value: record.get('urno') }]),
