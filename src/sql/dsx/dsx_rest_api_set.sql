@@ -565,6 +565,9 @@ BEGIN
     SET request = dsx_rest_api_set_operation_defaults(request);
     SET use_table_name = dsx_rest_api_set_use_table_name(request);
 
+
+call debug_message( concat('dsx_rest_api_set: start use_table_name: `',use_table_name,'`') );
+
     select 
         group_concat(
             concat('`',column_name,'`')
@@ -597,6 +600,7 @@ BEGIN
     ;
 
 
+    call debug_message( concat('dsx_rest_api_set: use_table_name: `',use_table_name,'`') );
 
 
     set sql_command = concat( 
@@ -624,7 +628,9 @@ BEGIN
 
     PREPARE stmt FROM sql_command;
     EXECUTE stmt USING request;
-    DEALLOCATE PREPARE stmt;    
+    DEALLOCATE PREPARE stmt;   
+
+    call debug_message( concat('dsx_rest_api_set: x use_table_name: `',use_table_name,'`') ); 
 
     IF JSON_VALUE(request,'$.type')<>'delete' then
         -- read old values removed
@@ -642,11 +648,14 @@ BEGIN
 
         call dsx_rest_api_set_loop_set_serial(temp_table_name,use_table_name,request);
         -- unescape removed
+    call debug_message( concat('dsx_rest_api_set: y use_table_name: `',use_table_name,'`') ); 
 
 
         call dsx_rest_api_set_loop_set_function(temp_table_name,use_table_name,request);
 
     END IF;
+    call debug_message( concat('dsx_rest_api_set: z use_table_name: `',use_table_name,'`') ); 
+
 
 
     set sql_command=null;
@@ -655,11 +664,14 @@ BEGIN
     END IF;
 
 
+    call debug_message( concat('dsx_rest_api_set: 1 use_table_name: `',use_table_name,'`') ); 
+
 
     IF JSON_VALUE(request,'$.type')='delete' THEN
         SET sql_command = dsx_rest_api_set_get_delete_statement(request,temp_table_name,use_table_name);
     END IF;
 
+    call debug_message( concat('dsx_rest_api_set: 2 use_table_name: `',use_table_name,'`') ); 
 
     IF JSON_VALUE(request,'$.type')='insert' THEN
         SET subtype = 'insert';
@@ -683,6 +695,7 @@ BEGIN
     END IF;
 
     -- check_foreign_key not active 
+    call debug_message( concat('dsx_rest_api_set: 3 use_table_name: `',use_table_name,'`') ); 
 
 
     if sql_command is null THEN
@@ -691,6 +704,7 @@ BEGIN
         SET MESSAGE_TEXT = msg, MYSQL_ERRNO = 1001;
     END IF;
 
+    call debug_message( concat('dsx_rest_api_set:   "',sql_command,'"') ); 
 
 
     PREPARE stmt FROM sql_command;
