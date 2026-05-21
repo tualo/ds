@@ -573,8 +573,23 @@ Ext.define('Tualo.DS.panel.Controller', {
             });
             store.sync({
                 scope: this,
-                failure: function () {
+                failure: function (batch, options) {
                     if (Ext.getApplication().getDebug() === true) console.error('save failure', arguments);
+                    console.error('save failure', arguments);
+                    /*
+                    if (response.responseJson) {
+            let msg = response.responseJson.msg;
+            if (!msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+            Ext.toast({
+                html: msg,
+                title: 'Fehler',
+                width: 200,
+                align: 't'
+            });
+        }
+        */
+
+
                     model.set('saving', false);
                 },
                 success: function (c, o) {
