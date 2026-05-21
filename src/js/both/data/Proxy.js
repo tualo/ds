@@ -20,6 +20,6 @@ Ext.define("Tualo.DataSets.proxy.Proxy", {
             });
         }
 
-        this.callParent(operation, response);
+        this.callParent([operation, response]);
     }
 });
