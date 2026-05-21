@@ -1,5 +1,5 @@
 Ext.define("Tualo.DataSets.data.Proxy", {
-    extend: 'Ext.data.Store',
+    extend: 'Ext.data.proxy.Ajax',
     alias: 'proxy.tualo_datasets_json',
     requires: [
         'Ext.data.proxy.Ajax',
