@@ -18,6 +18,23 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
     },
+
+
+    onStoreProxyExecption: function (proxy, response, operation, eOpts) {
+        console.log('exception', proxy, response, operation, eOpts);
+        if (response.responseJson) {
+            let msg = response.responseJson.msg;
+            if (!msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+            Ext.toast({
+                html: msg,
+                title: 'Fehler',
+                width: 200,
+                align: 't'
+            });
+        }
+        this.fireEvent('proxyerror', response);
+    },
+
     onExceptionStore: function (proxy, response, operation, eOpts) {
         console.error('onExceptionStore', proxy, response, operation, eOpts);
         if (response.responseJson) {
