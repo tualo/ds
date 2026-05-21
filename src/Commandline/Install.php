@@ -34,6 +34,7 @@ class Install extends CommandLineInstallSQL  implements ICommandline
         'install/ds_property_definition' => 'setup ds_property_definition ',
         'install/ds_property_definition.ds' => 'setup ds_property_definition.ds ',
         'install/fix.id' => 'setup fix.id ',
+        'install/fix.sortdirection' => 'setup fix.sortdirection ',
 
         'install/ds_listplugins' => 'setup ds_listplugins ',
         'install/ds_listplugins_placements.ds' => 'setup ds_listplugins_placements.ds ',
