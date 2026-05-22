@@ -31,7 +31,7 @@ Ext.define('Tualo.DataSets.grid.mixins.Contextmenu', {
     },
     createContextMenu: function () {
         let cm = [],
-            parent = this.getParent(),
+            parent = this.getParent()
             ;
         if (parent == null) {
             console.warn('Contextmenu: parent view not found');
