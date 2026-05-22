@@ -21,7 +21,7 @@ Ext.define('Tualo.routes.ds.DSDirectProcedure', {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        list: Ext.JSON.encode([{ id: values.id }])
+                        list: [{ id: values.id }]
                     })
                 });
                 let json = await res.json();
