@@ -145,12 +145,12 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                     $type = $_FILES['userfile']['type'];
                     $error = $_FILES['userfile']['error'];
                     if ($error == UPLOAD_ERR_OK) {
-                        if (file_exists(App::get('tempPath') . '/.ht_import_daten.' . $extension)) {
-                            unlink(App::get('tempPath') . '/.ht_import_daten.' . $extension);
+                        if (file_exists((string)App::get('tempPath') . '/.ht_import_daten.' . $extension)) {
+                            unlink((string)App::get('tempPath') . '/.ht_import_daten.' . $extension);
                         }
-                        move_uploaded_file($sfile, App::get('tempPath') . '/.ht_import_daten.' . $extension);
+                        move_uploaded_file($sfile, (string)App::get('tempPath') . '/.ht_import_daten.' . $extension);
                         file_put_contents(
-                            App::get('tempPath') . '/.ht_import_daten.cnf',
+                            (string)    App::get('tempPath') . '/.ht_import_daten.cnf',
                             json_encode(array(
                                 'type' => $type,
                                 'name' => $name,
@@ -174,17 +174,17 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dsimport/check', function () {
             $db = App::get('session')->getDB();
             try {
-                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                if (!file_exists((string)App::get('tempPath') . '/.ht_import_daten.cnf')) {
                     throw new \Exception('Keine Importdatei gefunden');
                 }
                 $result = [];
-                $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
+                $d = json_decode(file_get_contents((string)App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result['d'] = $d;
                 if (isset($d)) {
                     if (isset($d['type'])) {
                         if (isset($d['name'])) {
                             if (isset($d['extension'])) {
-                                $inputFileName = App::get('tempPath') . '/.ht_import_daten.' . $d['extension'];
+                                $inputFileName = (string)App::get('tempPath') . '/.ht_import_daten.' . $d['extension'];
                                 $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
                                 $sheets = $spreadsheet->getSheetNames();
                                 $index = 0;
@@ -216,11 +216,11 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             $db = App::get('session')->getDB();
 
             try {
-                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                if (!file_exists((string)App::get('tempPath') . '/.ht_import_daten.cnf')) {
                     throw new \Exception('Keine Importdatei gefunden');
                 }
 
-                $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
+                $d = json_decode(file_get_contents((string)App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result = [];
                 $result['d'] = $d;
 
@@ -229,7 +229,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                         $result['type'] = $d['type'];
                         if (isset($d['name'])) {
                             if (isset($d['extension'])) {
-                                $inputFileName = App::get('tempPath') . '/.ht_import_daten.' . $d['extension'];
+                                $inputFileName = (string)App::get('tempPath') . '/.ht_import_daten.' . $d['extension'];
                                 $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
                                 //$reader->setReadDataOnly(true);
                                 $sheet = $spreadsheet->getSheet($_REQUEST['tbl']);
@@ -268,14 +268,14 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                                         FALSE         // Should the array be indexed by cell row and cell column
                                     );
                                     $index += $d['chunksize'];
-                                    file_put_contents(App::get('tempPath') . '/.ht_import_daten_' . $chunk . '.cnf', json_encode($data));
+                                    file_put_contents((string)App::get('tempPath') . '/.ht_import_daten_' . $chunk . '.cnf', json_encode($data));
                                     $d['chunks'][] = '.ht_import_daten_' . $chunk . '.cnf';
                                     $chunk++;
                                 }
 
                                 $result['count']--; // zero based!
                                 $result['d'] = $d;
-                                file_put_contents(App::get('tempPath') . '/.ht_import_daten.cnf', json_encode($d));
+                                file_put_contents((string)App::get('tempPath') . '/.ht_import_daten.cnf', json_encode($d));
                                 App::result('count', $result['count']);
                                 App::result('columnCount', $result['columnCount']);
                                 App::result('success', $result['success']);
@@ -299,11 +299,11 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             $db = App::get('session')->getDB();
 
             try {
-                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                if (!file_exists((string)App::get('tempPath') . '/.ht_import_daten.cnf')) {
                     throw new \Exception('Keine Importdatei gefunden');
                 }
                 $result = [];
-                $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
+                $d = json_decode(file_get_contents((string)App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result['d'] = $d;
                 //require_once TualoApplication::get('basePath').'/cmp/cmp_phpspreadsheet/vendor/autoload.php';
 
@@ -354,11 +354,11 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
 
             try {
 
-                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                if (!file_exists((string)App::get('tempPath') . '/.ht_import_daten.cnf')) {
                     throw new \Exception('Keine Importdatei gefunden');
                 }
                 $result = ['data' => []];
-                $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
+                $d = json_decode(file_get_contents((string)App::get('tempPath') . '/.ht_import_daten.cnf'), true);
                 $result['d'] = $d;
                 if (isset($d)) {
                     if (isset($d['type'])) {
@@ -464,11 +464,11 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
             $db = App::get('session')->getDB();
 
             try {
-                if (!file_exists(App::get('tempPath') . '/.ht_import_daten.cnf')) {
+                if (!file_exists((string)App::get('tempPath') . '/.ht_import_daten.cnf')) {
                     throw new \Exception('Keine Importdatei gefunden');
                 }
 
-                $d = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten.cnf'), true);
+                $d = json_decode(file_get_contents((string)App::get('tempPath') . '/.ht_import_daten.cnf'), true);
 
                 if (!isset($_REQUEST['config'])) throw new \Exception('Config nicht gesetzt');
                 if (!isset($_REQUEST['index'])) throw new \Exception('Index nicht gesetzt');
@@ -494,7 +494,7 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 $max_time *= 0.5;
                 $max_time = 180;
                 $chunk = floor($_index / $d['chunksize']);
-                $data = json_decode(file_get_contents(App::get('tempPath') . '/.ht_import_daten_' . $chunk . '.cnf'), true);
+                $data = json_decode(file_get_contents((string)App::get('tempPath') . '/.ht_import_daten_' . $chunk . '.cnf'), true);
 
 
                 $dataChunkForImport = $data; //array_slice($data, $_index, $d['chunksize']);
