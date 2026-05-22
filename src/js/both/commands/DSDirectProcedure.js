@@ -4,21 +4,21 @@ Ext.define('Tualo.routes.ds.DSDirectProcedure', {
             return [
                 {
                     name: 'DS Run Proc direct',
-                    path: '#ds-direct-procedure/:{id}'
+                    path: '#ds-direct-procedure/:{proc}/:{id}'
                 }
             ]
         }
     },
-    url: 'ds-direct-procedure/:{id}',
+    url: 'ds-direct-procedure/:{proc}/:{id}',
     handler: {
         action: function (values) {
 
             let fn = async function () {
 
                 let res = await Tualo.Fetch.post('./dsrun/' + this.param, {
-                    list: Ext.JSON.encode(this.list)
+                    list: Ext.JSON.encode([{ id: values.id }])
                 });
-                let res = await fetch('./dsrun/' + values.id, {
+                let res = await fetch('./dsrun/' + values.proc + '/' + values.id, {
                     method: "post",
                     headers: {
                         'Content-Type': 'application/json'
