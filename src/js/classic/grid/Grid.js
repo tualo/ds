@@ -1,6 +1,16 @@
 Ext.define('Tualo.DataSets.grid.Grid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.dsgrid',
+
+    mixins: ['Tualo.DataSets.grid.mixins.Contextmenu'],
+
+
+    getParent: function () {
+        let parent = this.up('dsview_' + this.tablename);
+        if (parent) return parent;
+        return null;
+    },
+
     constructor: function (config) {
         let store = Ext.data.StoreManager.lookup('ds_' + this.tablename),
             storeConst = Ext.ClassManager.getByAlias('store.ds_' + this.tablename);
@@ -10,7 +20,13 @@ Ext.define('Tualo.DataSets.grid.Grid', {
         console.log('constructor config', 'ds_' + this.tablename, config);
         if (Ext.getApplication().getDebug() === true) console.debug(this.$className, 'constructor')
         this.callParent([config]);
+
+        this.createContextMenu();
     },
+
+
+
+
     initComponent: function () {
         var me = this;
         me.callParent(arguments);
@@ -28,6 +44,10 @@ Ext.define('Tualo.DataSets.grid.Grid', {
 
             return '';
         };
+        this.on('itemcontextmenu', this.onContextmenu, this);
+        this.on('cellcontextmenu', (me, td, cellIndex, record, tr, rowIndex, e, eOpts) => {
+            this.onContextmenu.apply(this, [me, record, me, rowIndex, e, eOpts]);
+        }, this);
     }
 });
 

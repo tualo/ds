@@ -23,11 +23,11 @@ class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
+                $msgs = [];
+                $results = [];
                 if (isset($_REQUEST['list'])) {
                     $list = json_decode($_REQUEST['list'], true);
                     $proc = $matches['proc'];
-                    $msgs = [];
-                    $results = [];
                     $warnings = [];
                     foreach ($list as $id) {
                         set_time_limit(600);
@@ -46,6 +46,7 @@ class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
                 }
                 App::result('success', true);
                 App::result('results', $results);
+                App::result('msg', implode("\n", $msgs));
             } catch (\Exception $e) {
                 App::result('last_sql', $db->last_sql);
                 App::result('msg', $e->getMessage());
