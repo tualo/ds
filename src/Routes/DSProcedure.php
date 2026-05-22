@@ -25,25 +25,32 @@ class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
             try {
                 $msgs = [];
                 $results = [];
+                $input = json_decode(file_get_contents('php://input'), true);
+                $list = [];
                 if (isset($_REQUEST['list'])) {
                     $list = json_decode($_REQUEST['list'], true);
-                    $proc = $matches['proc'];
-                    $warnings = [];
-                    foreach ($list as $id) {
-                        set_time_limit(600);
-                        $db->direct('call ' . $proc . '({id},@result,@msg)', ['id' => $id]);
-                        $results    = array_merge($results, $db->moreResults());
-                        $warnings   = array_merge($warnings, $db->getWarnings());
+                } else if (isset($input['list'])) {
+                    $list = $input['list'];
+                }
 
-                        $r = $db->direct('select @result result,@msg msg');
-                        if ($r[0]['result'] == 1) {
-                            $msgs[] = $r[0]['msg'];
-                        } else {
-                            throw new \Exception($r[0]['msg'], 1);
-                            break;
-                        }
+
+                $proc = $matches['proc'];
+                $warnings = [];
+                foreach ($list as $id) {
+                    set_time_limit(600);
+                    $db->direct('call ' . $proc . '({id},@result,@msg)', ['id' => $id]);
+                    $results    = array_merge($results, $db->moreResults());
+                    $warnings   = array_merge($warnings, $db->getWarnings());
+
+                    $r = $db->direct('select @result result,@msg msg');
+                    if ($r[0]['result'] == 1) {
+                        $msgs[] = $r[0]['msg'];
+                    } else {
+                        throw new \Exception($r[0]['msg'], 1);
+                        break;
                     }
                 }
+
                 App::result('success', true);
                 App::result('results', $results);
                 App::result('msg', implode("\n", $msgs));
