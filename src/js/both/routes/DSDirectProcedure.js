@@ -15,7 +15,7 @@ Ext.define('Tualo.routes.ds.DSDirectProcedure', {
 
             let fn = async function () {
 
-                let res = await fetch('./dsrun/' + this.param, {
+                let res = await fetch('./dsrun/' + values.proc, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
