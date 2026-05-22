@@ -1,7 +1,7 @@
 Ext.define('Tualo.DataSets.grid.mixins.Contextmenu', {
     onContextmenu: function (view, record, item, index, e) {
 
-        this.createContextMenu();
+        //this.createContextMenu();
         var p = e.getXY();
         if (typeof this.contextmenuCtrl !== 'undefined') {
             this.contextmenuCtrl.showAt(p);
