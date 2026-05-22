@@ -70,6 +70,12 @@ BEGIN
 
 END //
 
+
+CREATE OR REPLACE FUNCTION `dsx_rest_api_set_pure_insert`( request JSON ) RETURNS boolean
+BEGIN
+    RETURN (JSON_VALUE(request,'$.type')='insert' or JSON_VALUE(request,'$.type')='replace' )  and  JSON_EXISTS(request,'$.useInsertUpdate')=0 ;
+END //
+
 CREATE OR REPLACE FUNCTION `dsx_rest_api_set_operation_defaults`( request JSON ) RETURNS JSON
 BEGIN 
     IF (JSON_VALUE(request,'$.type')='update') and  JSON_EXISTS(request,'$.useInsertUpdate')=1 THEN 
@@ -127,7 +133,10 @@ BEGIN
             and ds_column.writeable =1
             and ds_column.is_generated <> 'ALWAYS'
             and ds_column.column_type <> ''
-            and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+            and ( 
+                (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+            )
         
                 
     ) DO
@@ -168,8 +177,10 @@ BEGIN
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
-                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
-        
+                and   ( 
+                    (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                    or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+                )
                 and ds_column.column_type <> ''
                 
         union 
@@ -187,8 +198,10 @@ BEGIN
                 and ds_column.existsreal=1
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
-                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
-        
+                and ( 
+                    (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                    or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+                )
                 and ds_column.column_type <> ''
                 
         union 
@@ -206,8 +219,10 @@ BEGIN
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
                 and ds_column.column_type <> ''
-                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
-        
+                and ( 
+                    (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                    or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+                )
                 
         
         union 
@@ -225,7 +240,10 @@ BEGIN
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
                 and ds_column.column_type <> ''
-                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                and ( 
+                    (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                    or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+                )
         
         union 
             select
@@ -242,7 +260,10 @@ BEGIN
                 and ds_column.writeable =1
                 and ds_column.is_generated <> 'ALWAYS'
                 and ds_column.column_type <> ''
-                and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                and ( 
+                    (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+                    or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+                )
         
         
 
@@ -273,7 +294,7 @@ BEGIN
         and ds_column.is_generated <> 'ALWAYS'
         and ds_column.column_type <> ''
         and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
-        
+        or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
         
     ;
 
@@ -594,7 +615,10 @@ call debug_message( concat('dsx_rest_api_set: start use_table_name: `',use_table
         ds_column.table_name = use_table_name
         and ds_column.existsreal=1
         and ds_column.writeable =1
-        and (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+        and ( 
+            (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
+            or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+        )
         and ds_column.is_generated <> 'ALWAYS'
         and column_type <> ''
     ;

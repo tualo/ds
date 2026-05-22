@@ -524,6 +524,8 @@ class Import extends \Tualo\Office\Basic\RouteWrapper
                 }
                 $table = DSTable::init($db)->t($tablename);
                 // options replace ignore update
+
+                App::result('dataset', $dataset);
                 $table->insert($dataset, ['check_foreign_key' => 1]);
                 if ($table->error()) {
                     throw new \Exception($table->errorMessage());

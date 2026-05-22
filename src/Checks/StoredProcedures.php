@@ -22,11 +22,11 @@ class StoredProcedures extends PostCheck
             'create_or_upgrade_hstr_table' => 'ad429a9b1ae27217a536bede47edaf2e',
             'dsx_filter_operator' => '02052d4b2764748d2dd99d70902a4f18',
             'dsx_get_key_sql' => '9dd4bf05f039f4f8cbd447c16df05cfe',
-            'dsx_get_key_sql_prefix' => '9d2af627f43fc988f26cd4902eabe998',
+            'dsx_get_key_sql_prefix' => 'feb5cc41442cf0fe1e087b4c4c35c418',
             'dsx_filter_term' => '54352cc2aef440d4d30e111106907d51',
             'dsx_filter_values_extract' => '302f4d9815bb7b237bf32afb75c522db',
-            'dsx_rest_api_get' => '653527133c66c6300c7e6dcbcbe50f2e',
-            'dsx_rest_api_set' => '7e0cb48f58eb39cdcbd9883928d4f431',
+            'dsx_rest_api_get' => '1f0198f3bae037f423ca4e8b709ddfad',
+            'dsx_rest_api_set' => 'f091ab6fda9b9eb24787e1362825b916',
             'ds_create_fulltext_search' => '4a247175446edccbc654941dfba42dd7'
         ];
         self::procedureCheck(
