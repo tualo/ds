@@ -15,8 +15,14 @@ Ext.define('Tualo.routes.ds.DSDirectProcedure', {
 
             let fn = async function () {
 
-                let res = await Tualo.Fetch.post('./dsrun/' + this.param, {
-                    list: Ext.JSON.encode([{ id: values.id }])
+                let res = await fetch('./dsrun/' + this.param, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        list: Ext.JSON.encode([{ id: values.id }])
+                    })
                 });
                 let json = await res.json();
 
