@@ -46,7 +46,9 @@ select
     ) js,
     1000000 position
 from ds
+
 union
+
 select
     ds.table_name,
     JSON_OBJECT(
@@ -77,6 +79,7 @@ from ds
 -- cmp_belege_report_editorform
 
 union 
+
 SELECT
     table_name,
     JSON_OBJECT(
@@ -92,23 +95,26 @@ SELECT
     ) js,
     3000000 position
 FROM ds_renderer 
+
 ;
 
 
 call addfieldifnotexists('ds_addcommands','iconCls','varchar(255) default "x-fa fa-plus"');
+
 create or replace view view_ds_dsview_commands as
 select 
-ds_addcommands.table_name,
-ds_addcommands.location,
-ds_addcommands.position,
-JSON_OBJECT(
-    'text', ds_addcommands.label,
-    'iconCls',if( ifnull(ds_addcommands.iconcls,'') = '','x-fa fa-plus',ds_addcommands.iconcls),
-    'defered', ds_addcommands.xtype,
-    'handler', 'onAddCommandClick'
-) js
+    ds_addcommands.table_name,
+    ds_addcommands.location,
+    ds_addcommands.position,
+    JSON_OBJECT(
+        'text', ds_addcommands.label,
+        'iconCls',if( ifnull(ds_addcommands.iconcls,'') = '','x-fa fa-plus',ds_addcommands.iconcls),
+        'defered', ds_addcommands.xtype,
+        'handler', 'onAddCommandClick'
+    ) js
 
-from ds_addcommands
+from 
+    ds_addcommands
 where ds_addcommands.location = 'toolbar';
 
 create or replace view view_ds_dsview as

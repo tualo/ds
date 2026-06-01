@@ -31,11 +31,12 @@ BEGIN
     end if;
 
 END //
+
 CREATE or replace PROCEDURE `dsx_rest_api_set`( IN  request JSON , OUT  result JSON)
 `whole_proc`:
 BEGIN 
     DECLARE use_table_name varchar(128);
-    DECLARE msg varchar(255);
+    DECLARE msg LONGTEXT;
     DECLARE use_fields LONGTEXT;
     DECLARE update_fields LONGTEXT;
     DECLARE update_statement_fields LONGTEXT;
@@ -44,6 +45,12 @@ BEGIN
     DECLARE ref_sql_command LONGTEXT;
     DECLARE i integer;
     DECLARE l integer;
+
+    --    DECLARE CONTINUE HANDLER FOR SQLSTATE '23000' SET @x2 = 1;
+    --   STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+    set session sql_mode= replace((replace((select @@sql_mode), "STRICT_ALL_TABLES", "")), "STRICT_TRANS_TABLES", "");
+
 
     SET request = fixBackslashBug(request);
 
@@ -201,7 +208,7 @@ BEGIN
             EXECUTE stmt USING request;
             DEALLOCATE PREPARE stmt;
 
-
+            
             IF (JSON_EXISTS(request,'$.update')=1) THEN
                 FOR record IN (
                     select
@@ -455,6 +462,7 @@ BEGIN
                         where 
                             ds_column.table_name = use_table_name
                             and ds_column.default_value<>'' 
+                            and ds_column.default_value<>'{#serial}' 
                             and ds_column.existsreal=1
                             and ds_column.writeable =1
                             and ds_column.is_generated <> 'ALWAYS'
@@ -662,7 +670,8 @@ BEGIN
                 insert into test_ds_request (note) values (sql_command);
             END IF;
 
-            SET result = JSON_OBJECT('success',1,'message','OK');
+
+            SET result = JSON_OBJECT('success',1,'message','OK','temporary_table_name','temp_dsx_rest_data');
 
             if JSON_VALUE(request,'$.type')<>'delete' then
 

@@ -21,7 +21,7 @@ select
                 "hideList",false,
                 "isNew",false,
                 "table_name",ds.table_name,
-                "contextmenu", view_ds_contextmenu.contextmenu
+                "contextmenu", ifnull(view_ds_contextmenu.contextmenu, JSON_ARRAY())
             )
             
         ),
@@ -32,7 +32,7 @@ from
     ds
     join view_ds_listcolumn 
         on ds.table_name = view_ds_listcolumn.table_name
-    join view_ds_contextmenu
+    left join view_ds_contextmenu
         on ds.table_name = view_ds_contextmenu.table_name
 where
     `ds`.`title`<>'';

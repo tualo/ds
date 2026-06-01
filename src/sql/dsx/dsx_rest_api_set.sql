@@ -264,6 +264,28 @@ BEGIN
                     (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 or ds_column.is_primary=1)
                     or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
                 )
+        union 
+            -- pure values
+            select
+                concat('update ',temp_table_name,' set `',column_name,'`=',quote(default_value),' where `',column_name,'` is null  ') s,
+                column_name,
+                SUBSTRING(ds_column.default_value,3,length(ds_column.default_value)-3) fn,
+                default_value
+            from 
+                ds_column
+            where 
+                ds_column.table_name = use_table_name
+                and SUBSTRING(ds_column.default_value,1,1)<>'{'
+                and length(trim(ds_column.default_value)) > 0
+                and ds_column.existsreal=1
+                and ds_column.writeable =1
+                and ds_column.is_generated <> 'ALWAYS'
+                and ds_column.column_type <> ''
+                and ( 
+                    (JSON_EXISTS(request,concat('$.data[0].', column_name))=1 
+                    or ds_column.is_primary=1)
+                    or ( dsx_rest_api_set_pure_insert(request) and ds_column.default_value is not null and ds_column.default_value<>'')
+                )
         
         
 
