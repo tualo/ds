@@ -38,5 +38,28 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
         */
     },
 
+    afterRender: function () {
+        var me = this;
+        me.callParent(arguments);
+
+        me.bodyEl.dom.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+
+            if (me.config.allowDrop === false) {
+                return;
+            }
+            const data = ev.dataTransfer.getData("text");
+            // ev.target.append(data);
+            me.setValue(data)
+            me.focus();
+        });
+        /*
+        me.bodyEl.dom.addEventListener("dragover", (ev) => {
+            ev.preventDefault();
+        });
+        */
+
+    }
+
 
 })
