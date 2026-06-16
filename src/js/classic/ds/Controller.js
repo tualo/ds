@@ -144,7 +144,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     filterBy: function (filterBy, cb) {
         let view = this.getView(),
             store = view.getComponent('list').getStore(),
-            storeFilters = view.getComponent('list').getFilters(),
+            storeFilters = store.getFilters(),
 
             columns = view.getComponent('list').getColumns();
         filterBy.forEach(function (item) {
