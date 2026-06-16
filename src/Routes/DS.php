@@ -146,6 +146,8 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                 if (isset($input['search'])) {
                     $input['search'] = DS::sanitizeInput($input['search']);
                 }
+
+
                 $read = DSReadRoute::read($db, $tablename, $input);
                 App::result('data', $read['data']);
                 App::result('total', $read['total']);

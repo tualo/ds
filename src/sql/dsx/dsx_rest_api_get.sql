@@ -307,6 +307,12 @@ BEGIN
             table_name = JSON_VALUE(userequest,'$.tablename')
         ;
 
+        IF JSON_VALUE(userequest,'$.searchfield') IS NOT NULL THEN
+            SET searchfield = JSON_VALUE(userequest,'$.searchfield');
+        END IF;
+
+        
+
         if (searchfield is null or searchfield='') THEN
             set @msg=concat('Es ist kein Suchfeld für `',JSON_VALUE(userequest,'$.tablename'),'` angelegt');
             SIGNAL SQLSTATE '45000'

@@ -28,7 +28,16 @@ select
                     "destroy", concat('./ds/',view_ds_field_model.table_name,'/delete')
                 ),
                 "extraParams", json_object(
-                    "fields", concat('["',view_ds_field_model.displayfield,'","',view_ds_field_model.idfield,'"]')
+                    "fields", 
+
+                    -- concat('["',view_ds_field_model.displayfield,'","',view_ds_field_model.idfield,'"]')
+                    JSON_ARRAY(
+                        view_ds_field_model.displayfield, 
+                        view_ds_field_model.idfield,
+                        ds.searchfield,
+                        ds.sortfield,
+                        ds.displayfield
+                )
                 ),
 
                 "reader", json_object(

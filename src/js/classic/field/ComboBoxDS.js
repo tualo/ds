@@ -25,18 +25,23 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
     },
     onBeforeLoad: function (store, operation, eOpts) {
         console.log('onBeforeLoad', store, this, operation, eOpts);
-        /*
-        store.getProxy().setExtraParams({
-
-            / *tablename: store.tablename,
-            fieldname: store.fieldname,
-            value: store.value,
-            query: store.query,
-            pageSize: store.pageSize
-            * /
-        });
-        */
+        let params = store.getProxy().getExtraParams() || {};
+        params.searchfield = this.displayField;
+        store.getProxy().setExtraParams(params);
     },
+
+    /*
+    store.getProxy().setExtraParams({
+
+        / *tablename: store.tablename,
+        fieldname: store.fieldname,
+        value: store.value,
+        query: store.query,
+        pageSize: store.pageSize
+        * /
+    });
+    */
+    // },
 
     afterRender: function () {
         var me = this;
