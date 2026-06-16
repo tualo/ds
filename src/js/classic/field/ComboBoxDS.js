@@ -51,7 +51,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
             const data = ev.dataTransfer.getData("text");
             me.setValue(data);
             setTimeout(() => {
-                me.doQuery(me.getValue());
+                me.doQuery(data, true, true);
                 me.focus();
             }, 500);
         });
