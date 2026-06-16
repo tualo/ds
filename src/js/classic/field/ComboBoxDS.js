@@ -50,8 +50,10 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
             }
             const data = ev.dataTransfer.getData("text");
             me.setValue(data);
-            me.doQuery(me.getValue());
-            me.focus();
+            setTimeout(() => {
+                me.doQuery(me.getValue());
+                me.focus();
+            }, 500);
         });
         /*
         me.bodyEl.dom.addEventListener("dragover", (ev) => {
