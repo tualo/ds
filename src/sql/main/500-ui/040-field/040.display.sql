@@ -13,7 +13,7 @@ select
                 "displayField", lower(ds_dropdownfields.displayfield),
                 "configStore", JSON_OBJECT(
                     "type", concat('ds_',`ds_dropdownfields`.`table_name`),
-                    "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_columnstore'),
+                    "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_displaycomboboxstore'),
                     "pageSize", 1000000
                 ),
                 "alias", concat('widget.displaycombobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name))

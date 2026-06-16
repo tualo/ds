@@ -144,22 +144,33 @@ Ext.define('Tualo.DS.panel.Controller', {
     filterBy: function (filterBy, cb) {
         let view = this.getView(),
             store = view.getComponent('list').getStore(),
+            storeFilters = view.getComponent('list').getFilters(),
+
             columns = view.getComponent('list').getColumns();
         filterBy.forEach(function (item) {
-            columns.forEach(function (column) {
-                if (item.property == column.dataIndex) {
-                    try {
-                        if ((column.filter.acceptedType === 'array') && (typeof item.value == 'string')) {
-                            column.filter.filter.setValue([item.value]);
-                        } else {
-                            column.filter.filter.setValue(item.value);
+
+            if (item.property == '__id') {
+                storeFilters.add({
+                    property: item.property,
+                    operator: item.operator,
+                    value: item.value
+                });
+            } else {
+                columns.forEach(function (column) {
+                    if (item.property == column.dataIndex) {
+                        try {
+                            if ((column.filter.acceptedType === 'array') && (typeof item.value == 'string')) {
+                                column.filter.filter.setValue([item.value]);
+                            } else {
+                                column.filter.filter.setValue(item.value);
+                            }
+                        } catch (e) {
+                            console.error(e);
                         }
-                    } catch (e) {
-                        console.error(e);
+                        column.filter.setActive(true);
                     }
-                    column.filter.setActive(true);
-                }
-            })
+                })
+            }
         });
         if (typeof cb == 'function') cb = () => { };
         store.load({

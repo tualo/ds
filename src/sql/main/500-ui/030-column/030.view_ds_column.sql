@@ -15,7 +15,7 @@ select
                 "displayField", lower(ds_dropdownfields.displayfield),
                 "configStore", JSON_OBJECT(
                     "type", concat('ds_',`ds_dropdownfields`.`table_name`,'_',ds_dropdownfields.name),
-                    "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_',ds_dropdownfields.name,'_columnstore'),
+                    -- "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_',ds_dropdownfields.name,'_columnstore'),
                     "pageSize", 10000000,
                     "remoteFilter", 0=1,
                     "proxy",

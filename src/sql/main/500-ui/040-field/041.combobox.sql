@@ -13,7 +13,7 @@ select
                 "displayField", lower( concat( /*`ds_dropdownfields`.`table_name`,'__',*/ `ds_dropdownfields`.`displayfield` )),
                 "store", JSON_OBJECT(
                     "type", concat('ds_',`ds_dropdownfields`.`table_name`,'_',ds_dropdownfields.name),
-                    "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_',ds_dropdownfields.name,'_columnstore'),
+                    "storeId", concat('ds_',`ds_dropdownfields`.`table_name`,'_',ds_dropdownfields.name,'_comboboxstore'),
                     "pageSize", 10000000,
                     "remoteFilter", 0=1,
                     "proxy",

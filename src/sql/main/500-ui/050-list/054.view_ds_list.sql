@@ -98,7 +98,8 @@ select
                         "dock", 'bottom'
                     ),
                     JSON_OBJECT(
-                        "ftype","grouping"
+                        "ftype","grouping",
+                        "showSummaryRow", 1=1
                     )
                     
                 ),
