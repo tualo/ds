@@ -49,8 +49,8 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
                 return;
             }
             const data = ev.dataTransfer.getData("text");
-            // ev.target.append(data);
-            me.setValue(data)
+            me.setValue(data);
+            me.doQuery(me.getValue());
             me.focus();
         });
         /*
