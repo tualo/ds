@@ -1,4 +1,4 @@
-Ext.define('Tualo.DS.Toolbar', {   
+Ext.define('Tualo.DS.Toolbar', {
     extend: "Ext.Toolbar",
     alias: 'widget.dstoolbar',
     dock: "top",
@@ -46,6 +46,7 @@ Ext.define('Tualo.DS.Toolbar', {
             xtype: "glyphtool",
             glyph: "refresh",
             handler: "refresh",
+            itemId: "refresh",
             tooltip: "neu Laden",
             bind: {
                 disabled: "{disableRefresh}"
@@ -61,9 +62,10 @@ Ext.define('Tualo.DS.Toolbar', {
         {
             xtype: "glyphtool",
             glyph: "save",
+            itemId: "save",
             tooltip: "Speichern",
             handler: "save",
-            bind:{
+            bind: {
                 disabled: "{disableSave}",
                 hidden: "{hideSave}"
             }
@@ -71,37 +73,42 @@ Ext.define('Tualo.DS.Toolbar', {
         {
             xtype: "glyphtool",
             glyph: "history",
+            itemId: "history",
             tooltip: "Änderungen verwerfen",
             handler: "reject",
-            bind:{
+            bind: {
                 disabled: "{disableSave}",
                 hidden: "{hideSave}"
             }
-        },{
+        }, {
             xtype: "glyphtool",
             glyph: "plus",
+            itemId: "plus",
+
             tooltip: "Hinzufügen",
             handler: "append",
-            
-            bind:{
+
+            bind: {
                 disabled: "{disableAdd}",
                 hidden: "{hideAppend}"
             }
-            
+
         },
         {
             xtype: "glyphtool",
             glyph: "minus",
+            itemId: "minus",
             tooltip: "Entfernen",
             handler: "delete",
-            bind:{
+            bind: {
                 disabled: "{disableDelete}",
                 hidden: "{hideDelete}"
             },
         },
-        { 
+        {
             xtype: "glyphtool",
             glyph: "upload",
+            itemId: "upload",
 
 
             tooltip: "Importieren",
@@ -109,12 +116,13 @@ Ext.define('Tualo.DS.Toolbar', {
             bind: {
                 hidden: "{hideAppend}"
             }
-            
+
 
         },
         {
             xtype: "glyphtool",
             glyph: "download",
+            itemId: "download",
             tooltip: "Exportieren",
             handler: "export",
             bind: {

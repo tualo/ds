@@ -8,6 +8,34 @@ alter table ds add column if not exists base_store_class varchar(50) default 'Tu
 
 alter table ds add column if not exists sortdirection varchar(10) default 'ASC';
 
+
+
+
+create or replace view view_ds_store_groupers as
+select 
+ds.table_name,
+if( count(distinct ds_column_list_label.column_name )>0, JSON_ARRAYAGG(
+    json_object(
+        "property", ds_column_list_label.column_name,
+        "sortProperty",ds.sortfield,
+
+        "direction", if(ds.sortdirection<>'',ds.sortdirection,'ASC')
+    )
+    ds_column_list_label.column_name
+),json_array()) groupers
+ from 
+    ds
+    join ds_column
+        on ds_column.table_name = ds.table_name
+        and ds_column.existsreal=1
+    left join ds_column_list_label 
+        on ds.table_name = ds_column_list_label.table_name
+        and ds_column_list_label.grouped=1
+ 
+group by ds.table_name 
+
+;
+
 create or replace view view_ds_store as
 select 
     concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))) name,
@@ -16,9 +44,9 @@ select
         'Ext.define(',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),',',
         JSON_OBJECT(
             "extend",  if(ifnull(ds.base_store_class,'')='','Tualo.DataSets.data.Store', ds.base_store_class),
-            "tablename", table_name,
-            "alias", JSON_ARRAY( concat('store.ds_',table_name) ,concat('store.',table_name,'_store') ),
-            "storeId", concat('ds_',table_name),
+            "tablename", ds.table_name,
+            "alias", JSON_ARRAY( concat('store.ds_',ds.table_name) ,concat('store.',ds.table_name,'_store') ),
+            "storeId", concat('ds_',ds.table_name),
             -- "requires", JSON_MERGE('[]', if( suppressRequires() ,  '[]', concat('[',doublequote(concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),']')) ),
             "model", concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))),
             "remoteFilter", TRUE is true,
@@ -49,18 +77,20 @@ select
             ),
             "sorters", JSON_ARRAY(
                 JSON_OBJECT(
-                    "property", if(sortfield<>'',sortfield,'__id'),
-                    "direction", if(sortdirection<>'',sortdirection,'ASC')
+                    "property", if(ds.sortfield<>'',ds.sortfield,'__id'),
+                    "direction", if(ds.sortdirection<>'',ds.sortdirection,'ASC')
                 )
-            )
+            ),
+            "groupers", view_ds_store_groupers.groupers
         ),')',char(59)
     ) js,
-    table_name
+    ds.table_name
 from
     ds
-    
+    join view_ds_store_groupers
+        on view_ds_store_groupers.table_name = ds.table_name
 where
-    /*`ds`.`title`<>'' and*/ (table_name in (
+    /*`ds`.`title`<>'' and*/ (ds.table_name in (
         select 
             table_name
         from 

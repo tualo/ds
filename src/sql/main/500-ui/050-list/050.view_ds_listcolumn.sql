@@ -56,7 +56,19 @@ select
                     `ds_column_list_label`.`summarytype`,
                     null
                 ),
+                'fixedSummaryType',
+                if(
+                    ifnull(`ds_column_list_label`.`summarytype`, '') <> '',
+                    `ds_column_list_label`.`summarytype`,
+                    null
+                ),
                 'summaryRenderer',
+                if(
+                    ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
+                    `ds_column_list_label`.`summaryrenderer`,
+                    null
+                ),
+                'fixedSummaryRenderer',
                 if(
                     ifnull(`ds_column_list_label`.`summaryrenderer`, '') <> '',
                     `ds_column_list_label`.`summaryrenderer`,
