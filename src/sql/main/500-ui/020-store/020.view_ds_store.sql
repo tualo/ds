@@ -21,7 +21,6 @@ if( count(distinct ds_column_list_label.column_name )>0, JSON_ARRAYAGG(
 
         "direction", if(ds.sortdirection<>'',ds.sortdirection,'ASC')
     )
-    ds_column_list_label.column_name
 ),json_array()) groupers
  from 
     ds
