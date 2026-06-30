@@ -156,6 +156,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                     value: item.value
                 });
             } else {
+                console.log('filterBy', filterBy, columns);
                 columns.forEach(function (column) {
                     if (item.property == column.dataIndex) {
                         try {
