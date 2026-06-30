@@ -1,6 +1,6 @@
 Ext.define('Tualo.routes.DS', {
     statics: {
-        
+
         load: async function () {
             let response = await Tualo.Fetch.post('ds/ds/read', { limit: 10000 });
             let list = [];
@@ -18,20 +18,20 @@ Ext.define('Tualo.routes.DS', {
 
         sha1: async function (str) {
             const enc = new TextEncoder();
-            if (crypto.subtle){
+            if (crypto.subtle) {
                 const hash = await crypto.subtle.digest('SHA-1', enc.encode(str));
                 return Array.from(new Uint8Array(hash))
                     .map(v => v.toString(16).padStart(2, '0'))
                     .join('');
-            }else{
-                return btoa(str).replace(/[^A-Za-z0-9]/g,'');
+            } else {
+                return btoa(str).replace(/[^A-Za-z0-9]/g, '');
             }
         }
     },
     url: 'ds/:{table}(\/:{fieldName}\/:{fieldValue})',
     handler: {
         action: function (values) {
-            console.log('ds route','action', values);
+            console.log('ds route', 'action', values);
 
             const fnx = async () => {
                 let type = 'dsview',
@@ -41,17 +41,17 @@ Ext.define('Tualo.routes.DS', {
                     stage = mainView.getComponent('dashboard_dashboard').getComponent('stage'),
                     component = null,
                     cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await Tualo.routes.DS.sha1(JSON.stringify(values)));
-                    console.log('ds route','action','cmp_id', cmp_id);
+                console.log('ds route', 'action', 'cmp_id', cmp_id);
                 component = stage.getComponent(cmp_id);
 
                 if (!Ext.isEmpty(component)) {
                     stage.setActiveItem(component);
-                    console.log('ds route','action','setActiveItem', component);
+                    console.log('ds route', 'action', 'setActiveItem', component);
                 } else {
                     component = Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase, {
                         itemId: cmp_id
                     });
-                    console.log('ds route','action','new', component);
+                    console.log('ds route', 'action', 'new', component);
                 }
 
                 if ((component) && (typeof values.fieldValue != 'undefined')) {
@@ -61,29 +61,29 @@ Ext.define('Tualo.routes.DS', {
             fnx();
         },
         before: function (values, action) {
-            console.log('ds route','before', values);
-            
+            console.log('ds route', 'before', values);
+
 
             const fnx = async () => {
                 let type = 'dsview',
                     tablename = values.table,
                     tablenamecase = tablename.toLocaleUpperCase().substring(0, 1) + tablename.toLowerCase().slice(1),
                     cmp_id = type + '_' + tablename.toLowerCase() + '_' + (await Tualo.routes.DS.sha1(JSON.stringify(values)));
-                console.log('ds route','before', 'fnx', cmp_id)
+                console.log('ds route', 'before', 'fnx', cmp_id)
 
-                if (!Ext.isEmpty(Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').down(cmp_id))) {
+                if (!Ext.isEmpty(Ext.getApplication().getMainView().getComponent('dashboard_dashboard').getComponent('stage').getComponent(cmp_id))) {
                     action.resume();
                 } else {
-                    console.log('ds route','before', 'fnx zeile 77', cmp_id)
+                    console.log('ds route', 'before', 'fnx zeile 77', cmp_id)
                     if (
                         (Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase])
                         && (Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase].stores)
                     ) {
                         let waitFor = 0, resumed = false;
-                        console.log('ds route','before', 'fnx zeile 83', cmp_id)                        
+                        console.log('ds route', 'before', 'fnx zeile 83', cmp_id)
                         try {
                             Ext.ClassManager.classes['Tualo.DataSets.' + type + '.' + tablenamecase].stores.forEach(element => {
-                                console.log('create store',element, typeof Ext.data.StoreManager.lookup(element.storeId));
+                                console.log('create store', element, typeof Ext.data.StoreManager.lookup(element.storeId));
                                 if (typeof Ext.data.StoreManager.lookup(element.storeId) == 'undefined') {
                                     waitFor++;
                                     console.log('create store', element.storeId, waitFor);
@@ -129,7 +129,7 @@ Ext.define('Tualo.routes.DS', {
                             action.stop();
                         }
                     } else {
-                        console.log('ds route','before', 'fnx zeile 133', cmp_id)                        
+                        console.log('ds route', 'before', 'fnx zeile 133', cmp_id)
                         action.resume();
                     }
                 }
