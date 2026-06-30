@@ -22,8 +22,11 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
             let me = this,
                 column = me.getColumns()[colIndex],
                 configStore = column.configStore,
-                storeId = configStore.storeId,
-                store = Ext.data.StoreManager.lookup(storeId),
+                storeId = configStore.storeId;
+            if (typeof storeId == 'undefined') {
+                storeId = configStore.type + '_columnstore';
+            }
+            let store = Ext.data.StoreManager.lookup(storeId),
                 renderRecord = null;
             if (store) {
                 if (store.loadCount == 0 && !store.loading) {
