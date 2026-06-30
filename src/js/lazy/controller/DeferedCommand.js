@@ -41,7 +41,7 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
             }
         } catch (e) {
             console.log(e);
-            window.history.back();
+            Ext.util.History.back();
         }
     },
     enableNext: function () {
@@ -55,7 +55,7 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
     },
     cancel: function () {
         console.log('cancel');
-        window.history.back();
+        Ext.util.History.back();
     },
     prev: function () {
 
@@ -65,7 +65,7 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
         var me = this;
         me.getViewModel().set('enableNext', false);
         await me.c.run(btn);
-        window.history.back();
+        Ext.util.History.back();
 
     }
 });
