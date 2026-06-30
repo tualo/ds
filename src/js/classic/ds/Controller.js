@@ -159,6 +159,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 console.log('filterBy', filterBy, columns);
                 columns.forEach(function (column) {
                     if (item.property == column.dataIndex) {
+                        column.filter.setActive(false);
                         try {
                             if ((column.filter.acceptedType === 'array') && (typeof item.value == 'string')) {
                                 column.filter.filter.setValue([item.value]);
