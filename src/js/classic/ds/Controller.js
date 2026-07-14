@@ -36,10 +36,16 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
     },
     toolbarBoxReady: function (toolbar) {
+
+        if (Ext.getApplication().getRequiredLoaded() === false) {
+            Ext.getApplication().on('requiresloaded', function () {
+                this.toolbarBoxReady(toolbar);
+            }, this, { single: true });
+            return;
+        }
         let id = this.getView().getId(),
             tn = this.getViewModel().get('table_name');
         if (this.getView().additionalTools.length > 0) {
-            console.log('Tualo.DS.Panel', this, this.additionalTools, toolbar);
 
 
             this.getView().additionalTools.forEach(element => {
@@ -57,6 +63,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                     });
                 }
             });
+
         }
     },
     onAddCommandClick: function () {
