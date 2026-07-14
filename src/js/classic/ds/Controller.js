@@ -39,7 +39,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         let id = this.getView().getId(),
             tn = this.getViewModel().get('table_name');
         if (this.getView().additionalTools.length > 0) {
-            if (Ext.getApplication().getDebug() === true) console.log('Tualo.DS.Panel', this, this.additionalTools, toolbar);
+            console.log('Tualo.DS.Panel', this, this.additionalTools, toolbar);
 
 
             this.getView().additionalTools.forEach(element => {
