@@ -3,9 +3,8 @@ Ext.define('Tualo.Exporter', {
 });
 
 
-/*
 Ext.define('Tualo.exporter.Override', {
     override: 'Ext.exporter.File',
     url: './extjscmplr/exporter',
 });
-*/
+
