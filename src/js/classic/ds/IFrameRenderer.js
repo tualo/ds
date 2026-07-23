@@ -68,6 +68,19 @@ Ext.define('Tualo.DS.IFrameRenderer', {
   },
   items: [
     {
+      tbar: {
+        items: [
+          {
+            xtype: 'button',
+            text: 'Drucken',
+            iconCls: 'fa fa-print',
+            handler: function (me) {
+              let p = this.up('ds_iframe_renderer_panel');
+              p.down('tualoiframe').getEl().dom.querySelector('iframe').contentWindow.print();
+            }
+          }
+        ]
+      },
       itemId: 'frame',
       xtype: 'tualoiframe',
       src: 'about:blank'
