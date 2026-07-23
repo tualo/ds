@@ -84,7 +84,7 @@ SELECT
     table_name,
     JSON_OBJECT(
         "iconCls", "x-fa fa-file-pdf",
-        "xtype", "cmp_ds_pdfrendererpanel",
+        "xtype", ds_renderer.xtype,
         "bind", JSON_OBJECT(
             "record", "{record}"
         ),
