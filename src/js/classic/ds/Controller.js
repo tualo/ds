@@ -36,7 +36,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
     },
     toolbarBoxReady: function (toolbar) {
-
+        let me = this;
         if (Ext.getApplication().getRequiredLoaded() === false) {
             Ext.getApplication().on('requiresloaded', function () {
                 this.toolbarBoxReady(toolbar);
@@ -49,18 +49,35 @@ Ext.define('Tualo.DS.panel.Controller', {
 
 
             this.getView().additionalTools.forEach(element => {
-                if (!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.' + element.defered))) {
-                    if (!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.' + element.defered).glyph)) {
-                        element.glyph = Ext.ClassManager.getByAlias('widget.' + element.defered).glyph;
-                    }
+
+                if (element.redirectTo) {
                     toolbar.add({
                         xtype: "glyphtool",
                         glyph: element.glyph,
                         handler: function () {
-                            Ext.getApplication().redirectTo('dscommand/' + tn + '/' + element.defered + '/' + id);
+                            let tpl = new Ext.XTemplate(element.redirectTo)
+                            let record = me.getViewModel().get('record');
+                            var data = Ext.apply({}, record.data, record.getAssociatedData());
+                            Ext.getApplication().redirectTo(tpl.apply(data));
                         },
                         tooltip: element.text
                     });
+
+                } else {
+
+                    if (!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.' + element.defered))) {
+                        if (!Ext.isEmpty(Ext.ClassManager.getByAlias('widget.' + element.defered).glyph)) {
+                            element.glyph = Ext.ClassManager.getByAlias('widget.' + element.defered).glyph;
+                        }
+                        toolbar.add({
+                            xtype: "glyphtool",
+                            glyph: element.glyph,
+                            handler: function () {
+                                Ext.getApplication().redirectTo('dscommand/' + tn + '/' + element.defered + '/' + id);
+                            },
+                            tooltip: element.text
+                        });
+                    }
                 }
             });
 

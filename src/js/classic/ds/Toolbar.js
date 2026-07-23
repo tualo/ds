@@ -96,6 +96,7 @@ Ext.define('Tualo.DS.Toolbar', {
             }
 
         },
+
         {
             xtype: "glyphtool",
             glyph: "minus",

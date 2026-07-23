@@ -101,17 +101,33 @@ FROM ds_renderer
 
 call addfieldifnotexists('ds_addcommands','iconCls','varchar(255) default "x-fa fa-plus"');
 
+
+
+call addfieldifnotexists('ds_addcommands','redirectto','varchar(255) default null');
+
 create or replace view view_ds_dsview_commands as
 select 
     ds_addcommands.table_name,
     ds_addcommands.location,
     ds_addcommands.position,
-    JSON_OBJECT(
-        'text', ds_addcommands.label,
-        'iconCls',if( ifnull(ds_addcommands.iconcls,'') = '','x-fa fa-plus',ds_addcommands.iconcls),
-        'defered', ds_addcommands.xtype,
-        'handler', 'onAddCommandClick'
-    ) js
+    IF (
+        ds_addcommands.redirectto is not null and ds_addcommands.redirectto <> '',
+
+        JSON_OBJECT(
+            'text', ds_addcommands.label,
+            'iconCls',if( ifnull(ds_addcommands.iconcls,'') = '','x-fa fa-plus',ds_addcommands.iconcls),
+            'defered', ds_addcommands.xtype,
+            'handler', 'onAddCommandClick',
+            'redirectTo', ds_addcommands.redirectto
+        ),
+        JSON_OBJECT(
+            'text', ds_addcommands.label,
+            'iconCls',if( ifnull(ds_addcommands.iconcls,'') = '','x-fa fa-plus',ds_addcommands.iconcls),
+            'defered', ds_addcommands.xtype,
+            'handler', 'onAddCommandClick'
+        ) 
+    )
+    js
 
 from 
     ds_addcommands
