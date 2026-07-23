@@ -53,7 +53,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 if (element.redirectTo) {
                     toolbar.add({
                         xtype: "glyphtool",
-                        glyph: element.glyph,
+                        glyph: element.iconCls,
                         handler: function () {
                             let tpl = new Ext.XTemplate(element.redirectTo)
                             let record = me.getViewModel().get('record');
