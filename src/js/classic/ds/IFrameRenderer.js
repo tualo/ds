@@ -47,7 +47,7 @@ Ext.define('Tualo.DS.IFrameRenderer', {
   updateRecord: function (record) {
 
     if (this.isVisible() && ((this.collapsed === true) || (this.collapsed == 'left'))) {
-      this.getComponent('frame').src = 'about:blank';
+      this.getComponent('framepanel').getComponent('frame').src = 'about:blank';
       this.on({
         expand: { fn: this.loadFrame, scope: this, single: true }
       });
@@ -63,7 +63,7 @@ Ext.define('Tualo.DS.IFrameRenderer', {
       if (Ext.isEmpty(this.record.get('__id'))) {
         id = this.record.get('__displayfield');
       }
-      this.getComponent('frame').load(url + '/' + id);
+      this.getComponent('framepanel').getComponent('frame').load(url + '/' + id);
     }
   },
   items: [
@@ -81,9 +81,18 @@ Ext.define('Tualo.DS.IFrameRenderer', {
           }
         ]
       },
-      itemId: 'frame',
-      xtype: 'tualoiframe',
-      src: 'about:blank'
+      xtype: 'panel',
+      layout: 'fit',
+      border: false,
+      bodyBorder: false,
+      itemId: 'framepanel',
+      items: [
+        {
+          itemId: 'frame',
+          xtype: 'tualoiframe',
+          src: 'about:blank'
+        }
+      ]
     }
   ]
 });
