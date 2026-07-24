@@ -99,11 +99,18 @@ FROM ds_renderer
 ;
 
 
-call addfieldifnotexists('ds_addcommands','iconCls','varchar(255) default "x-fa fa-plus"');
+call addfieldifnotexists('ds_addcommands','iconcls','varchar(255) default "x-fa fa-plus"');
 
 
 
 call addfieldifnotexists('ds_addcommands','redirectto','varchar(255) default null');
+
+
+
+update ds_column_list_label set column_name=lower(column_name) where table_name = 'ds_addcommands';
+update ds_column_form_label set column_name=lower(column_name) where table_name = 'ds_addcommands';
+update ds_column set column_name=lower(column_name) where table_name = 'ds_addcommands';
+
 
 create or replace view view_ds_dsview_commands as
 select 
