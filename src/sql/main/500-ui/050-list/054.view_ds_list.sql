@@ -146,7 +146,7 @@ select
     ds.table_name
 from
     ds
-    join view_ds_listcolumn 
+    left join view_ds_listcolumn 
         on ds.table_name = view_ds_listcolumn.table_name
     left join 
         (

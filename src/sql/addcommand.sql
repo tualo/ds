@@ -13,7 +13,7 @@ and (select sum(`is_primary`) from `ds_column` where `table_name`='view_ds_listf
 
 
 
-INSERT  IGNORE INTO `ds_addcommands` VALUES
+INSERT  IGNORE INTO `ds_addcommands` (table_name,xtype,location,position,label,iconCls) VALUES
 -- ('ds','cmp_setup_export_config_command','toolbar',1,'','x-fa fa-plus'),
 -- ('ds','cmp_setup_update_history_tables_command','toolbar',1,'','x-fa fa-plus'),
 ('ds','compiler_command','toolbar',1,'Kompiler',NULL),
