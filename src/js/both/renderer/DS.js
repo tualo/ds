@@ -16,6 +16,15 @@ Ext.define("Tualo.ds.renderer.DS", {
                     return me.data[val] || val;
                 }
                 console.debug('not loaded', me.config.table_name, val, metaData, record, rowIndex, colIndex, store, view);
+                me.lazyRendering.push({
+                    val: val,
+                    metaData: metaData,
+                    record: record,
+                    rowIndex: rowIndex,
+                    colIndex: colIndex,
+                    store: store,
+                    view: view
+                });
                 if (!me.isFetching) me.fetchData();
                 return 'not loaded'; // me.config.table_name;
             }
@@ -23,6 +32,7 @@ Ext.define("Tualo.ds.renderer.DS", {
         Ext.merge(Ext.util.Format, o);
         // this.fetchData();
     },
+    lazyRendering: [],
     isFetching: false,
     fetchData: async function () {
         let me = this;
@@ -55,6 +65,26 @@ Ext.define("Tualo.ds.renderer.DS", {
             o[data.data[i][this.config.idField]] = data.data[i][this.config.displayField];
         }
         me.data = o;
+        me.renderLazy();
+        me.isFetching = false;
+
         // return o;
+    },
+    renderLazy: function () {
+        let me = this;
+        while (me.lazyRendering.length > 0) {
+
+
+            let item = me.lazyRendering.pop();
+            let val = item.val;
+            let metaData = item.metaData;
+            let record = item.record;
+            let rowIndex = item.rowIndex;
+            let colIndex = item.colIndex;
+            let store = item.store;
+            let view = item.view;
+            view.getCell(record, colIndex, true).setHtml(me.data[val] || val);
+        }
     }
+
 });
