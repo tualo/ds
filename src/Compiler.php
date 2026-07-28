@@ -51,6 +51,8 @@ class Compiler implements ICompiler
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_store', '', 2));
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_field_store', '', 2));
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_column', '', 3));
+            $subfiles = array_merge($subfiles, self::extractFiles('view_ds_column', '', 3));
+            $subfiles = array_merge($subfiles, self::extractFiles('view_ds_renderer', '', 4));
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_columnfilters', '', 4));
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_combobox', '', 3));
             $subfiles = array_merge($subfiles, self::extractFiles('view_ds_linkedcombobox', '', 3));
