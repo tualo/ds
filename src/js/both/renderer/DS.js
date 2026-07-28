@@ -11,11 +11,9 @@ Ext.define("Tualo.ds.renderer.DS", {
         this.initConfig(config);
         let o = {},
             fn = function (val, metaData, record, rowIndex, colIndex, store, view) {
-                console.debug(me.config.table_name, me.data, typeof me.data, val, metaData, record, rowIndex, colIndex, store, view);
                 if (typeof me.data === 'object') {
                     return me.data[val] || val;
                 }
-                console.debug('not loaded', me.config.table_name, val, metaData, record, rowIndex, colIndex, store, view);
                 me.lazyRendering.push({
                     val: val,
                     metaData: metaData,
