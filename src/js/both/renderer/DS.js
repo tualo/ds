@@ -30,7 +30,15 @@ Ext.define("Tualo.ds.renderer.DS", {
         */
         let fields = [this.config.idField, this.config.displayField];
         let response = await fetch('./ds/' + this.config.table_name + '/read?limit=1000000&fields=' + JSON.stringify(fields));
+        if (!response.ok) {
+            console.error('Error fetching data:', response.statusText);
+            return;
+        }
         let data = await response.json();
+        if (!data || !data.data) {
+            console.error('Invalid data format:', data);
+            return;
+        }
         let o = {};
         for (let i in data.data) {
             o[data.data[i][this.config.idField]] = data.data[i][this.config.displayField];

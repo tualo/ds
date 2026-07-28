@@ -36,6 +36,7 @@ class InstallMain extends CommandLineInstallSQL  implements ICommandline
         'main/500-ui/020-store/021.view_ds_field_store' => 'setup 020.view_ds_field_store ',
         'main/500-ui/030-column/030.view_ds_column' => 'setup 030.view_ds_column ',
         'main/500-ui/030-column/030.view_ds_columnfilters' => 'setup 030.view_ds_columnfilters ',
+        'main/500-ui/031-renderer/031.view_ds_renderer' => 'setup 031.view_ds_renderer',
         'main/500-ui/040-field/040.display' => 'setup 040.display ',
         'main/500-ui/040-field/041.combobox' => 'setup 041.combobox ',
         'main/500-ui/040-field/042.displaylink' => 'setup 042.displaylink ',
