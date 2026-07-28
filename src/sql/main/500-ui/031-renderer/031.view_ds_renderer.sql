@@ -20,7 +20,10 @@ select
         ')',char(59)
     ) js,
     `ds_dropdownfields`.`table_name`,
-    `ds_dropdownfields`.`name`
+    `ds_dropdownfields`.`name`,
+    `ds_dropdownfields`.`idfield`,
+    `ds_dropdownfields`.`displayfield`,
+    concat('ds_',`ds_dropdownfields`.`table_name`,'_',`ds_dropdownfields`.`name`) as `renderername`
 from
     `ds_dropdownfields`
     join `ds_column` 

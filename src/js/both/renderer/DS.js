@@ -28,7 +28,7 @@ Ext.define("Tualo.ds.renderer.DS", {
                 if (!me.isFetching) me.fetchData();
                 return 'not loaded'; // me.config.table_name;
             }
-        o['ds_' + this.config.table_name + '__' + this.config.name] = fn;
+        o['ds_' + this.config.table_name + '_' + this.config.name] = fn;
         Ext.merge(Ext.util.Format, o);
         // this.fetchData();
     },
