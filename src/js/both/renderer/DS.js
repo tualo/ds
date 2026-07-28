@@ -29,7 +29,7 @@ Ext.define("Tualo.ds.renderer.DS", {
                         ),
         */
         let fields = [this.config.idField, this.config.displayField];
-        let response = await fetch('./ds/' + this.config.table_name + '/read?limit=1000000&fields=' + fields.join(','));
+        let response = await fetch('./ds/' + this.config.table_name + '/read?limit=1000000&fields=' + JSON.stringify(fields));
         let data = await response.json();
         let o = {};
         for (let i in data.data) {
