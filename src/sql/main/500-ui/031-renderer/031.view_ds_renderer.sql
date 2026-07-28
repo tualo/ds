@@ -1,15 +1,5 @@
 delimiter ;
-/*
-Ext.define("Tualo.ds.DSRenderZ2", {
-    extend: 'Tualo.ds.DSRender',
-    singleton: true,
-    config: {
-        table_name: 'artikelgruppen',
-        idField: 'gruppen_id',
-        displayField: 'kurztext',
-    }
-});
-*/
+
 create or replace view view_ds_renderer as
 select 
 
@@ -26,7 +16,7 @@ select
                     "idField", lower(ds_dropdownfields.idfield),
                     "displayField", lower(ds_dropdownfields.displayfield)
                 )
-            )
+            ),
         ')',char(59)
     ) js,
     `ds_dropdownfields`.`table_name`,

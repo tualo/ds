@@ -22,8 +22,14 @@ Ext.define("Tualo.ds.renderer.DS", {
     },
     fetchData: async function () {
         let me = this;
-        let response = await fetch('./ds/' + this.config.table_name + '/read?limit=1000000');
-        // &fields=' + this.config.idField + ',' + this.config.displayField);
+
+        /*
+        "extraParams", json_object(
+                            "fields", concat('["',ds_dropdownfields.displayfield,'","',ds_dropdownfields.idfield,'"]')
+                        ),
+        */
+        let fields = [this.config.idField, this.config.displayField];
+        let response = await fetch('./ds/' + this.config.table_name + '/read?limit=1000000&fields=' + fields.join(','));
         let data = await response.json();
         let o = {};
         for (let i in data.data) {
