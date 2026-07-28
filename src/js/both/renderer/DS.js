@@ -14,8 +14,8 @@ Ext.define("Tualo.ds.renderer.DS", {
                 if (typeof me.data === 'object') {
                     return me.data[val] || val;
                 }
-                me.fetchData();
                 console.debug('not loaded', me.config.table_name, val, metaData, record, rowIndex, colIndex, store, view);
+                if (!me.isFetching) me.fetchData();
                 return 'not loaded'; // me.config.table_name;
             }
         o['ds_' + this.config.table_name + '__' + this.config.name] = fn;
