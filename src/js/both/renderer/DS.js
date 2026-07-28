@@ -14,11 +14,13 @@ Ext.define("Tualo.ds.renderer.DS", {
                 if (typeof me.data === 'object') {
                     return me.data[val] || val;
                 }
+                me.fetchData();
+                console.debug('not loaded', me.config.table_name, cell);
                 return 'not loaded'; // me.config.table_name;
             }
         o['ds_' + this.config.table_name + '__' + this.config.name] = fn;
         Ext.merge(Ext.util.Format, o);
-        this.fetchData();
+        // this.fetchData();
     },
     fetchData: async function () {
         let me = this;
