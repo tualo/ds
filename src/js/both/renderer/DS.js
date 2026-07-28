@@ -22,8 +22,16 @@ Ext.define("Tualo.ds.renderer.DS", {
         Ext.merge(Ext.util.Format, o);
         // this.fetchData();
     },
+    isFetching: false,
     fetchData: async function () {
         let me = this;
+
+        if (me.isFetching) {
+            console.debug('already fetching', me.config.table_name);
+            return;
+        }
+        me.isFetching = true;
+
 
         /*
         "extraParams", json_object(
