@@ -10,12 +10,12 @@ Ext.define("Tualo.ds.renderer.DS", {
         let me = this;
         this.initConfig(config);
         let o = {},
-            fn = function (val, record, dataIndex, cell, column) {
+            fn = function (val, metaData, record, rowIndex, colIndex, store, view) {
                 if (typeof me.data === 'object') {
                     return me.data[val] || val;
                 }
                 me.fetchData();
-                console.debug('not loaded', me.config.table_name, cell);
+                console.debug('not loaded', me.config.table_name, val, metaData, record, rowIndex, colIndex, store, view);
                 return 'not loaded'; // me.config.table_name;
             }
         o['ds_' + this.config.table_name + '__' + this.config.name] = fn;
