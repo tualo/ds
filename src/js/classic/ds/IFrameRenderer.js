@@ -78,6 +78,15 @@ Ext.define('Tualo.DS.IFrameRenderer', {
               let p = this.up('ds_iframe_renderer_panel');
               p.down('tualoiframe').getEl().dom.querySelector('iframe').contentWindow.print();
             }
+          },
+          {
+            xtype: 'button',
+            text: 'Speichern',
+            iconCls: 'fa fa-save',
+            handler: function (me) {
+              let p = this.up('ds_iframe_renderer_panel');
+              p.down('tualoiframe').getEl().dom.querySelector('iframe').contentWindow.save();
+            }
           }
         ]
       },
