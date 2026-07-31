@@ -7,6 +7,7 @@ Ext.define('Tualo.DataSets.grid.Controller', {
     },
 
     valueRenderer: function(value, metaData, record, rowIndex, colIndex, store,view) {
+        console.log('rendererValue ds/src/js/both/grid/Controller.js ',value, metaData, record, rowIndex, colIndex, store,view);
         if (value === null || value === undefined) return '';
         var headerCt = this.getView().getHeaderContainer(),
         column = headerCt.getHeaderAtIndex(colIndex);
@@ -16,6 +17,7 @@ Ext.define('Tualo.DataSets.grid.Controller', {
                 return fn.apply(this,[value, metaData, record, rowIndex, colIndex, store,view]);
             }
         }
+        console.log('rendererValue ds/src/js/both/grid/Controller.js column',);
         return value;
     },
 
