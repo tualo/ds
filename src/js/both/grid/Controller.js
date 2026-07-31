@@ -6,6 +6,7 @@ Ext.define('Tualo.DataSets.grid.Controller', {
         this.getView().getStore().load();
     },
 
+    /*
     valueRenderer: function(value, metaData, record, rowIndex, colIndex, store,view) {
         console.log('rendererValue ds/src/js/both/grid/Controller.js ',value, metaData, record, rowIndex, colIndex, store,view);
         if (value === null || value === undefined) return '';
@@ -20,5 +21,6 @@ Ext.define('Tualo.DataSets.grid.Controller', {
         console.log('rendererValue ds/src/js/both/grid/Controller.js column',);
         return value;
     },
+    */
 
 })
