@@ -5,6 +5,7 @@ Ext.define('Tualo.DataSets.grid.Controller', {
     onDropGrid: function(node, data, overModel, dropPosition, eOpts){
         if(Ext.getApplication().getDebug()===true)  console.log('onDropGrid',node, data, overModel, dropPosition, eOpts);
     },
+ 
 
     rendererStatus: function(value, metaData, record, rowIndex, colIndex, store) {
         var color = "grey";

@@ -1,16 +1,19 @@
+
 Ext.define('Tualo.DataSets.grid.Grid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.dsgrid',
 
     mixins: ['Tualo.DataSets.grid.mixins.Contextmenu'],
 
-
+ 
     getParent: function () {
         let parent = this.up('dsview_' + this.tablename);
         if (parent) return parent;
         return null;
     },
 
+ 
+    
     constructor: function (config) {
         let store = Ext.data.StoreManager.lookup('ds_' + this.tablename),
             storeConst = Ext.ClassManager.getByAlias('store.ds_' + this.tablename);

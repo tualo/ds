@@ -44,10 +44,11 @@ select
                     `ds_column_list_label`.`align`,
                     'start'
                 ),
-                'formatter',
+                'renderer','valueRenderer',
+                'ds_renderer',
                 if(
                     ifnull(`ds_column_list_label`.`renderer`, '') <> '',
-                    `ds_column_list_label`.`renderer`,
+                     `ds_column_list_label`.`renderer`,
                     ''
                 ),
                 'summaryType',

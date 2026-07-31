@@ -23,6 +23,13 @@ Ext.define('Tualo.cmp.cmp_ds.controller.mixins.Save', {
     },
     onSaveFailure: function(){
     },
+
+    valueRenderer: function(value, metaData, record, rowIndex, colIndex, store) {
+        console.log('rendererValue',value, metaData, record, rowIndex, colIndex, store);
+        if (value === null || value === undefined) return '';
+        return value;
+    },
+
     onProxyError: function(response){
         let model = this.getViewModel(),
             view = this.getView(),

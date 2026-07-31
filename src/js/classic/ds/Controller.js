@@ -18,8 +18,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
     },
-
-
+ 
 
 
     onExceptionStore: function (proxy, response, operation, eOpts) {

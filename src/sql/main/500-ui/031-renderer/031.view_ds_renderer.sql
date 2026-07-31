@@ -1,5 +1,7 @@
 delimiter ;
 
+
+
 create or replace view view_ds_renderer as
 select 
 
