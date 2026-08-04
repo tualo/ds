@@ -21,11 +21,12 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
             let me = this,
                 column = me.getColumns()[colIndex];
 
-            let fnName = 'ds_' + record.get('__table_name') + '_' + column.valueField;
+
+            let fnName = 'ds_' + record.get('__table_name') + '_' + column.idField;
             if (typeof Ext.util.Format[fnName] == 'function') {
                 return Ext.util.Format[fnName](value, metaData, record, rowIndex, colIndex, store, view);
             } else {
-                console.debug('renderer function not found', fnName);
+                console.debug('renderer function not found', fnName, column.idField, column.displayField);
                 return value;
             }
             // Ext.util.Format.ds_company_subtype_id
