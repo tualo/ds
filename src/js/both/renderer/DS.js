@@ -88,13 +88,15 @@ Ext.define("Tualo.ds.renderer.DS", {
             let cell = view.getCell(record, colIndex, true);
 
             if (!cell) {
-                console.error('cell not found', record, colIndex, view);
-                continue;
+                //                 console.error('cell not found', record, colIndex, view);
+                return;
+                //                continue;
             }
             let cellElement = cell.dom.querySelector('#' + item.id);
             if (!cellElement) {
-                console.error('cell element not found', record, colIndex, view, cell);
-                continue;
+                // console.error('cell element not found', record, colIndex, view, cell);
+                return;
+                //                continue;
             }
             cellElement.innerText = me.data[val] || val;
 
