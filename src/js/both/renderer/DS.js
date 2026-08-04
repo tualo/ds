@@ -87,6 +87,7 @@ Ext.define("Tualo.ds.renderer.DS", {
             let view = item.view
             let cell = view.getCell(record, colIndex, true);
 
+            console.log('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
             if (!cell) {
                 //                 console.error('cell not found', record, colIndex, view);
                 return;
@@ -100,9 +101,9 @@ Ext.define("Tualo.ds.renderer.DS", {
             }
             cellElement.innerText = me.data[val] || val;
 
+
             /*
             // cell.dom.innerText = me.data[val] || val;
-            console.log('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
             window.cellTest = {
                 val: val,
                 metaData: metaData,
