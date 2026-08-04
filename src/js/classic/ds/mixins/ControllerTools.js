@@ -30,6 +30,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
             store.rejectChanges();
         }
     },
+    // ainstieg vom btutton click
     append: function () {
         let model = this.getViewModel(),
             view = this.getView(),
@@ -49,6 +50,15 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
         if (referencedList == true) {
             if (Ext.isEmpty(referencedRecord)) {
             } else {
+                if (referencedRecord.phantom) {
+                    Ext.toast({
+                        html: 'Bitte speichern Sie zuerst den übergeordneten Datensatz.',
+                        title: 'Fehler',
+                        width: 200,
+                        align: 't'
+                    });
+                    return false;
+                }
                 for (var ref in view.referenced) {
                     if (typeof view.referenced[ref] == 'string')
                         values[ref.toLowerCase()] = referencedRecord.get(view.referenced[ref].toLowerCase());
