@@ -87,7 +87,7 @@ Ext.define("Tualo.ds.renderer.DS", {
 
             console.debug('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
             // window.cell = cell;
-            cell.setValue(me.data[val] || val);
+            // cell.setValue(me.data[val] || val);
             // call.setHtml(me.data[val] || val);
         }
     }
