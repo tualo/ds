@@ -19,6 +19,16 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
         */
         try {
 
+            let fnName = 'ds_' + record.get('__table_name') + '_' + this.idField;
+            if (typeof Ext.util.Format[fnName] == 'function') {
+                return Ext.util.Format[fnName](value, metaData, record, rowIndex, colIndex, store, view);
+            } else {
+                console.debug('renderer function not found', fnName);
+                return value;
+            }
+            // Ext.util.Format.ds_company_subtype_id
+            /*
+
             console.debug('DS Column Renderer', value, metaData, record, rowIndex, colIndex, store, view);
             let me = this,
                 column = me.getColumns()[colIndex],
@@ -50,6 +60,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
                     metaData.tdStyle = "color: rgb(200,30,30)";
                 }
             }
+            */
         } catch (e) {
             console.debug(e)
         }
