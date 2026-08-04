@@ -18,8 +18,10 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
         }
         */
         try {
+            let me = this,
+                column = me.getColumns()[colIndex];
 
-            let fnName = 'ds_' + record.get('__table_name') + '_' + this.idField;
+            let fnName = 'ds_' + record.get('__table_name') + '_' + column.valueField;
             if (typeof Ext.util.Format[fnName] == 'function') {
                 return Ext.util.Format[fnName](value, metaData, record, rowIndex, colIndex, store, view);
             } else {
