@@ -14,6 +14,9 @@ Ext.define("Tualo.ds.renderer.DS", {
                 if (typeof me.data === 'object') {
                     return me.data[val] || val;
                 }
+                if (typeof record === 'undefined') {
+                    console.error('record is undefined, dont use it as formatter, use it as renderer');
+                }
                 me.lazyRendering.push({
                     val: val,
                     metaData: metaData,
@@ -28,7 +31,6 @@ Ext.define("Tualo.ds.renderer.DS", {
             }
         o['ds_' + this.config.table_name + '_' + this.config.name] = fn;
         Ext.merge(Ext.util.Format, o);
-        // this.fetchData();
     },
     lazyRendering: [],
     isFetching: false,
@@ -80,8 +82,9 @@ Ext.define("Tualo.ds.renderer.DS", {
             let rowIndex = item.rowIndex;
             let colIndex = item.colIndex;
             let store = item.store;
-            let view = item.view;
-            view.getCell(record, colIndex, true).setHtml(me.data[val] || val);
+            let view = item.view
+            let cell = view.getCell(record, colIndex, true);
+            call.setHtml(me.data[val] || val);
         }
     }
 

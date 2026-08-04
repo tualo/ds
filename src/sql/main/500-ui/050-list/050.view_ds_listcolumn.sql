@@ -10,19 +10,37 @@ delimiter;
  
  
  */
-alter table ds_column_list_label add if not exists width integer default 0;
+alter table
+    ds_column_list_label
+add
+    if not exists width integer default 0;
 
-alter table ds_column_list_label add if not exists config json default '{}';
-update ds_column_list_label set config= '{}' where config is null;
+alter table
+    ds_column_list_label
+add
+    if not exists config json default '{}';
+
+update
+    ds_column_list_label
+set
+    config = '{}'
+where
+    config is null;
 
 create
 or replace view view_ds_listcolumn as
 select
     json_arrayagg(
-        distinct 
-
-        JSON_MERGE(
-            ifnull(ds_column_list_label.config,json_object()),
+        distinct JSON_MERGE(
+            ifnull(ds_column_list_label.config, json_object()),
+            if (
+                ifnull(`ds_column_list_label`.`renderer`, '') <> '',
+                JSON_OBJECT(
+                    'renderer',
+                    `ds_column_list_label`.`renderer`
+                ),
+                JSON_OBJECT()
+            ),
             JSON_OBJECT(
                 'text',
                 `ds_column_list_label`.`label`,
@@ -37,26 +55,28 @@ select
                     /*`ds_column`.`table_name`,'__',*/
                     `ds_column`.`column_name`
                 ),
-                'groupable', 1=1,
+                'groupable',
+                1 = 1,
                 'align',
                 if(
                     ifnull(`ds_column_list_label`.`align`, '') <> '',
                     `ds_column_list_label`.`align`,
                     'start'
                 ),
-                'formatter', 
-                if (ifnull(`ds_column_list_label`.`renderer`, '') <> '',
-                   `ds_column_list_label`.`renderer`,
+                'formatter',
+                if (
+                    ifnull(`ds_column_list_label`.`formatter`, '') <> '',
+                    `ds_column_list_label`.`formatter`,
                     null
                 ),
                 /*
-                'ds_renderer',
-                if(
-                    ifnull(`ds_column_list_label`.`renderer`, '') <> '',
-                     `ds_column_list_label`.`renderer`,
-                    ''
-                ),
-                */
+                 'ds_renderer',
+                 if(
+                 ifnull(`ds_column_list_label`.`renderer`, '') <> '',
+                 `ds_column_list_label`.`renderer`,
+                 ''
+                 ),
+                 */
                 'summaryType',
                 if(
                     ifnull(`ds_column_list_label`.`summarytype`, '') <> '',
@@ -104,18 +124,16 @@ select
                         ds_column_list_label.editor
                     )
                 ),
-
                 if(
                     ds_column_list_label.width > 0,
                     'width',
                     'flex'
-                ) , 
+                ),
                 if(
                     ds_column_list_label.width > 0,
                     ds_column_list_label.width,
                     ds_column_list_label.flex
                 ),
-
                 'filter',
                 if (
                     ds_column_list_label.listfiltertype <> '',
@@ -130,9 +148,12 @@ select
                             'date',
                             'dateFormat',
                             'Y-m-d',
-                            'pickerDefaults', JSON_OBJECT(
-                                'xtype', 'datepicker',
-                                'border', 0,
+                            'pickerDefaults',
+                            JSON_OBJECT(
+                                'xtype',
+                                'datepicker',
+                                'border',
+                                0,
                                 'format',
                                 'Y-m-d'
                             )
@@ -173,7 +194,6 @@ select
         )
         order by
             ds_column_list_label.position
-            
     ) js,
     `ds`.`table_name`,
     concat(
@@ -184,22 +204,19 @@ select
         ']'
     ) `requiresJS`
 from
-
-        `ds`
-        join 
-        `ds_column` on `ds`.`table_name` = `ds_column`.`table_name`
-            and `ds_column`.`existsreal` = 1
-            and `ds`.`title` <> ''
-        join  `ds_column_list_label` on (
-            `ds_column`.`table_name`,
-            `ds_column`.`column_name`
-        ) = (
-            `ds_column_list_label`.`table_name`,
-            `ds_column_list_label`.`column_name`
-        )
-        and `ds_column_list_label`.`active` = 1
-        left join 
-            view_readtable_all_types_classic types on types.type = `ds_column_list_label`.`xtype`
-            and typeclass = 'widget'
+    `ds`
+    join `ds_column` on `ds`.`table_name` = `ds_column`.`table_name`
+    and `ds_column`.`existsreal` = 1
+    and `ds`.`title` <> ''
+    join `ds_column_list_label` on (
+        `ds_column`.`table_name`,
+        `ds_column`.`column_name`
+    ) = (
+        `ds_column_list_label`.`table_name`,
+        `ds_column_list_label`.`column_name`
+    )
+    and `ds_column_list_label`.`active` = 1
+    left join view_readtable_all_types_classic types on types.type = `ds_column_list_label`.`xtype`
+    and typeclass = 'widget'
 group by
     `ds`.`table_name`;
