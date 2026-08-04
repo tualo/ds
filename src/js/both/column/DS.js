@@ -19,6 +19,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
         */
         try {
 
+            console.debug('DS Column Renderer', value, metaData, record, rowIndex, colIndex, store, view);
             let me = this,
                 column = me.getColumns()[colIndex],
                 configStore = column.configStore,
