@@ -18,6 +18,9 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
         }
         */
         try {
+
+
+            /*
             let me = this,
                 column = me.getColumns()[colIndex];
 
@@ -30,7 +33,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
                 return value;
             }
             // Ext.util.Format.ds_company_subtype_id
-            /*
+            */
 
             console.debug('DS Column Renderer', value, metaData, record, rowIndex, colIndex, store, view);
             let me = this,
@@ -63,7 +66,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
                     metaData.tdStyle = "color: rgb(200,30,30)";
                 }
             }
-            */
+
         } catch (e) {
             console.debug(e)
         }
