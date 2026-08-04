@@ -29,5 +29,6 @@ require_once "Routes/Breadcrumb.php";
 require_once "Routes/File.php";
 require_once "Routes/Files.php";
 require_once "Routes/XTypes.php";
+require_once "Routes/import/Fileimport.php";
 
 require_once "Commandline/SystemChecks/DSColumnCheck.php";

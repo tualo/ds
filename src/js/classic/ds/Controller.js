@@ -18,7 +18,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
     },
- 
+
 
 
     onExceptionStore: function (proxy, response, operation, eOpts) {
@@ -135,6 +135,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         let store = this.getStore(),
             list = this.getView().getComponent('list');
 
+        console.log('initEvents', store, list);
         store.on('datachanged', this.onDataChanged, this);
         store.on('beforeload', this.onBeforeStoreLoad, this);
         store.on('beforesync', this.onBeforeStoreSync, this);
