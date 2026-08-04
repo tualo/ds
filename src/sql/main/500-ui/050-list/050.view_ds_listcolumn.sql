@@ -1,5 +1,3 @@
-delimiter;
-
 /*
  update ds_column_list_label set xtype='booleancolumn' where (table_name,column_name) in (
  select table_name,column_name from ds_column where   data_type='tinyint'
@@ -26,6 +24,13 @@ set
     config = '{}'
 where
     config is null;
+
+
+
+
+delimiter;
+
+call ds_listcolumn_formatter();
 
 create
 or replace view view_ds_listcolumn as
