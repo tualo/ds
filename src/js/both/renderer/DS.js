@@ -17,6 +17,7 @@ Ext.define("Tualo.ds.renderer.DS", {
                 if (typeof record === 'undefined') {
                     console.error('record is undefined, dont use it as formatter, use it as renderer');
                 }
+                let id = Ext.id();
                 me.lazyRendering.push({
                     val: val,
                     metaData: metaData,
@@ -24,10 +25,11 @@ Ext.define("Tualo.ds.renderer.DS", {
                     rowIndex: rowIndex,
                     colIndex: colIndex,
                     store: store,
-                    view: view
+                    view: view,
+                    id: id
                 });
                 if (!me.isFetching) me.fetchData();
-                return 'not loaded'; // me.config.table_name;
+                return '<span id="' + id + '">not loaded</span>'; // me.config.table_name;
             }
         o['ds_' + this.config.table_name + '_' + this.config.name] = fn;
         Ext.merge(Ext.util.Format, o);
@@ -85,6 +87,18 @@ Ext.define("Tualo.ds.renderer.DS", {
             let view = item.view
             let cell = view.getCell(record, colIndex, true);
 
+            if (!cell) {
+                console.error('cell not found', record, colIndex, view);
+                continue;
+            }
+            let cellElement = cell.dom.querySelector('#' + item.id);
+            if (!cellElement) {
+                console.error('cell element not found', record, colIndex, view, cell);
+                continue;
+            }
+            cellElement.innerText = me.data[val] || val;
+
+            /*
             // cell.dom.innerText = me.data[val] || val;
             console.log('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
             window.cellTest = {
@@ -97,6 +111,7 @@ Ext.define("Tualo.ds.renderer.DS", {
                 view: view,
                 cell: cell
             };
+            */
             // cell.setValue(me.data[val] || val);
             // cell.setHtml(me.data[val] || val);
         }
