@@ -89,13 +89,13 @@ Ext.define("Tualo.ds.renderer.DS", {
 
             console.log('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
             if (!cell) {
-                console.error('cell not found', record, colIndex, view);
+                console.error('cell not found', item, record, colIndex, view);
                 return;
                 //                continue;
             }
             let cellElement = cell.dom.querySelector('#' + item.id);
             if (!cellElement) {
-                console.error('cell element not found', record, colIndex, view, cell);
+                console.error('cell element not found', item, record, colIndex, view, cell);
                 return;
                 //                continue;
             }
