@@ -56,8 +56,16 @@ Ext.define('Tualo.DS.panel.Controller', {
                         handler: function () {
                             let tpl = new Ext.XTemplate(element.redirectTo)
                             let record = me.getViewModel().get('record');
-                            window.me = me;
-                            var data = Ext.apply({}, record.data, record.getAssociatedData());
+                            let data = {}
+                            if (!Ext.isEmpty(record)) {
+                                data = Ext.apply({}, record.data, record.getAssociatedData());
+                            }
+                            try {
+                                let parentRecord = me.getReferencedRecord();
+                                if (!Ext.isEmpty(parentRecord)) {
+                                    data.parent = Ext.apply({}, parentRecord.data, parentRecord.getAssociatedData());
+                                }
+                            } catch (e) { }
                             Ext.getApplication().redirectTo(tpl.apply(data));
                         },
                         tooltip: element.text
