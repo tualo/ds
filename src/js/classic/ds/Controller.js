@@ -60,12 +60,14 @@ Ext.define('Tualo.DS.panel.Controller', {
                             if (!Ext.isEmpty(record)) {
                                 data = Ext.apply({}, record.data, record.getAssociatedData());
                             }
+                            console.log('redirectTo', tpl.apply(data));
                             try {
                                 let parentRecord = me.getReferencedRecord();
                                 if (!Ext.isEmpty(parentRecord)) {
                                     data.parent = Ext.apply({}, parentRecord.data, parentRecord.getAssociatedData());
                                 }
                             } catch (e) { }
+                            console.log('redirectTo', tpl.apply(data));
                             Ext.getApplication().redirectTo(tpl.apply(data));
                         },
                         tooltip: element.text
