@@ -70,8 +70,11 @@ Ext.define('Tualo.DS.panel.Controller', {
                                             data['parent_' + key] = x[key];
                                         }
                                     }
+
                                 }
                             } catch (e) { }
+
+                            Ext.getApplication().currentView = me.getView();
                             console.log('redirectTo', tpl.apply(data));
                             Ext.getApplication().redirectTo(tpl.apply(data));
                         },
