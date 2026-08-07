@@ -64,7 +64,12 @@ Ext.define('Tualo.DS.panel.Controller', {
                             try {
                                 let parentRecord = me.getReferencedRecord();
                                 if (!Ext.isEmpty(parentRecord)) {
-                                    data.parent = Ext.apply({}, parentRecord.data, parentRecord.getAssociatedData());
+                                    let x = Ext.apply({}, parentRecord.data, parentRecord.getAssociatedData());
+                                    for (var key in x) {
+                                        if (typeof data['parent_' + key] == 'undefined') {
+                                            data['parent_' + key] = x[key];
+                                        }
+                                    }
                                 }
                             } catch (e) { }
                             console.log('redirectTo', tpl.apply(data));
