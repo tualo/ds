@@ -56,6 +56,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                         handler: function () {
                             let tpl = new Ext.XTemplate(element.redirectTo)
                             let record = me.getViewModel().get('record');
+                            window.me = me;
                             var data = Ext.apply({}, record.data, record.getAssociatedData());
                             Ext.getApplication().redirectTo(tpl.apply(data));
                         },
