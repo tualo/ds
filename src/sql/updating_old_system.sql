@@ -21,5 +21,4 @@ update ds set alternativeformxtype='' where alternativeformxtype in ('0','1');
 update ds_column set column_name = lower(column_name) ;
 update ds_column_list_label set column_name = lower(column_name) ;
 update ds_column_form_label set column_name = lower(column_name) ;
-update ds_column_list_label set renderer='' where renderer='Tualo.renderer.CSSMetaRenderer';
 
