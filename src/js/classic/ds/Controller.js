@@ -781,6 +781,33 @@ Ext.define('Tualo.DS.panel.Controller', {
         });
     },
 
+    cloneRecord: function (item, evt) {
+        var model = this.getViewModel(),
+            tablename = model.get('tablename'),
+            mytablename = tablename,
+            view = this.getView(),
+            referencedList = this.referencedList,
+            referencedRecord = this.getReferencedRecord(),
+
+            // firstletter uppercase
+            mytablename = model.get('table_name'),
+            tablenamecase = mytablename.toLocaleUpperCase().substring(0, 1) + mytablename.toLowerCase().slice(1),
+            dsname = model.get('table_name'),
+
+            store = model.getStore('list'),
+            fields = store.getModel().getFields(),
+            values = {};
+
+
+        for (i = 0; i < fields.length; i++) {
+            if (fields[i].name.indexOf('__') > 0)
+                values[fields[i].name] = model.get('record').get(fields[i].name);
+        }
+        return Ext.create('Tualo.DataSets.model.' + tablenamecase, values);
+
+    },
+
+
     onProxyError: function (response) {
         let form = this.getView().getComponent('form'),
             showToast = true;
