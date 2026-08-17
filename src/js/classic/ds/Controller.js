@@ -796,8 +796,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
             store = model.getStore('list'),
             fields = useRecord.getFields(),
-            values = {},
-            newRecord = this.append();
+            values = {};
 
 
 
@@ -805,8 +804,10 @@ Ext.define('Tualo.DS.panel.Controller', {
         for (i = 0; i < fields.length; i++) {
             console.log('cloneRecord', fields[i].name, model.get('record').get(fields[i].name));
             if (fields[i].name.indexOf('__') != 0)
-                newRecord.set(fields[i].name, model.get('record').get(fields[i].name));
+                values[fields[i].name] = model.get('record').get(fields[i].name);
         }
+        newRecord = this.append();
+        newRecord.set(values);
 
 
         return newRecord;
