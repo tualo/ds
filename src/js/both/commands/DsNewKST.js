@@ -41,19 +41,19 @@ Ext.define('Ext.cmp.cmp_ds.views.DsNewKST', {
       type: newrecord.get('__table_name') + '_store'
     });
     store.setFilters({
-      property:  'kundennummer',
+      property: 'kundennummer',
       operator: 'eq',
-      value: 'kundennummer'
+      value: newrecord.get('kundennummer')
     });
     store.load({
       callback: function () {
         var r = store.getRange();
         var m = 0;
         r.forEach(function (element) {
-          m = Math.max(m, element.get( 'kostenstelle'));
+          m = Math.max(m, element.get('kostenstelle'));
         });
         m++;
-        newrecord.set( 'kostenstelle', m);
+        newrecord.set('kostenstelle', m);
       }
     });
     return null;
