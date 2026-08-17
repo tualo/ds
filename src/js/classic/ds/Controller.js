@@ -782,8 +782,31 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
 
     cloneRecord: function (item, evt) {
-        let record = this.append();
-        return record;
+        var model = this.getViewModel(),
+            tablename = model.get('tablename'),
+            mytablename = tablename,
+            view = this.getView(),
+            referencedList = this.referencedList,
+            useRecord = model.get('record'),
+
+            // firstletter uppercase
+            mytablename = model.get('table_name'),
+            tablenamecase = mytablename.toLocaleUpperCase().substring(0, 1) + mytablename.toLowerCase().slice(1),
+            dsname = model.get('table_name'),
+
+            store = model.getStore('list'),
+            fields = useRecord.getFields(),
+            values = {},
+            newRecord = this.append();
+
+
+        for (i = 0; i < fields.length; i++) {
+            if (fields[i].name.indexOf('__') != 0)
+                newRecord.set(fields[i].name, model.get('record').get(fields[i].name));
+        }
+
+
+        return newRecord;
 
     },
 
