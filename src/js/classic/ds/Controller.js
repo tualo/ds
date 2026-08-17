@@ -787,7 +787,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             mytablename = tablename,
             view = this.getView(),
             referencedList = this.referencedList,
-            referencedRecord = this.getReferencedRecord(),
+            useRecord = model.get('record'),
 
             // firstletter uppercase
             mytablename = model.get('table_name'),
@@ -795,7 +795,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             dsname = model.get('table_name'),
 
             store = model.getStore('list'),
-            fields = referencedRecord.getFields(),
+            fields = useRecord.getFields(),
             values = {};
 
 
