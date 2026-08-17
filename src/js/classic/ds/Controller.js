@@ -795,7 +795,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             dsname = model.get('table_name'),
 
             store = model.getStore('list'),
-            fields = store.getModel().getFields(),
+            fields = referencedRecord.getFields(),
             values = {};
 
 
