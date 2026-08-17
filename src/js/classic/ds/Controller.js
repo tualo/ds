@@ -800,7 +800,10 @@ Ext.define('Tualo.DS.panel.Controller', {
             newRecord = this.append();
 
 
+
+
         for (i = 0; i < fields.length; i++) {
+            console.log('cloneRecord', fields[i].name, model.get('record').get(fields[i].name));
             if (fields[i].name.indexOf('__') != 0)
                 newRecord.set(fields[i].name, model.get('record').get(fields[i].name));
         }
