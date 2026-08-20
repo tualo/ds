@@ -4,8 +4,13 @@ delimiter //
 
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_checks`( IN  request JSON )
 BEGIN 
-    DECLARE msg varchar(255);
+    DECLARE msg LONGTEXT;
 
+
+    if @debug=1 then
+        SIGNAL SQLSTATE '01000'
+        SET MESSAGE_TEXT = 'dsx_rest_api_set_checks start', MYSQL_ERRNO = 1001;
+    end if;
 
     IF (JSON_VALID(request)=0) THEN 
         SET msg = 'input json invalid';
@@ -100,7 +105,7 @@ END //
 CREATE OR REPLACE FUNCTION `dsx_rest_api_set_use_table_name`( request JSON ) RETURNS varchar(128)
 BEGIN
     DECLARE use_table_name varchar(128);
-    DECLARE msg varchar(255);
+    DECLARE msg LONGTEXT;
 
     SET use_table_name = JSON_VALUE(request,'$.tablename');
     select if(ifnull(writetable,'') = '',use_table_name,writetable)  into use_table_name from ds where table_name = use_table_name and existsreal=1;
@@ -598,6 +603,11 @@ BEGIN
     DECLARE update_statement_fields LONGTEXT;
     DECLARE sql_command LONGTEXT;
     DECLARE msg LONGTEXT;
+
+    if @debug=1 then
+        SIGNAL SQLSTATE '01000'
+        SET MESSAGE_TEXT = 'dsx_rest_api_set_checks start', MYSQL_ERRNO = 1001;
+    end if;
 
 
     call dsx_rest_api_set_checks(request);
