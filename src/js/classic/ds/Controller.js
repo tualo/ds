@@ -160,6 +160,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         store.on('datachanged', this.onDataChanged, this);
         store.on('beforeload', this.onBeforeStoreLoad, this);
         store.on('beforesync', this.onBeforeStoreSync, this);
+        store.on('write', this.onSyncStore, this);
         store.on('load', this.onStoreLoad, this);
 
         list.on('selectionchange', c.onListSelectionChange, this);
@@ -324,8 +325,11 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
 
     onSyncStore: function () {
+        let me = this,
+            store = me.getStore();
         console.debug('onSyncStore', this.alias, arguments);
-        model.set('isNew', false);
+        me.getViewModel().set('isNew', false);
+        me.getViewModel().set('saving', false);
         return true;
     },
 
