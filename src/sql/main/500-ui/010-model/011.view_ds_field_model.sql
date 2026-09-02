@@ -1,5 +1,6 @@
 delimiter ;
 
+
 CREATE OR REPLACE VIEW `view_ds_field_model` AS
 with name as (
     select
@@ -62,6 +63,7 @@ json_object(
                         `ds_column_forcetype_idfield`.`fieldtype`,
                         ifnull(`ds_db_types_fieldtype_idfield`.`fieldtype`, 'string')
                     )
+
                 )
             )
         ),
@@ -139,3 +141,6 @@ from
     definition
 
 ;
+
+
+
