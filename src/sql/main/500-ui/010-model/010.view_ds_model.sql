@@ -172,7 +172,7 @@ OR REPLACE VIEW `view_ds_model` AS with prepared_data as (
                             `ds`.`table_name` = `ds_column`.`table_name`
                             and `ds_column`.`existsreal` = 1
                         )
-                        left join `view_readtable_all_types` on view_readtable_all_types.xtype_long_classic = concat(
+                        join `view_readtable_all_types` on view_readtable_all_types.xtype_long_classic = concat(
                             'data.field.',
                             if(
                                 `ds_column`.`fieldtype` <> '',

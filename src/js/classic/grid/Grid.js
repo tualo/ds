@@ -5,15 +5,15 @@ Ext.define('Tualo.DataSets.grid.Grid', {
 
     mixins: ['Tualo.DataSets.grid.mixins.Contextmenu'],
 
- 
+
     getParent: function () {
         let parent = this.up('dsview_' + this.tablename);
         if (parent) return parent;
         return null;
     },
 
- 
-    
+
+
     constructor: function (config) {
         let store = Ext.data.StoreManager.lookup('ds_' + this.tablename),
             storeConst = Ext.ClassManager.getByAlias('store.ds_' + this.tablename);
@@ -34,7 +34,7 @@ Ext.define('Tualo.DataSets.grid.Grid', {
         var me = this;
         me.callParent(arguments);
         me.getView().getRowClass = function (record, rowIndex, rowParams, store) {
-            // console.log('getRowClass',record, rowIndex, rowParams, store);
+            console.log('getRowClass', record, rowIndex, rowParams, store);
             if ((rowIndex % 2 == 0) && (typeof record.get("_rowclass_even") == "string")) {
                 return record.get("_rowclass_even");
             } else if ((rowIndex % 2 == 1) && (typeof record.get("_rowclass_odd") == "string")) {
