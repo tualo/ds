@@ -129,5 +129,8 @@ class Install extends CommandLineInstallSQL  implements ICommandline
         'install/ds/view_ds_store_sort_directions.ds' => 'setup view_ds_store_sort_directions.ds',
 
 
+
+        'install/ds_coloring_formulas' => 'setup ds_coloring_formulas',
+        'install/ds/ds_coloring_formulas.ds' => 'setup ds_coloring_formulas.ds',
     ];
 }

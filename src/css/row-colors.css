@@ -1,5 +1,62 @@
-.row-color-cobaltgreen_test:not(.x-grid-cell-selected):not(.x-grid-item-focused):not(.x-grid-item-over) .x-grid-cell {
-    background-color: rgba(61, 145, 64, 0.5);
+.row-color-cobaltgreen_test {
+    --tualo-row-background: rgba(61, 145, 64, 0.5);
+    --tualo-row-foreground: #102912;
+    --tualo-row-hover-background: #256b2c;
+    --tualo-row-hover-foreground: #ffffff;
+}
+
+/*
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+*/
+.blink_me {
+
+    /* am tr ein zum tr positioniertes reletives div in rot*/
+    /* über before eingefügt */
+
+    td:first-child::before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        border: 2px solid red;
+        animation: blinker 1s linear infinite;
+        box-shadow: 0 0 10px red;
+        z-index: 0;
+        animation: blinker 1s linear infinite;
+    }
+
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+
+.row-color-notdefined .x-grid-cell:not(.x-grid-cell-selected) {
+    opacity: 0.7;
+    transition: background-color 160ms ease, color 160ms ease;
+}
+
+.row-color-cobaltgreen_test .x-grid-cell:not(.x-grid-cell-selected) {
+    color: var(--tualo-row-foreground);
+    background-color: var(--tualo-row-background);
+    transition: background-color 160ms ease, color 160ms ease;
+}
+
+.row-color-cobaltgreen_test .x-grid-cell:not(.x-grid-cell-selected) a {
+    color: inherit;
+}
+
+tr.row-color-cobaltgreen_test .x-grid-row .x-grid-cell.x-grid-cell-selected {
+    color: var(--tualo-row-hover-foreground);
+    background-color: var(--tualo-row-hover-background);
 }
 
 
