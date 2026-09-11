@@ -175,6 +175,9 @@ class DSTable
     private function dsx_rest_api_set(): mixed
     {
 
+        // create table dsx_logs (id varchar(36) primary key, createts datetime, data text);
+        // $this->db->direct('insert into dsx_logs (id, createts, data) values (uuid(), now(), @request)', []);
+
         $this->db->direct('call dsx_rest_api_set(@request,@result)');
         $this->readWarnings();
         $this->readMoreResults();

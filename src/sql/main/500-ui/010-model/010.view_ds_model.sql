@@ -271,21 +271,7 @@ select
                                             false
                                         )
                                     ),
-                                    'type',
-                                    if(
-                                        `prepared_data`.`fieldtype` <> '',
-                                        `prepared_data`.`fieldtype`,
-                                        if(
-                                            `prepared_data`.`column_type` = 'bigint(4)'
-                                            or `prepared_data`.`column_type` = 'int(4)'
-                                            or `prepared_data`.`column_type` = 'tinyint(4)',
-                                            'boolean',
-                                            ifnull(
-                                                `prepared_data`.`fieldtype`,
-                                                ifnull(`prepared_data`.`fieldtype`, 'string')
-                                            )
-                                        )
-                                    )
+                                    'type', `prepared_data`.`type`
                                 ),
                                 if(
                                     (

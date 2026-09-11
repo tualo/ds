@@ -115,5 +115,61 @@ class File extends \Tualo\Office\Basic\RouteWrapper
                 ]
             ]
         ], self::scope());
+
+
+
+
+        Route::add('/dsfile/inlinebase64/(?P<tablename>\w+)/(?P<id>\w+)', function ($matches) {
+            App::contenttype('application/json');
+
+            $db = App::get('session')->getDB();
+            $session = App::get('session');
+            $tablename = $matches['tablename'];
+            $id = $matches['id'];
+            try {
+
+                $direct = true;
+                $base64 = true;
+                $maxwidth = -1;
+                $maxheight = -1;
+                if (isset($_REQUEST['maxwidth'])) {
+                    $maxwidth = intval($_REQUEST['maxwidth']);
+                }
+                if (isset($_REQUEST['maxheight'])) {
+                    $maxheight = intval($_REQUEST['maxheight']);
+                }
+
+                $result = DSFileHelper::getFile($db, $tablename, $id, $direct, $base64, $maxwidth, $maxheight);
+                foreach ($result as $k => $v) {
+                    App::result($k, $v);
+                }
+                if ($result['success'] == true) {
+                    App::contenttype('html/text');
+                    App::body($result['data']);
+                }
+            } catch (Exception $e) {
+                App::result('msg', $e->getMessage());
+            }
+        }, array('get', 'post'), true, [
+            'errorOnUnexpected' => true,
+            'errorOnInvalid' => true,
+            'fields' =>
+            [
+                'tablename' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'max_length' => 128,
+                    'pattern' => '/^[0-9a-zA-ZäöüÄÖÜß\s\-]+$/u',  // nur Buchstaben, Ziffern, Leerzeichen, Bindestriche
+                    'min' => 0,
+                    'max' => 10000000
+                ],
+                'id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                    'min' => 0,
+                    'max' => 1000000000
+                ]
+            ]
+        ], self::scope());
     }
 }
