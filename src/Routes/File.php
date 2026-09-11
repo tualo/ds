@@ -155,20 +155,7 @@ class File extends \Tualo\Office\Basic\RouteWrapper
             'errorOnInvalid' => true,
             'fields' =>
             [
-                'tablename' => [
-                    'required' => true,
-                    'type' => 'string',
-                    'max_length' => 128,
-                    'pattern' => '/^[0-9a-zA-ZäöüÄÖÜß\s\-_]+$/u',  // nur Buchstaben, Ziffern, Leerzeichen, Bindestriche
-                    'min' => 0,
-                    'max' => 10000000
-                ],
-                'id' => [
-                    'required' => true,
-                    'type' => 'integer',
-                    'min' => 0,
-                    'max' => 1000000000
-                ],
+
                 'maxwidth' => [
                     'required' => false,
                     'type' => 'integer',
