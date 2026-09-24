@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `ds_virtual_columns` (
   `type` varchar(128) NOT NULL,
   PRIMARY KEY (`table_name`,`column_name`),
   CONSTRAINT `fk_ds_virtual_columns_ds` FOREIGN KEY (`table_name`) REFERENCES `ds` (`table_name`) ON DELETE CASCADE ON UPDATE CASCADE
-);
+) ;
 
 call addfieldifnotexists(
     'ds',

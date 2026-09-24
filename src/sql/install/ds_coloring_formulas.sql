@@ -13,5 +13,8 @@ create table if not exists ds_coloring_formulas (
     position int default 0,
     css_class text not null,
     constraint `fk_ds_coloring_formulas_ds_table` foreign key (`table_name`) references `ds` (`table_name`) on delete cascade on update cascade
-);
+) ;
 
+
+
+ 
