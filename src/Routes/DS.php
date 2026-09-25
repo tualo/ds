@@ -248,7 +248,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
 
                     App::result('temporary_table_data',  $db->direct('select * from ' . $result['temporary_table_name']));
                     App::result('_request',  $db->direct('select @request r', [], 'r'));
-                    App::result('result',  $db->direct('select @result r', [], 'r'));
+                    App::result('_result',  $db->direct('select @result r', [], 'r'));
                 } else {
 
                     App::result('success', false);
