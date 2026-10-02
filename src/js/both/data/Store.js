@@ -89,10 +89,10 @@ Ext.define("Tualo.DataSets.data.Store", {
       }
     }, config);
     */
-    console.log('STORECONFIG', config);
+    // console.log('STORECONFIG', config);
     this.callParent([config]);
 
-    console.log('getExtraParams', this.getProxy().getExtraParams());
+    // console.log('getExtraParams', this.getProxy().getExtraParams());
     /*
     this.proxy.setTimeout(6000000);
     this.proxy.tablename = this.tablename;
