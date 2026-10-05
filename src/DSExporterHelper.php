@@ -460,7 +460,7 @@ class DSExporterHelper
 
                     $row[] = '"' . $ivalue . '"';
                 } else {
-                    $row[] = "";
+                    // $row[] = "";
                 }
             }
             $data[] = $row;
