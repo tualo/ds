@@ -236,6 +236,9 @@ class DSExporterHelper
         } else if ($fn == 'DIF') {
             $dateiname .= '.dif';
             DSExporterHelper::exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', '\t', '');
+        } else if ($fn == 'DIF_NO_HEADER') {
+            $dateiname .= '.dif';
+            DSExporterHelper::exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', '\t', '', true);
         } else {
             $dateiname .= '.csv';
             DSExporterHelper::exportDataToXSLX_CsvWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns);
@@ -412,7 +415,7 @@ class DSExporterHelper
 
 
 
-    public static function exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = '\t', $extraHeader = '')
+    public static function exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = '\t', $extraHeader = '', $noHeader = false)
     {
         $header = array();
         $data = array();
@@ -429,8 +432,10 @@ class DSExporterHelper
             $header[] = 'string';
         }
 
-        $data[] = $row;
-        ++$y;
+        if (!$noHeader) {
+            $data[] = $row;
+            ++$y;
+        }
 
 
         foreach ($liste as $key => $zeile) {

@@ -24,7 +24,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
         console.debug('ComboBoxDS constructed', this.tablename, this.id, config, store);
     },
     onBeforeLoad: function (store, operation, eOpts) {
-        console.log('onBeforeLoad', store, this, operation, eOpts);
+        // console.log('onBeforeLoad', store, this, operation, eOpts);
         let params = store.getProxy().getExtraParams() || {};
         params.searchfield = this.displayField;
         store.getProxy().setExtraParams(params);

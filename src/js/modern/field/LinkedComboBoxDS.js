@@ -23,7 +23,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
         store.load();
     },
     onBeforeLoad: function (store, operation, eOpts) {
-        console.log('onBeforeLoad', store, this, operation, eOpts);
+        // console.log('onBeforeLoad', store, this, operation, eOpts);
         store.getProxy().setExtraParams({
 
             /*tablename: store.tablename,
