@@ -236,6 +236,9 @@ class DSExporterHelper
         } else if ($fn == 'DIF') {
             $dateiname .= '.dif';
             DSExporterHelper::exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', '\t', '');
+        } else if ($fn == 'DIFX') {
+            $dateiname .= '.dif';
+            DSExporterHelper::exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', '\t', '', true, true);
         } else if ($fn == 'DIF_NO_HEADER') {
             $dateiname .= '.dif';
             DSExporterHelper::exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, $dateiname, $hcolumns, 'utf-8', '\t', '', true);
@@ -415,7 +418,7 @@ class DSExporterHelper
 
 
 
-    public static function exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = '\t', $extraHeader = '', $noHeader = false)
+    public static function exportDataToXSLX_DIFWriter($db, $tablename, $columns, $liste, $pathName, &$dateiname, $hcolumns, $encoding = 'utf-8', $delimiter = '\t', $extraHeader = '', $noHeader = false, $commaSeperated = false)
     {
         $header = array();
         $data = array();
@@ -475,14 +478,22 @@ class DSExporterHelper
         fclose($out);
         */
         $text = "";
-        foreach ($data as $row) {
-            $text .= implode("\t", $row) . "\x0D\x0A";
+        if ($commaSeperated) {
+            $delimiter = ',';
+            foreach ($data as $row) {
+                $text .= implode($delimiter, $row) . "\n";
+            }
+            file_put_contents($pathName . $dateiname, $text);
+        } else {
+            foreach ($data as $row) {
+                $text .= implode("\t", $row) . "\x0D\x0A";
+            }
+
+            $utf32String  = "\xFF\xFE\x00\x00" . mb_convert_encoding(/*"\0xFF\0xFE" .*/$text, 'UTF-32LE', 'UTF-8');
+
+            // Speichern der Datei
+            file_put_contents($pathName . $dateiname, $utf32String);
         }
-
-        $utf32String  = "\xFF\xFE\x00\x00" . mb_convert_encoding(/*"\0xFF\0xFE" .*/$text, 'UTF-32LE', 'UTF-8');
-
-        // Speichern der Datei
-        file_put_contents($pathName . $dateiname, $utf32String);
     }
 
 
