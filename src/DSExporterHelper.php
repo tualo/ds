@@ -449,7 +449,7 @@ class DSExporterHelper
                     $ivalue = $zeile[$key];
 
                     if ($value['data_type'] == 'decimal') {
-                        $ivalue = number_format($ivalue, 2, ',', '.');
+                        $ivalue = number_format($ivalue, 2, '.', '');
                     }
                     if ($encoding != 'utf-8') {
                         if (function_exists("mb_convert_encoding")) {
@@ -478,11 +478,15 @@ class DSExporterHelper
         fclose($out);
         */
         $text = "";
+        // convert text to ansii
+
+
         if ($commaSeperated) {
             $delimiter = ',';
             foreach ($data as $row) {
                 $text .= implode($delimiter, $row) . "\n";
             }
+            $text = mb_convert_encoding($text, 'ISO-8859-1', 'UTF-8');
             file_put_contents($pathName . $dateiname, $text);
         } else {
             foreach ($data as $row) {

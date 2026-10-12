@@ -40,7 +40,8 @@ select
             JSON_OBJECT(
                 'singleton', 1=1,
                 'formulas', d.obj
-            )
+            ),
+        ')'
     ) as js
 from 
     (select * from d)

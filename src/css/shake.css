@@ -1,39 +1,107 @@
-
-.x-form-fieldset{
+.x-form-fieldset {
   border-bottom: 1px solid lightgray;
   margin-bottom: 16px;
 }
-.x-textfield-alt .x-input-el{
+
+.x-textfield-alt .x-input-el {
   padding-left: 7px;
 }
 
-.form-label-changed .x-label-text-el{
+.form-label-changed .x-label-text-el {
   font-weight: 700;
 }
 
 .label-shake {
-  animation: dslabelshake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  animation: dslabelshake 0.82s cubic-bezier(.36, .07, .19, .97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
-  
+
   color: var(--alert-color);
 }
 
 @keyframes dslabelshake {
-  10%, 90% {
+
+  10%,
+  90% {
     transform: translate3d(-1px, 0, 0);
   }
-  
-  20%, 80% {
+
+  20%,
+  80% {
     transform: translate3d(2px, 0, 0);
   }
 
-  30%, 50%, 70% {
+  30%,
+  50%,
+  70% {
     transform: translate3d(-4px, 0, 0);
   }
 
-  40%, 60% {
+  40%,
+  60% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+
+
+
+.new_cmp_ds {
+  background-color: #7bb075;
+}
+
+.x-accordion-item .x-accordion-hd {
+  background-image: none;
+  background-color: #5fa2dd;
+}
+
+.x-accordion-item .x-accordion-hd-over {
+  background-image: none;
+  background-color: #62a5df;
+}
+
+.x-accordion-hd .x-panel-header-title {
+  color: #fff;
+}
+
+.x-accordion-hd .x-tool-tool-el {
+  color: #fff;
+}
+
+.ds-toolbar-text {
+  color: #f0f0f0;
+  font-weight: bold;
+}
+
+
+.treelist-with-nav {
+  background-color: #32404e;
+}
+
+.x-panel-body-nav {
+  background-color: #32404e;
+}
+
+.x-fa {
+  font-family: 'Font Awesome 7 Free';
+  font-weight: 900;
+}
+
+.application-search-icon {
+  padding-top: 14px;
+  padding-left: 14px;
+  font-size: 14px;
+  width: 14px;
+}
+
+
+.application-search-input {
+  margin: 14px;
+}
+
+.application-profile-header {
+  font-weight: 900;
+  font-size: 1.2em;
+  color: #adb3b8;
 }
