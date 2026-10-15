@@ -26,16 +26,32 @@ Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
         store.load();
     },
     onBeforeLoad: function (store, operation, eOpts) {
-        // console.log('onBeforeLoad', store, this, operation, eOpts);
-        store.getProxy().setExtraParams({
+        let me = this;
+        let params = store.getProxy().getExtraParams() || {};
+        params.searchfield = this.displayField;
 
-            /*tablename: store.tablename,
-            fieldname: store.fieldname,
-            value: store.value,
-            query: store.query,
-            pageSize: store.pageSize
-            */
-        });
+        if (typeof me.config.filterFields !== 'undefined'
+            && me.config.filterFields !== null
+            && Object.keys(me.config.filterFields).length > 0
+            && typeof me.up('form') !== 'undefined'
+            && typeof me.up('form').getRecord == 'function'
+        ) {
+            let recordData = me.up('form').getRecord().data;
+            let reference = {};
+
+            for (let sourceField in me.config.filterFields) {
+                let targetField = me.config.filterFields[sourceField];
+                if (me.config.filterFields.hasOwnProperty(sourceField)) {
+                    if (recordData[sourceField]) {
+                        reference[targetField] = recordData[sourceField];
+                    }
+                }
+            }
+            params.reference = Ext.JSON.encode(reference);
+        }
+        // field.up('form').getRecord().data
+        // e
+        store.getProxy().setExtraParams(params);
     },
 
     onFocus: function (e) {
