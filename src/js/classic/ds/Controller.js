@@ -78,7 +78,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
                             Ext.getApplication().currentView = me.getView();
                             console.log('redirectTo', tpl.apply(data));
-                            Ext.getApplication().redirectTo(tpl.apply(data));
+                            Ext.getApplication().redirectTo(tpl.apply(data), { force: true });
                         },
                         tooltip: element.text
                     });
@@ -389,7 +389,9 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (true) {
             if (record) {
                 form.loadRecord(record);
-                this.setViewType('form');
+                if (model.get('formOnDoubleClick') == true) {
+                    this.setViewType('form');
+                }
             }
 
 

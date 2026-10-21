@@ -88,7 +88,7 @@ select
                 "title", ds.title,
                 
                 "controller",concat('dsgridcontroller'),
-                "stateful",JSON_OBJECT("columns",true),
+                "stateful", 1=1, -- JSON_OBJECT("columns",true),
                 
                 "selModel",ds.listselectionmodel,
                 "features", JSON_ARRAY(

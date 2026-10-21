@@ -28,9 +28,15 @@ Ext.define('Tualo.DataSets.grid.Grid', {
     },
 
 
+    stateful: true,
+
 
 
     initComponent: function () {
+        console.log('initComponent', 'dsgrid_' + this.tablename);
+        window.lastgrid = this;
+        this.stateId = 'dsgrid_' + this.tablename;
+
         var me = this;
         me.callParent(arguments);
         me.getView().getRowClass = function (record, rowIndex, rowParams, store) {

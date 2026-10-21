@@ -49,13 +49,15 @@ Ext.define('Tualo.routes.DS', {
                     console.log('ds route', 'action', 'setActiveItem', component);
                 } else {
                     component = Ext.getApplication().addView('Tualo.DataSets.' + type + '.' + tablenamecase, {
-                        itemId: cmp_id
+                        itemId: cmp_id,
+                        stateId: cmp_id,
+                        stateful: true
                     });
                     console.log('ds route', 'action', 'new', component);
                 }
 
                 if ((component) && (typeof values.fieldValue != 'undefined')) {
-                    component.filterField(values.fieldName, values.fieldValue);
+                    component.filterField(values.fieldName, decodeURIComponent(values.fieldValue));
                 }
             }
             fnx();

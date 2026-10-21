@@ -35,7 +35,7 @@ Ext.define("Tualo.cmp.cmp_ds.column.DS", {
             // Ext.util.Format.ds_company_subtype_id
             */
 
-            console.debug('DS Column Renderer', value, metaData, record, rowIndex, colIndex, store, view);
+            // console.debug('DS Column Renderer', value, metaData, record, rowIndex, colIndex, store, view);
             let me = this,
                 column = me.getColumns()[colIndex],
                 configStore = column.configStore,

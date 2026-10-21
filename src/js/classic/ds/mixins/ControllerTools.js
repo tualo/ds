@@ -129,7 +129,13 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
         });
         store.add(record);
         model.set('record', record);
-        this.setViewType('form');
+        // prevent form, 
+        console.log('listOnAppend', model.get('listOnAppend'));
+        if (model.get('listOnAppend') == true) {
+            this.setViewType('list');
+        } else {
+            this.setViewType('form');
+        }
         list.setSelection(record);
         list.getView().focusRow(record);
         model.set('lastSelectRecordRecordNumber', model.get('selectRecordRecordNumber'));
