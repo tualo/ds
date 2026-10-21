@@ -1,4 +1,5 @@
 delimiter ;
+
 alter table ds add column if not exists list_on_append tinyint default 0;
 alter table ds add column if not exists form_on_double_click tinyint default 1;
 -- update ds set list_on_append=1 where table_name='tualo_job_data';

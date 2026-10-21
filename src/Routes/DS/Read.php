@@ -57,13 +57,13 @@ class Read extends DSBase
                 }
 
                 // fields is allways expected to include __id
-                if (isset($input['fields'])) {
+                /*if (isset($input['fields'])) {
                     if (is_string($input['fields'])) {
                         $input['fields'] = json_decode($input['fields'], true);
                         $input['fields'][] = '__id';
                         $input['fields'] = json_encode(array_unique($input['fields']));
                     }
-                }
+                }*/
                 $read = DSReadRoute::read($db, $tablename, $input);
                 App::result('fields', $input);
                 App::result('data', $read['data']);
