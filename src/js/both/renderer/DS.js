@@ -94,8 +94,10 @@ Ext.define("Tualo.ds.renderer.DS", {
                 //                continue;
             }
             let cellElement = cell.dom.querySelector('#' + item.id);
+
             if (!cellElement) {
-                console.error('cell element not found', item, record, colIndex, view, cell);
+
+                console.error('cell element not found 1st', item, record, colIndex, view, cell);
                 return;
                 //                continue;
             }

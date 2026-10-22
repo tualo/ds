@@ -49,6 +49,8 @@ select
             -- "requires", JSON_MERGE('[]', if( suppressRequires() ,  '[]', concat('[',doublequote(concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),']')) ),
             "model", concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))),
             "remoteFilter", TRUE is true,
+            "statefulFilters", FALSE is true,
+
             "autoLoad", FALSE is true,
             "autoSync", ds.autosave=1,
             "pageSize", ifnull(ds.default_pagesize,1000),

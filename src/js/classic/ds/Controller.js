@@ -61,6 +61,9 @@ Ext.define('Tualo.DS.panel.Controller', {
                             console.log('redirectTo', tpl, record, me.getViewModel().get('record'));
                             if (!Ext.isEmpty(record)) {
                                 data = Ext.apply({}, record.data, record.getAssociatedData());
+                                for (var key in data) {
+                                    data[key] = encodeURIComponent(data[key]);
+                                }
                             }
                             console.log('redirectTo', tpl.apply(data));
                             try {

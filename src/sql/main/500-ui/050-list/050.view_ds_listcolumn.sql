@@ -39,12 +39,6 @@ select
             JSON_OBJECT(
                 'text',`ds_column_list_label`.`label`,
                 -- 'stateId', concat('state_', `ds_column`.`table_name`, '__', `ds_column`.`column_name`),
-                -- 'stateful', JSON_OBJECT(
-                --     'hidden', 1=1,
-                --     'width', 1=1,
-                --     'flex', 1=1,
-                --     'height', 1=1
-                -- ),
                 'xtype',
                 if(
                     types.type is null,
