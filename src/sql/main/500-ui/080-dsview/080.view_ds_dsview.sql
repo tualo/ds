@@ -14,6 +14,7 @@ select
         "store", JSON_OBJECT(
             "type", concat("",ds.table_name,"_store"),
             "autoLoad", 1=0,
+            "statefulFilters", 0=1,
             "listeners", JSON_OBJECT(
                 "sync", "onSyncStore"
             )

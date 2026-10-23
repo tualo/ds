@@ -391,6 +391,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         if (true) {
             if (record) {
+                model.set('record', record);
                 form.loadRecord(record);
                 if (model.get('formOnDoubleClick') == true) {
                     this.setViewType('form');
