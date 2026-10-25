@@ -4,6 +4,7 @@ CREATE OR REPLACE VIEW  `view_ds_access_by_role` AS select `ds_access`.`table_na
  in (select `view_session_groups`.`group` from `view_session_groups`) and
  (ifnull(`ds_access`.`read`,0) + ifnull(`ds_access`.`write`,0) + ifnull(`ds_access`.`delete`,0) + ifnull(`ds_access`.`append`,0)) > 0 group by `ds_access`.`table_name` ;
 
+
 create or replace view view_ds_listfilters as
 select
 
@@ -17,6 +18,22 @@ join ds
     and ds.existsreal=1
 join view_ds_access_by_role ds_access
 on ds.table_name = ds_access.table_name
+
+union 
+
+select
+
+lower(concat(ds_dropdownfields.table_name,'_',ds_dropdownfields.name,'_searchlistfilter')) `id`,
+(concat('Search ',ds.title,' ',ds_dropdownfields.name,'')) `name`
+from 
+
+ds_dropdownfields
+join ds
+    on ds_dropdownfields.table_name = ds.table_name
+    and ds.existsreal=1
+join view_ds_access_by_role ds_access
+on ds.table_name = ds_access.table_name
+
 union 
 
 

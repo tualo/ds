@@ -87,7 +87,7 @@ Ext.define("Tualo.ds.renderer.DS", {
             let view = item.view
             let cell = view.getCell(record, colIndex, true);
 
-            console.log('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
+            // console.log('renderLazy', val, metaData, record, rowIndex, colIndex, store, view, cell);
             if (!cell) {
                 console.error('cell not found', item, record, colIndex, view);
                 return;
