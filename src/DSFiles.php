@@ -97,6 +97,14 @@ class DSFiles
 
 
 
+    public function getHash(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
+    {
+
+        $record = $this->getRecord($fieldName, $fieldValue, $emptyOnError);
+        $record['tablename'] = $this->tablename;
+        $info = $this->getInfo($fieldName, $fieldValue, $emptyOnError, $record);
+        return md5($info['hash']);
+    }
 
     public function getBase64(string $fieldName, string $fieldValue, bool $emptyOnError = false): string
     {

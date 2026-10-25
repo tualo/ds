@@ -15,6 +15,21 @@ BEGIN
 END //
 
 
+CREATE OR REPLACE FUNCTION `getRequestParameterBigInteger`( fieldName varchar(255) )
+RETURNS BIGINT
+BEGIN 
+    IF @request_parameter is not null THEN
+        
+        IF JSON_VALID(@request_parameter) = 1 THEN
+            IF JSON_TYPE(json_extract(@request_parameter,concat('$.',fieldName)))='INTEGER' THEN
+              return json_value(@request_parameter,concat('$.',fieldName));
+            END IF;
+        END IF;
+    END IF;
+    return null;
+END //
+
+
 CREATE OR REPLACE FUNCTION `getRequestParameterDouble`( fieldName varchar(255) )
 RETURNS DECIMAL(15,5)
 BEGIN 
