@@ -148,7 +148,7 @@ BEGIN
         if (@serial is null ) then
 
             set sql_command = concat('select ifnull( max(`',record.column_name,'`) , 0) m into @serial from `',use_table_name,'`');
-            call dsx_rest_api_set_log_statemant(sql_command);
+            call dsx_rest_api_set_log_statement(sql_command);
             PREPARE stmt FROM sql_command;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
@@ -298,7 +298,7 @@ BEGIN
     ) DO
 
         set sql_command = record.s;
-        call dsx_rest_api_set_log_statemant(sql_command);
+        call dsx_rest_api_set_log_statement(sql_command);
         PREPARE stmt FROM sql_command;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -401,7 +401,7 @@ BEGIN
     DECLARE sql_command LONGTEXT;
     if JSON_EXISTS(request,'$.data[0].__file_data') and JSON_EXISTS(request,'$.data[0].__file_name') then
         set sql_command = concat('create temporary table temp_dsx_rest_data as select * from ',temp_table_name);
-        call dsx_rest_api_set_log_statemant(sql_command);
+        call dsx_rest_api_set_log_statement(sql_command);
         PREPARE stmt FROM sql_command;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -476,7 +476,7 @@ BEGIN
                     update `',use_table_name,'` 
                     set file_id=',quote(rec.__file_id),'  
                     where ',dsx_get_key_sql( use_table_name),' in (select ',dsx_get_key_sql_prefix('temp_dsx_rest_data',use_table_name),' from temp_dsx_rest_data where __id=',quote(rec.__id),')');
-                call dsx_rest_api_set_log_statemant(sql_command);
+                call dsx_rest_api_set_log_statement(sql_command);
                 PREPARE stmt FROM sql_command;
                 EXECUTE stmt;
                 DEALLOCATE PREPARE stmt;
@@ -687,7 +687,7 @@ call debug_message( concat('dsx_rest_api_set: start use_table_name: `',use_table
     ' ',use_template_columns,')) as jt');
 
 
-    call dsx_rest_api_set_log_statemant(sql_command);
+    call dsx_rest_api_set_log_statement(sql_command);
     PREPARE stmt FROM sql_command;
     EXECUTE stmt USING request;
     DEALLOCATE PREPARE stmt;   
@@ -768,7 +768,7 @@ call debug_message( concat('dsx_rest_api_set: start use_table_name: `',use_table
 
     call debug_message( concat('dsx_rest_api_set:   "',sql_command,'"') ); 
 
-    call dsx_rest_api_set_log_statemant(sql_command);
+    call dsx_rest_api_set_log_statement(sql_command);
     PREPARE stmt FROM sql_command;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
@@ -777,7 +777,7 @@ call debug_message( concat('dsx_rest_api_set: start use_table_name: `',use_table
 
     -- nacharbeiten
     set sql_command = concat('update ',temp_table_name,' set __id = ',dsx_get_key_sql( use_table_name ));
-    call dsx_rest_api_set_log_statemant(sql_command);
+    call dsx_rest_api_set_log_statement(sql_command);
     PREPARE stmt FROM sql_command;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;    
