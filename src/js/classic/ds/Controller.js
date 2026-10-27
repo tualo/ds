@@ -626,7 +626,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             store.getModifiedRecords().forEach(function (record) {
                 if (!Ext.isEmpty(record.get('__file_data'))) {
                     if (record.get('__file_data').length > 10 * 1024 * 1024) {
-                        // let o = { ...record.data };
+                        let o = { ...record.data };
                         o.internalId = record.internalId;
                         delayedFileUpload.push(o);
                         record.set('__file_data', 'chunks');
