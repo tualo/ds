@@ -176,8 +176,12 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                     });
                     console.log('delete', payload);
 
+                    // header auf 
                     const response = await fetch('./ds/' + model.get('table_name') + '', {
                         method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                         body: JSON.stringify(payload)
                     });
 

@@ -1,12 +1,19 @@
 <?php
+
 namespace Tualo\Office\DS\Commandline;
+
 use Tualo\Office\Basic\ICommandline;
 use Tualo\Office\Basic\CommandLineInstallSQL;
 
-class InstallDSX extends CommandLineInstallSQL  implements ICommandline{
-    public static function getDir():string {   return dirname(__DIR__,1); }
+class InstallDSX extends CommandLineInstallSQL  implements ICommandline
+{
+    public static function getDir(): string
+    {
+        return dirname(__DIR__, 1);
+    }
     public static $shortName  = 'ds-dsx';
     public static $files = [
+        'dsx/log_table' => 'setup log_table ',
         'dsx/000.dsx_get_key_sql' => 'setup 000.dsx_get_key_sql ',
         'dsx/000.dsx_filter_values' => 'setup 000.dsx_filter_values ',
         'dsx/000.dsx_filter_values_extract' => 'setup 000.dsx_filter_values_extract ',
@@ -17,7 +24,4 @@ class InstallDSX extends CommandLineInstallSQL  implements ICommandline{
         'dsx/dsx_rest_api_set' => 'setup dsx_rest_api_set ',
         'dsx/createJSONReadTable' => 'setup createJSONReadTable ',
     ];
-    
 }
-
-

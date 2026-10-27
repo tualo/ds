@@ -1,3 +1,4 @@
+delimiter //
 
 create table if not exists log_table (
     `id` varchar(36) primary key,
@@ -6,7 +7,16 @@ create table if not exists log_table (
     `login` varchar(255),
     `created_at` timestamp default current_timestamp
 ) //
+
+create table if not exists dsx_logger_config (
+    `id` int primary key,
+    `use_logger` tinyint(1) default 0
+) //
+insert ignore into dsx_logger_config (`id`, `use_logger`) values (1, 0);
+
 CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_log_statemant`( IN  stmt longtext )
 BEGIN 
-    INSERT INTO log_table (`id`, `session_token`, `statement`, `login`) VALUES (uuid(), @logger_session_token, stmt, getSessionUser());
-END 
+    if exists(select `use_logger` from dsx_logger_config where `id` = 1 and `use_logger` = 1) then
+        INSERT INTO log_table (`id`, `session_token`, `statement`, `login`) VALUES (uuid(), @logger_session_token, stmt, getSessionUser());
+    end if;
+END //
