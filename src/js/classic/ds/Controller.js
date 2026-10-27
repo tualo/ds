@@ -336,7 +336,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         return true;
     },
 
-    onListSelect: function (selModel, record, eOpts) {
+    onListSelect: function (selModel, recordX, eOpts) {
         let me = this,
             model = me.getViewModel(),
             form = this.getView().getComponent('form'),

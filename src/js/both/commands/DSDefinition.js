@@ -40,7 +40,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
     getNextText: function () {
         return 'Exportieren';
     },
-    loadRecord: function (record, records, selectedrecords, parent) {
+    loadRecord: function (record, records, selectedrecords, parentX) {
         let parent = Ext.getCmp(this.calleeId);
         this.record = record;
         this.records = records;

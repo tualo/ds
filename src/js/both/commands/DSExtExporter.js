@@ -7,8 +7,8 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSExtExporter', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.cmp_ds_extexporter_command',
     requires: [
-       // 'Ext.exporter.excel.Xlsx',
-       // 'Ext.grid.plugin.Exporter'
+        // 'Ext.exporter.excel.Xlsx',
+        // 'Ext.grid.plugin.Exporter'
     ],
     plugins: {
         gridexporter: true
@@ -31,7 +31,7 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSExtExporter', {
     getNextText: function () {
         return 'Exportieren';
     },
-    loadRecord: function (record, records, selectedrecords, parent) {
+    loadRecord: function (record, records, selectedrecords, parentX) {
         let parent = Ext.getCmp(this.calleeId);
         this.record = record;
         this.records = records;
