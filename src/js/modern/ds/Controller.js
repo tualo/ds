@@ -182,7 +182,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         model.set('isModified', store.getModifiedRecords().length !== 0);
     },
 
-    onListSelect: function (selModel, record, eOpts) {
+    onListSelect: function (selModel, recordX, eOpts) {
         let me = this,
             model = me.getViewModel(),
             form = this.getView().getComponent('form'),
