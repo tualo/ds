@@ -119,12 +119,12 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
-            $db->tinyIntAsBoolean(true);
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             $tablename = $matches['tablename'];
             $table = null;
             try {
+                $db->tinyIntAsBoolean(true);
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -166,12 +166,8 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                 } else {
 
                     App::result('success', false);
-                    App::result('warnings',  $db->getWarnings());
 
                     if (!is_null($table)) {
-
-                        $table->readMoreResults();
-                        $table->readWarnings();
                         App::result('warnings', $table->warnings());
                         App::result('moreResults', $table->moreResults());
                     }
@@ -179,13 +175,13 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     App::result('msg', $table->errorMessage());
                 }
             } catch (\Exception $e) {
-
-                if (!is_null($table)) {
-                    $table->readMoreResults();
-                    $table->readWarnings();
-                    App::result('warnings', $table->warnings());
-                    App::result('moreResults', $table->moreResults());
-                }
+                App::result('success', false);
+                App::result('code', $e->getCode());
+                App::logger('dstable')->error($e->getMessage(), [
+                    'operation' => 'update',
+                    'tablename' => $tablename,
+                    'code' => $e->getCode(),
+                ]);
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;
@@ -195,11 +191,11 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
-            $db->tinyIntAsBoolean(true);
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             $tablename = $matches['tablename'];
             try {
+                $db->tinyIntAsBoolean(true);
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -235,7 +231,13 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     App::result('msg', $table->errorMessage());
                 }
             } catch (\Exception $e) {
-
+                App::result('success', false);
+                App::result('code', $e->getCode());
+                App::logger('dstable')->error($e->getMessage(), [
+                    'operation' => 'create',
+                    'tablename' => $tablename,
+                    'code' => $e->getCode(),
+                ]);
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;
@@ -246,10 +248,10 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
-            $db->tinyIntAsBoolean(true);
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             try {
+                $db->tinyIntAsBoolean(true);
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -266,7 +268,13 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     App::result('msg', $table->errorMessage());
                 }
             } catch (\Exception $e) {
-
+                App::result('success', false);
+                App::result('code', $e->getCode());
+                App::logger('dstable')->error($e->getMessage(), [
+                    'operation' => 'delete',
+                    'tablename' => $tablename,
+                    'code' => $e->getCode(),
+                ]);
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;
@@ -277,10 +285,10 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             App::contenttype('application/json');
 
             $db = App::get('session')->getDB();
-            $db->tinyIntAsBoolean(true);
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             $tablename = $matches['tablename'];
             try {
+                $db->tinyIntAsBoolean(true);
+                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
                 $input = json_decode(file_get_contents('php://input'), true);
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);
@@ -296,7 +304,13 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     App::result('msg', $table->errorMessage());
                 }
             } catch (\Exception $e) {
-
+                App::result('success', false);
+                App::result('code', $e->getCode());
+                App::logger('dstable')->error($e->getMessage(), [
+                    'operation' => 'delete',
+                    'tablename' => $tablename,
+                    'code' => $e->getCode(),
+                ]);
                 App::result('msg', $e->getMessage());
             }
             Route::$finished = true;

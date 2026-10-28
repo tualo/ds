@@ -24,10 +24,10 @@ class Read extends DSBase
     {
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
             $db = App::get('session')->getDB();
-            $db->tinyIntAsBoolean(true);
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
             try {
+                $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
@@ -76,6 +76,12 @@ class Read extends DSBase
 
                 App::result('success', true);
             } catch (\Exception $e) {
+                App::result('success', false);
+                App::logger('dstable')->error($e->getMessage(), [
+                    'operation' => 'read',
+                    'tablename' => $tablename,
+                    'code' => $e->getCode(),
+                ]);
                 // App::result('last_sql', $db->last_sql);
                 if ($e->getCode() == 15403) {
                     http_response_code(403);
@@ -95,24 +101,36 @@ class Read extends DSBase
 
         Route::add('/ds/(?P<tablename>\w+)/read/(?P<id>.+)', function ($matches) {
             $db = App::get('session')->getDB();
-            $db->tinyIntAsBoolean(true);
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
             try {
+                $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 // $db->direct( 'SET GLOBAL max_allowed_packet = 50331648 ' . (48 * 1024 * 1024) );
                 //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 $table = new DSTable($db, $tablename);
-                $read = $table->f('__id', 'eq', $matches['id'])->read()->get();
+                $read = $table->f('__id', 'eq', $matches['id'])->get();
+                if ($table->error()) {
+                    App::result('success', false);
+                    App::result('msg', $table->errorMessage());
+                    Route::$finished = true;
+                    App::contenttype('application/json');
+                    return;
+                }
 
 
                 App::result('data', $read);
                 //App::result('total', $read['total']);
                 App::result('success', true);
             } catch (\Exception $e) {
-
-                App::result('last_sql', $db->last_sql);
+                App::result('success', false);
+                App::result('code', $e->getCode());
+                App::logger('dstable')->error($e->getMessage(), [
+                    'operation' => 'read',
+                    'tablename' => $tablename,
+                    'code' => $e->getCode(),
+                ]);
                 App::result('msg', $e->getMessage());
                 //App::result('dq', implode("\n",$GLOBALS['debug_query']));
 

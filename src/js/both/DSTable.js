@@ -1,4 +1,3 @@
-/*
 Ext.define('Tualo.DSTable', {
     constructor: function (tablename = 'test') {
         let baseUrl = './ds';
@@ -271,4 +270,3 @@ Ext.define('Tualo.DSTable', {
 window.dstable = function (tablename) {
     return new Tualo.DSTable(tablename);
 };
-*/

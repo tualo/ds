@@ -104,6 +104,52 @@ class DSTable
     {
         return $this->errorMessage;
     }
+
+    private function logError(string $operation, \Exception $error): void
+    {
+        $this->hasError = true;
+        $this->errorMessage = $error->getMessage();
+
+        $context = [
+            'operation' => $operation,
+            'tablename' => $this->tablename,
+            'configured_schema' => $this->db->dbname ?? null,
+            'exceptions' => [],
+        ];
+        for ($exception = $error; $exception !== null; $exception = $exception->getPrevious()) {
+            $details = [
+                'class' => get_class($exception),
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+            if ($exception instanceof \mysqli_sql_exception) {
+                $details['sqlstate'] = $exception->getSqlState();
+            }
+            $context['exceptions'][] = $details;
+        }
+
+        if (
+            isset($this->db->lastSQL) &&
+            preg_match('/^\s*(CALL\s+`?[a-zA-Z0-9_]+`?|[a-zA-Z]+)/i', $this->db->lastSQL, $matches)
+        ) {
+            $context['last_statement_prefix'] = $matches[1];
+        }
+
+        if (isset($this->db->mysqli) && $this->db->mysqli instanceof \mysqli) {
+            try {
+                $context['mysqli_errno'] = $this->db->mysqli->errno;
+                $context['mysqli_sqlstate'] = $this->db->mysqli->sqlstate;
+                $context['connection_id'] = $this->db->mysqli->thread_id;
+                $context['connection_host_info'] = $this->db->mysqli->host_info;
+            } catch (\Error $diagnosticError) {
+                // A closed connection must not hide the original database error.
+                $context['connection_diagnostic_error'] = $diagnosticError->getMessage();
+            }
+        }
+
+        TualoApplication::logger('dstable')->error($error->getMessage(), $context);
+    }
+
     public function warnings(): array
     {
         return $this->_warnings;
@@ -215,8 +261,7 @@ class DSTable
             ]);
             return $this->dsx_rest_api_set();
         } catch (\Exception $e) {
-            $this->hasError = true;
-            $this->errorMessage = $e->getMessage();
+            $this->logError('delete', $e);
         }
         return false;
     }
@@ -246,8 +291,7 @@ class DSTable
 
             return $this->dsx_rest_api_set();
         } catch (\Exception $e) {
-            $this->hasError = true;
-            $this->errorMessage = $e->getMessage();
+            $this->logError('update', $e);
         }
         return false;
     }
@@ -267,8 +311,7 @@ class DSTable
             //$this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'insert','update'=>true]) ]);
             return $this->dsx_rest_api_set();
         } catch (\Exception $e) {
-            $this->hasError = true;
-            $this->errorMessage = $e->getMessage();
+            $this->logError('insert', $e);
         }
         return false;
     }
@@ -299,8 +342,7 @@ class DSTable
             }
             $this->data = $read['data'];
         } catch (\Exception $e) {
-            $this->hasError = true;
-            $this->errorMessage = $e->getMessage();
+            $this->logError('read', $e);
         }
         return $this;
     }
