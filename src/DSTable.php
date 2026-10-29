@@ -114,6 +114,7 @@ class DSTable
             'operation' => $operation,
             'tablename' => $this->tablename,
             'configured_schema' => $this->db->dbname ?? null,
+            'galera_hostname' => $this->db->singleValue('SELECT @@hostname v', [], 'v'),
             'exceptions' => [],
         ];
         for ($exception = $error; $exception !== null; $exception = $exception->getPrevious()) {
@@ -125,7 +126,6 @@ class DSTable
             if ($exception instanceof \mysqli_sql_exception) {
                 $details['sqlstate'] = $exception->getSqlState();
             }
-            $details['galera_hostname'] = $this->db->singleVlue('SELECT @@hostname v', [], 'v');
             $context['exceptions'][] = $details;
         }
 
