@@ -80,6 +80,7 @@ class Read extends DSBase
                 App::logger('dstable')->error($e->getMessage(), [
                     'operation' => 'read',
                     'tablename' => $tablename,
+                    'galera_hostname' => $db->singleValue('SELECT @@hostname v', [], 'v'),
                     'code' => $e->getCode(),
                 ]);
                 // App::result('last_sql', $db->last_sql);
