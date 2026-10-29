@@ -125,6 +125,7 @@ class DSTable
             if ($exception instanceof \mysqli_sql_exception) {
                 $details['sqlstate'] = $exception->getSqlState();
             }
+            $details['galera_hostname'] = $this->db->singleVlue('SELECT @@hostname v', [], 'v');
             $context['exceptions'][] = $details;
         }
 

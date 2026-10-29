@@ -7,6 +7,12 @@ create table if not exists `briefanreden` (
 );
 insert ignore into briefanreden (id,name,language) values ('default','Sehr geehrte Damen und Herren','DE');
 
+alter table briefanreden add column if not exists template text not null;
+update briefanreden set template = name where template is null;
+
+call fill_ds('briefanreden');
+call fill_ds_column('briefanreden');
+
 create table if not exists `geschlecht` (
   id integer primary key,
   name varchar(255) not null
