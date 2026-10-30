@@ -11,6 +11,7 @@ use Tualo\Office\DS\DSTable;
 use Tualo\Office\DS\Routes\DSBase;
 use Tualo\Office\DS\Routes\DefaultExpectedFields;
 use Tualo\Office\DS\Scopes\DSReadScope;
+use Tualo\Office\DSX\Read\StreamResponse;
 
 
 class Read extends DSBase
@@ -22,7 +23,41 @@ class Read extends DSBase
 
     public static function register()
     {
+
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
+
+            $startTime = microtime(true);
+            $db = App::get('session')->getDB();
+            $tablename = $matches['tablename'];
+            try {
+                $request = $_REQUEST;
+                if (!isset($request['request_options'])) {
+                    $request['request_options'] = [];
+                }
+                $request['tablename'] = $tablename;
+                if (!isset($request['count'])) $request['count'] = 0;
+                if (!isset($request['comibedfieldname'])) $request['comibedfieldname'] = 0;
+                $db->direct('set @request_options = {request_options};', ['request_options' => json_encode($request['request_options'])]);
+
+                StreamResponse::send($db, $request, fn() => ['execution_time' => microtime(true) - $startTime]);
+                // response is sent, other routes for this path must not answer again
+                return true;
+            } catch (\Exception $e) {
+                App::result('last_sql', $db->last_sql);
+                App::result('msg', $e->getMessage());
+            }
+            $endTime = microtime(true);
+            App::result('execution_time', $endTime - $startTime);
+            App::contenttype('application/json');
+        }, ['get', 'post'], true, [
+            'errorOnUnexpected' => false,
+            'errorOnInvalid' => false,
+            'fields' => DefaultExpectedFields::$Fields
+        ], self::scope());
+
+
+        Route::add('/.ds/(?P<tablename>\w+)/read', function ($matches) {
+            $startTime = microtime(true);
             $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
             ini_set('memory_limit', '8G');
@@ -92,6 +127,8 @@ class Read extends DSBase
             }
 
             Route::$finished = true;
+            $endTime = microtime(true);
+            App::result('execution_time', $endTime - $startTime);
             App::contenttype('application/json');
         }, ['get', 'post'], true, [
             'errorOnUnexpected' => false,
