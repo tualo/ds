@@ -8,10 +8,53 @@ use Tualo\Office\Basic\Route;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSTable;
+use Tualo\Office\DSX\Read\RestApiGet;
 
 
 class DS extends \Tualo\Office\Basic\RouteWrapper
 {
+    private static function readWrittenRows($db, string $tablename, array $result): array
+    {
+        $written = $result['data'] ?? [];
+        $ids = [];
+        foreach ($written as $row) {
+            if (isset($row['__id']) && is_scalar($row['__id'])) {
+                $ids[] = (string)$row['__id'];
+            }
+        }
+        $ids = array_values(array_unique($ids));
+        if (count($ids) === 0) return [];
+
+        $read = RestApiGet::read($db, [
+            'tablename' => $tablename,
+            'start' => 0,
+            'limit' => count($ids),
+            'comibedfieldname' => 0,
+            'filter' => [[
+                'property' => '__id',
+                'operator' => 'in',
+                'value' => $ids,
+            ]],
+        ]);
+
+        $rowsById = [];
+        foreach ($read['data'] ?? [] as $row) {
+            if (isset($row['__id'])) $rowsById[(string)$row['__id']] = $row;
+        }
+
+        $rows = [];
+        foreach ($written as $writtenRow) {
+            $id = isset($writtenRow['__id']) && is_scalar($writtenRow['__id'])
+                ? (string)$writtenRow['__id']
+                : null;
+            if (is_null($id) || !isset($rowsById[$id])) continue;
+            $row = $rowsById[$id];
+            $row['__clientid'] = $writtenRow['__clientid'] ?? null;
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     const DefaultExpectedFields  = [
         'page' => [
             'required' => false,
@@ -139,9 +182,6 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                 App::result('line', __LINE__);
 
                 if (($result = $table->update($input, $o)) !== false) {
-
-                    App::result('temporary_table_name',  $result['temporary_table_name']);
-
                     if ($table->error()) {
                         throw new \Exception($table->errorMessage());
                     }
@@ -151,18 +191,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     // if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
-
-                    $read = DSReadRoute::read($db, $tablename, [
-                        'tablename' => $tablename,
-                        'temporary_table_name' => $result['temporary_table_name'],
-                        'concat_set_table' => 1
-                    ]);
-
-                    App::result('data', $read['data']);
-
-                    App::result('temporary_table_data',  $db->direct('select * from ' . $result['temporary_table_name']));
-                    App::result('_request',  $db->direct('select @request r', [], 'r'));
-                    App::result('_result',  $db->direct('select @result r', [], 'r'));
+                    App::result('data', self::readWrittenRows($db, $tablename, $result));
                 } else {
 
                     App::result('success', false);
@@ -213,17 +242,8 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
 
 
                     App::deferredTrigger();
-                    if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
-
-
-
-                    $read = DSReadRoute::read($db, $tablename, [
-                        'tablename' => $tablename,
-                        'temporary_table_name' => $result['temporary_table_name'],
-                        'concat_set_table' => 1
-                    ]);
-                    App::result('data', $read['data']);
+                    App::result('data', self::readWrittenRows($db, $tablename, $result));
                 } else {
                     App::result('success', false);
                     App::result('warnings', $table->warnings());

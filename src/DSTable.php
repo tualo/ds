@@ -4,6 +4,7 @@ namespace Tualo\Office\DS;
 
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\DS\DataRenderer;
+use Tualo\Office\DSX\Write\RestApiSet;
 
 
 class DSTable
@@ -204,37 +205,6 @@ class DSTable
 
 
 
-    private function requestData(array $input, array $merge): string
-    {
-
-
-        $data = json_encode(array_merge([
-            'tablename' => $this->tablename,
-            'data' => $input
-        ], $merge), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-
-        // return  str_replace(chr(92) . chr(92), chr(92), $data);
-        return  $data;
-    }
-
-
-
-    private function dsx_rest_api_set(): mixed
-    {
-
-        // create table dsx_logs (id varchar(36) primary key, createts datetime, data text);
-        // $this->db->direct('insert into dsx_logs (id, createts, data) values (uuid(), now(), @request)', []);
-
-        $this->db->direct('call dsx_rest_api_set(@request,@result)');
-        $this->readWarnings();
-        $this->readMoreResults();
-        $res = $this->db->singleValue('select @result s', [], 's');
-        TualoApplication::deferredTrigger();
-        if ($res === false) return false;
-        return json_decode($res, true);
-    }
-
     public function readWarnings(): mixed
     {
         $this->_warnings = array_merge($this->_warnings, $this->db->getWarnings());
@@ -252,67 +222,36 @@ class DSTable
 
     public function delete(mixed $record = [], mixed $options = []): mixed
     {
-        try {
-            $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [
-                'd' => $this->requestData(
-                    $input,
-                    array_merge(['type' => 'delete'], $options)
-                )
-            ]);
-            return $this->dsx_rest_api_set();
-        } catch (\Exception $e) {
-            $this->logError('delete', $e);
-        }
-        return false;
+        return $this->write('delete', $record, $options);
     }
 
 
 
     public function update(mixed $record = [], mixed $options = []): mixed
     {
-        try {
-
-
-            $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [
-                'd' => $this->requestData(
-                    $input,
-                    array_merge(['type' => 'update'], $options)
-                )
-            ]);
-
-            TualoApplication::result('r', $record);
-            TualoApplication::result('i', $input);
-
-            TualoApplication::result('o', json_decode($this->requestData(
-                $input,
-                array_merge(['type' => 'update'], $options)
-            ), true));
-
-            return $this->dsx_rest_api_set();
-        } catch (\Exception $e) {
-            $this->logError('update', $e);
-        }
-        return false;
+        return $this->write('update', $record, $options);
     }
 
     public function insert(mixed $record = [], mixed $options = []): mixed
     {
+        return $this->write('insert', $record, array_merge(['update' => true], is_array($options) ? $options : []));
+    }
+
+    private function write(string $type, mixed $record, mixed $options): mixed
+    {
         try {
             $input = $this->prepareRecords($record);
-            $this->db->direct('set @request = {d}', [
-                'd' => $this->requestData(
-                    $input,
-                    array_merge(['type' => 'insert', 'update' => true], $options)
-                )
+            $request = array_merge(is_array($options) ? $options : [], [
+                'tablename' => $this->tablename,
+                'type' => $type,
+                'data' => $input,
             ]);
-
-
-            //$this->db->direct('set @request = {d}', [ 'd'=> $this->requestData($input,['type'=>'insert','update'=>true]) ]);
-            return $this->dsx_rest_api_set();
+            $result = RestApiSet::write($this->db, $request);
+            $this->readWarnings();
+            TualoApplication::deferredTrigger();
+            return $result;
         } catch (\Exception $e) {
-            $this->logError('insert', $e);
+            $this->logError($type, $e);
         }
         return false;
     }
