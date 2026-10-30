@@ -240,6 +240,11 @@ class DSTable
     private function write(string $type, mixed $record, mixed $options): mixed
     {
         try {
+            if (!class_exists(RestApiSet::class)) {
+                throw new \RuntimeException(
+                    RestApiSet::class . ' ist nicht verfuegbar; tualo/dsx ab Version 1.0.3 installieren und den Composer-Autoloader aktualisieren.'
+                );
+            }
             $input = $this->prepareRecords($record);
             $request = array_merge(is_array($options) ? $options : [], [
                 'tablename' => $this->tablename,

@@ -2,6 +2,13 @@
 
 Datenstämme, Verwalten von Tabellen und Zugriffsrechten
 
+## DSX-Abhaengigkeit
+
+Die PHP-Schreibwege benoetigen `tualo/dsx` ab Version 1.0.3. Bei Anwendungen
+mit `composer.lock` muss die Abhaengigkeit im Lockfile aktualisiert und
+anschliessend installiert werden; `composer dump-autoload` allein aktualisiert
+das Paket nicht.
+
 ## DSTable-Fehlerdiagnose
 
 Abgefangene Fehler in `read`, `insert`, `update` und `delete` werden ueber
