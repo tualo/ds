@@ -27,7 +27,7 @@
     "tualo/tualojs": "^1.0",
     "tualo/monacoeditor": "^1.0",
     "tualo/systemfiles": "^1.0.0",
-    "tualo/dsx": "^1.0.3"
+    "tualo/dsx": "^1.0.5"
   },
-  "version": "1.8.175"
+  "version": "1.8.176"
 }

@@ -8,6 +8,7 @@ use Tualo\Office\Basic\Route;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSTable;
+use Tualo\Office\DS\ErrorLogger;
 use Tualo\Office\DS\Routes\DSBase;
 use Tualo\Office\DS\Routes\DefaultExpectedFields;
 use Tualo\Office\DS\Scopes\DSReadScope;
@@ -27,9 +28,11 @@ class Read extends DSBase
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
 
             $startTime = microtime(true);
-            $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
+            $db = null;
+            $readInvoked = false;
             try {
+                $db = App::get('session')->getDB();
                 $request = $_REQUEST;
                 if (!isset($request['request_options'])) {
                     $request['request_options'] = [];
@@ -39,11 +42,16 @@ class Read extends DSBase
                 if (!isset($request['comibedfieldname'])) $request['comibedfieldname'] = 0;
                 $db->direct('set @request_options = {request_options};', ['request_options' => json_encode($request['request_options'])]);
 
+                $readInvoked = true;
                 StreamResponse::send($db, $request, fn() => ['execution_time' => microtime(true) - $startTime]);
                 // response is sent, other routes for this path must not answer again
                 return true;
-            } catch (\Exception $e) {
-                App::result('last_sql', $db->last_sql);
+            } catch (\Throwable $e) {
+                if (!$readInvoked || !class_exists(\Tualo\Office\DSX\ErrorLogger::class)) {
+                    ErrorLogger::log($db, 'read', $tablename, $e);
+                }
+                App::result('success', false);
+                App::result('last_sql', $db->last_sql ?? null);
                 App::result('msg', $e->getMessage());
             }
             $endTime = microtime(true);
@@ -58,10 +66,11 @@ class Read extends DSBase
 
         Route::add('/.ds/(?P<tablename>\w+)/read', function ($matches) {
             $startTime = microtime(true);
-            $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
+            $db = null;
             ini_set('memory_limit', '8G');
             try {
+                $db = App::get('session')->getDB();
                 $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
@@ -110,14 +119,9 @@ class Read extends DSBase
 
 
                 App::result('success', true);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 App::result('success', false);
-                App::logger('dstable')->error($e->getMessage(), [
-                    'operation' => 'read',
-                    'tablename' => $tablename,
-                    'galera_hostname' => $db->singleValue('SELECT @@hostname v', [], 'v'),
-                    'code' => $e->getCode(),
-                ]);
+                ErrorLogger::log($db, 'read', $tablename, $e);
                 // App::result('last_sql', $db->last_sql);
                 if ($e->getCode() == 15403) {
                     http_response_code(403);
@@ -138,10 +142,11 @@ class Read extends DSBase
 
 
         Route::add('/ds/(?P<tablename>\w+)/read/(?P<id>.+)', function ($matches) {
-            $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
+            $db = null;
             ini_set('memory_limit', '8G');
             try {
+                $db = App::get('session')->getDB();
                 $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
                 $db->direct('SET SESSION group_concat_max_len = 4294967295;');
@@ -161,14 +166,10 @@ class Read extends DSBase
                 App::result('data', $read);
                 //App::result('total', $read['total']);
                 App::result('success', true);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 App::result('success', false);
                 App::result('code', $e->getCode());
-                App::logger('dstable')->error($e->getMessage(), [
-                    'operation' => 'read',
-                    'tablename' => $tablename,
-                    'code' => $e->getCode(),
-                ]);
+                ErrorLogger::log($db, 'read', $tablename, $e);
                 App::result('msg', $e->getMessage());
                 //App::result('dq', implode("\n",$GLOBALS['debug_query']));
 

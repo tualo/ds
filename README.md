@@ -4,10 +4,12 @@ Datenstämme, Verwalten von Tabellen und Zugriffsrechten
 
 ## DSX-Abhaengigkeit
 
-Die PHP-Schreibwege benoetigen `tualo/dsx` ab Version 1.0.3. Bei Anwendungen
+Die PHP-Lese- und Schreibwege benoetigen `tualo/dsx` ab Version 1.0.5. Bei Anwendungen
 mit `composer.lock` muss die Abhaengigkeit im Lockfile aktualisiert und
 anschliessend installiert werden; `composer dump-autoload` allein aktualisiert
-das Paket nicht.
+das Paket nicht. Falls der gemeinsame Logger wegen einer veralteten
+DSX-Installation fehlt, wird der urspruengliche Fehler mit einem Hinweis auf
+die erforderliche Paketversion protokolliert.
 
 ## DSTable-Fehlerdiagnose
 
@@ -23,9 +25,12 @@ Request-Inhalte, Filterwerte und Datensaetze werden nicht zusaetzlich geloggt;
 die originale Fehlermeldung kann allerdings vom Datenbankserver genannte Werte
 enthalten.
 
-Es werden keine Diagnose-SQL-Abfragen ausgefuehrt. Das konfigurierte Schema ist
-kein Nachweis fuer das aktuell ausgewaehlte Schema; das Verbindungsziel ist bei
-HAProxy kein Nachweis fuer den tatsaechlichen Backend-Knoten.
+Wenn die Verbindung verfuegbar ist, wird der Galera-Hostname mit
+`SELECT @@hostname` ermittelt; ein Fehler dabei wird im Logkontext festgehalten.
+Waehrend eines ungepufferten Reads wird diese Abfrage nicht ausgefuehrt.
+Das konfigurierte Schema ist kein Nachweis fuer das aktuell ausgewaehlte Schema;
+das Verbindungsziel ist bei HAProxy kein Nachweis fuer den tatsaechlichen
+Backend-Knoten.
 Dateiausgabe und Log-Level richten sich nach der zentralen Logger-Konfiguration.
 
 Die DS-Routen geben bei Fehlern explizit `success: false` und `msg` zurueck,
@@ -34,3 +39,6 @@ Ein solcher Fehler bedeutet nicht, dass der Schreibvorgang zurueckgerollt wurde.
 Direkt in den Routen abgefangene Exceptions werden ebenfalls im Kanal `dstable`
 protokolliert. Der Einzelabruf prueft den DSTable-Fehlerstatus und fuehrt nur
 einen Read aus; SQL-Statements werden dort nicht als Fehlerantwort ausgegeben.
+
+Die Fehlerprotokollierung laesst sich ohne Datenbank mit
+`php tests/ReadErrorLoggingTest.php` pruefen.
