@@ -4,15 +4,16 @@ Ext.define('Tualo.DS.field.SearchField', {
     flex: 1,
     minWidth: 300,
     emptyText: "Suchen ...",
+    cls: "searchfield-background",
     triggers: {
         bar: {
             weight: 0,
             cls: Ext.baseCSSPrefix + "form-clear-trigger",
-            handler: function(field) {
+            handler: function (field) {
                 field.setValue("");
                 let store = field.up().up().getComponent('list').getStore(),
                     params = store.getProxy().getExtraParams();
-                    if (Ext.isEmpty(params)){ params = {}; };
+                if (Ext.isEmpty(params)) { params = {}; };
                 delete params.filter_by_search;
                 delete params.search;
                 store.getProxy().setExtraParams(params);
@@ -22,12 +23,12 @@ Ext.define('Tualo.DS.field.SearchField', {
         }
     },
     listeners: {
-        specialkey: function(field, e){
+        specialkey: function (field, e) {
             if (e.getKey() == e.ENTER) {
                 let store = field.up().up().getComponent('list').getStore();
-                store.getProxy().setExtraParam("filter_by_search",1);
-//                store.getProxy().setExtraParam("fulltext",2);
-                store.getProxy().setExtraParam("search",field.getValue());
+                store.getProxy().setExtraParam("filter_by_search", 1);
+                //                store.getProxy().setExtraParam("fulltext",2);
+                store.getProxy().setExtraParam("search", field.getValue());
                 store.load();
                 field.up().up().getController().setViewType("list");
             }

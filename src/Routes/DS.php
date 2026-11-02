@@ -167,7 +167,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $table = null;
             try {
                 $db->tinyIntAsBoolean(true);
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -224,7 +224,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $tablename = $matches['tablename'];
             try {
                 $db->tinyIntAsBoolean(true);
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -271,7 +271,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $tablename = $matches['tablename'];
             try {
                 $db->tinyIntAsBoolean(true);
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 self::setRequestParameter();
 
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -308,7 +308,7 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
             $tablename = $matches['tablename'];
             try {
                 $db->tinyIntAsBoolean(true);
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
                 $input = json_decode(file_get_contents('php://input'), true);
                 if (is_null($input)) throw new Exception("Error Processing Request", 1);

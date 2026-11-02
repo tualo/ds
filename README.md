@@ -41,4 +41,5 @@ protokolliert. Der Einzelabruf prueft den DSTable-Fehlerstatus und fuehrt nur
 einen Read aus; SQL-Statements werden dort nicht als Fehlerantwort ausgegeben.
 
 Die Fehlerprotokollierung laesst sich ohne Datenbank mit
-`php tests/ReadErrorLoggingTest.php` pruefen.
+`php tests/ReadErrorLoggingTest.php` und
+`php tests/MissingDsxErrorLoggingTest.php` pruefen.

@@ -9,7 +9,7 @@
 
 .x-accordion-item .x-accordion-hd-over {
     background-image: none;
-    background-color:  #62a5df;
+    background-color: #62a5df;
 }
 
 .x-accordion-hd .x-panel-header-title {
@@ -20,7 +20,37 @@
     color: #fff;
 }
 
-.ds-toolbar-text{
+.ds-toolbar-text {
     color: #f0f0f0;
     font-weight: bold;
+}
+
+.glyph-header {
+    color: rgba(0, 0, 0, 0.02);
+
+    font-size: 1.2em;
+    opacity: 0.8;
+    width: 22px;
+    height: 22px;
+    padding-top: 2px;
+    border-radius: 50%;
+}
+
+.treelist-with-nav .glyph-header {
+    color: white;
+}
+
+.glyph-header:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(15, 23, 42, .16);
+}
+
+.glyph-header:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, .18) inset;
+}
+
+.x-accordion-layout-ct {
+    background-color: #fff;
+    padding: 0;
 }

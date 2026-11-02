@@ -27,7 +27,7 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
                     http_response_code(403);
                     throw new \Exception('Keine Berechtigung');
                 }
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 $tn = isset($_REQUEST['table_name']) ? $_REQUEST['table_name'] : '';
 
                 $db->direct('call fill_ds({table_name})', ['table_name' => $tn]);
@@ -58,7 +58,7 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dssetup/ds_cloneformlabelexport', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
                 //$db->direct('call UPDATE_DS_SETUP()');
@@ -75,7 +75,7 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dssetup/export/definition/(?P<table_name>[\w\_\-]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
 
@@ -99,7 +99,7 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dssetup/export/definition_direct/(?P<table_name>[\w\_\-]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
 
@@ -124,7 +124,7 @@ class DSUpdate extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/pugtemplates/export/(?P<id>[\w\_\-]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
 

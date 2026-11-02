@@ -73,7 +73,7 @@ class Read extends DSBase
                 $db = App::get('session')->getDB();
                 $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                //$db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
                 $input = json_decode(file_get_contents('php://input'), true);
                 if (is_null($input)) {
@@ -149,7 +149,7 @@ class Read extends DSBase
                 $db = App::get('session')->getDB();
                 $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
-                $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+                // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
                 // $db->direct( 'SET GLOBAL max_allowed_packet = 50331648 ' . (48 * 1024 * 1024) );
                 //$read = DSReadRoute::read($db, $tablename, $_REQUEST);
                 $table = new DSTable($db, $tablename);

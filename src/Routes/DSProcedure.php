@@ -20,7 +20,7 @@ class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dsrun/(?P<proc>[\w\_\-]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
                 $msgs = [];
@@ -67,7 +67,7 @@ class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/dsrun/(?P<proc>[\w\_\-]+)/(?P<id>[\w\_\-]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
                 $proc = $matches['proc'];
@@ -98,7 +98,7 @@ class DSProcedure extends \Tualo\Office\Basic\RouteWrapper
         Route::add('/procedure/(?P<proc>[\w\_\-]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
+            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
 
             try {
                 $proc = $matches['proc'];

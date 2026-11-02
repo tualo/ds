@@ -3,7 +3,7 @@ Ext.define('Tualo.DS.Toolbar', {
     alias: 'widget.dstoolbar',
     dock: "top",
     layout: 'hbox',
-    cls: "x-panel-header-default",
+    // cls: "x-panel-header-default",
     listeners: {
         boxready: 'toolbarBoxReady'
     },
