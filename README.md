@@ -43,3 +43,33 @@ einen Read aus; SQL-Statements werden dort nicht als Fehlerantwort ausgegeben.
 Die Fehlerprotokollierung laesst sich ohne Datenbank mit
 `php tests/ReadErrorLoggingTest.php` und
 `php tests/MissingDsxErrorLoggingTest.php` pruefen.
+
+## MariaDB und group_concat_max_len
+
+Die Prozedur `dsx_rest_api_get` setzt `group_concat_max_len` auf `173741824`.
+Dieser Wert gilt fuer die anschliessende Datenabfrage von `DSTable` und
+`DSReadRoute` und bleibt wie bisher auf der Verbindung bestehen. PHP stellt
+keinen vorherigen Wert wieder her. Der Export setzt vor dem Prozeduraufruf
+keinen zusaetzlichen Maximalwert.
+
+In der untersuchten MariaDB-11.8.9-Umgebung trat das Problem mit leeren
+`JSON_ARRAYAGG`-View-Ergebnissen beim Erreichen bzw. Ueberschreiten des
+Maximalwerts auf. Der bisherige Wert `4294967295` liegt ueber dem dort
+zulaessigen Maximum von `1073741824`. Die geaenderte SQL-Prozedur muss auch in
+der Datenbank installiert werden; ein Austausch der PHP-Dateien allein aendert
+sie nicht.
+
+Auch ein kleinerer Wert muss ausreichend Platz fuer die benoetigten Aggregate
+bieten: MariaDB-Warnung 1260 wegen eines abgeschnittenen `GROUP_CONCAT`- oder
+`JSON_ARRAYAGG`-Ergebnisses wird beim Legacy-Read als Fehler gemeldet und ueber
+`DSTable` bzw. die Routen protokolliert.
+
+Der Regressionstest fuer den PHP-Leseweg ist
+`php tests/DSReadRouteGroupConcatTest.php`. Fuer den
+Integrationstest `tests/DSReadRouteGroupConcatIntegrationTest.php` muessen
+`DS_TEST_MYSQL_HOST` und `DS_TEST_MYSQL_PORT` auf einen isolierten Testserver
+zeigen; optional koennen `DS_TEST_MYSQL_USER`, `DS_TEST_MYSQL_PASSWORD` und
+`DS_TEST_BSC_SRC` sowie `DS_TEST_DSX_SRC` angegeben werden. Der Test erstellt
+und entfernt ein eigenes Testschema und benoetigt dafuer entsprechende
+Datenbankrechte. Ohne Pfadangaben werden die benachbarten Pakete `../bsc/src`
+und `../dsx/src` verwendet.

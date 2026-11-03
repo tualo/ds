@@ -7,6 +7,19 @@ use Tualo\Office\DS\DataRenderer;
 
 class DSReadRoute
 {
+    private static function assertAggregateNotTruncated($db): void
+    {
+        foreach ($db->getWarnings() as $warning) {
+            if (($warning['errno'] ?? null) == 1260) {
+                throw new \RuntimeException(
+                    'Das Datenbankergebnis wurde durch group_concat_max_len abgeschnitten: '
+                    . ($warning['message'] ?? 'MariaDB-Warnung 1260'),
+                    1260
+                );
+            }
+        }
+    }
+
     public static function readSingleItem($db, $tablename, $request)
     {
         $res = self::read($db, $tablename, $request);
@@ -79,8 +92,9 @@ class DSReadRoute
 
         $db->direct('set @request = {request};', ['request' => json_encode($request)]);
         // print_r($db->direct('select @request', [], 'request'));
-        $db->direct('call dsx_rest_api_get(@request,@result);');
-
+        if ($db->direct('call dsx_rest_api_get(@request,@result);') !== true) {
+            throw new \RuntimeException('Der Aufruf von dsx_rest_api_get war nicht erfolgreich.');
+        }
         $mysqlresults = $db->moreResults();
         /*
         do {
@@ -131,6 +145,7 @@ class DSReadRoute
         }
 
         $o['data'] = $db->direct($o['query'] . ' ' . $o['order_by'] . ' ' . $o['limitterm']);
+        self::assertAggregateNotTruncated($db);
 
         $fields = false;
         if (isset($request['fields']) && is_string($request['fields'])) {

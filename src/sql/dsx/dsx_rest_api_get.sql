@@ -255,7 +255,9 @@ BEGIN
     DECLARE counts integer default 0;
     DECLARE sql_command longtext;
 
-    SET SESSION group_concat_max_len = 4294967295;
+    -- SET SESSION group_concat_max_len = 4294967295;
+    SET SESSION group_concat_max_len = 173741820;
+    
     SET userequest = JSON_QUERY(request,'$');
 
     set result=JSON_OBJECT(

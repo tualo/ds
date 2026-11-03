@@ -7,6 +7,7 @@ use Tualo\Office\Basic\Route;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\DS\DSReadRoute;
 use Tualo\Office\DS\DSExporterHelper;
+use Tualo\Office\DS\ErrorLogger;
 
 
 class Export extends \Tualo\Office\Basic\RouteWrapper
@@ -25,7 +26,6 @@ class Export extends \Tualo\Office\Basic\RouteWrapper
 
             ini_set('memory_limit', '16096M');
 
-            $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             try {
 
                 $_REQUEST['start'] = 0;
@@ -47,7 +47,9 @@ class Export extends \Tualo\Office\Basic\RouteWrapper
                 //                App::result('hcolumns', $hcolumns);
 
 
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
+                ErrorLogger::log($db, 'export', $tablename, $e);
+                App::result('success', false);
                 App::result('msg', $e->getMessage());
             }
             App::contenttype('application/json');
