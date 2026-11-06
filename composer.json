@@ -21,7 +21,7 @@
   "require": {
     "tualo/extjscmplr": "^1.0.6",
     "phpoffice/phpspreadsheet": "^5.7",
-    "phpseclib/phpseclib": "^3.0",
+    "phpseclib/phpseclib": "^4.0",
     "ramsey/uuid": "~4.9.0",
     "tualo/tualo-ext-shim": "^1.0.1",
     "tualo/tualojs": "^1.0",

@@ -1,5 +1,5 @@
 .new_cmp_ds {
-    background-color: #7bb075;
+    background-color: #9ec98d;
 }
 
 .x-accordion-item .x-accordion-hd {
@@ -26,7 +26,6 @@
 }
 
 .glyph-header {
-    color: rgba(0, 0, 0, 0.02);
 
     font-size: 1.2em;
     opacity: 0.8;
@@ -34,20 +33,35 @@
     height: 22px;
     padding-top: 2px;
     border-radius: 50%;
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        box-shadow 180ms ease-out;
 }
 
 .treelist-with-nav .glyph-header {
     color: white;
+    transition: none;
+}
+
+.x-panel-header .glyph-header {
+    color: white;
+    transition: none;
 }
 
 .glyph-header:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(15, 23, 42, .16);
+    transform: translateY(-1px) scale(1.1);
+    background-color: rgba(82, 128, 237, 0.05);
+    box-shadow: 0 3px 10px rgba(15, 23, 42, .16) scale(1.1);
 }
 
 .glyph-header:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0);
     box-shadow: 0 1px 3px rgba(15, 23, 42, .18) inset;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .glyph-header {
+        transition: none;
+    }
 }
 
 .x-accordion-layout-ct {

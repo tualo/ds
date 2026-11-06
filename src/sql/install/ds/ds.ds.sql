@@ -124,7 +124,7 @@ INSERT IGNORE INTO `ds_addcommands` (`iconcls`,`label`,`location`,`position`,`ta
 INSERT IGNORE INTO `ds_addcommands` (`iconcls`,`label`,`location`,`position`,`table_name`,`xtype`) VALUES ('x-fa fa-plus','','toolbar','1','ds','ds_rmcache_command') ; 
 INSERT IGNORE INTO `ds_access` (`append`,`delete`,`read`,`role`,`table_name`,`write`) VALUES ('0','0','1','_default_','ds','0') ; 
 INSERT IGNORE INTO `ds_access` (`append`,`delete`,`read`,`role`,`table_name`,`write`) VALUES ('0','0','1','administration','ds','1') ; 
-INSERT IGNORE INTO `ds_listroutes` (`iconcls`,`position`,`route`,`table_name`,`target`) VALUES ('fa-duotone fa-regular fa-clipboard-question','1','#dbviewer/table/{table_name}','ds','_blank') ; 
+REPLACE INTO `ds_listroutes` (`iconcls`,`position`,`route`,`table_name`,`target`) VALUES ('fa-solid fa-clipboard','1','#dbviewer/table/{table_name}','ds','_blank') ; 
 INSERT IGNORE INTO `ds_listroutes` (`iconcls`,`position`,`route`,`table_name`,`target`) VALUES ('fa-solid fa-rotate','1','#dsfill/{table_name}','ds','_self') ; 
 INSERT IGNORE INTO `ds_listroutes` (`iconcls`,`position`,`route`,`table_name`,`target`) VALUES ('fa-solid fa-binoculars','0','#dstestsuite/checkitem/{table_name}','ds','_self') ; 
 REPLACE INTO `docsystem_ds` (`table_name`,`text`) VALUES ('ds','In diesem Datenstamm werden alle Tabellen konfiguriert.') ; 

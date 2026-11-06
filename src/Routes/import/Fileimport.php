@@ -19,7 +19,7 @@ class FileImport extends \Tualo\Office\Basic\RouteWrapper
 
     public static function register()
     {
-        Route::add('/dssftp/import/(?P<tablename>[\w\-\_]+)', function ($matches) {
+        Route::add('/_dssftp/import/(?P<tablename>[\w\-\_]+)', function ($matches) {
 
             $db = App::get('session')->getDB();
             $tablename = $matches['tablename'];
