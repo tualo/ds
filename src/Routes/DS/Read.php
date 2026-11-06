@@ -26,11 +26,11 @@ class Read extends DSBase
     {
 
         Route::add('/ds/(?P<tablename>\w+)/read', function ($matches) {
-
             $startTime = microtime(true);
             $tablename = $matches['tablename'];
             $db = null;
             $readInvoked = false;
+            App::result('n', false);
             try {
                 $db = App::get('session')->getDB();
                 $request = $_REQUEST;
@@ -41,6 +41,17 @@ class Read extends DSBase
                 if (!isset($request['count'])) $request['count'] = 0;
                 if (!isset($request['comibedfieldname'])) $request['comibedfieldname'] = 0;
                 $db->direct('set @request_options = {request_options};', ['request_options' => json_encode($request['request_options'])]);
+                App::result('use_fulltext', false);
+                if (isset($input['filter_by_search']) && ($input['filter_by_search'] == 1) && !isset($input['fulltext'])) {
+
+                    App::result('use_fulltext', true);
+                    $sql = "select count(*) c from ds where table_name = 'ds_ftsearch_" . $tablename . "'";
+                    $count = $db->singleValue($sql, [], 'c');
+                    if ($count > 0) {
+                        $input['filter_by_search'] = 2;
+                        $input['fulltext'] = 2;
+                    }
+                }
 
                 $readInvoked = true;
                 StreamResponse::send($db, $request, fn() => ['execution_time' => microtime(true) - $startTime]);

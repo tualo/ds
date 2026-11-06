@@ -117,11 +117,13 @@ BEGIN
               if (
                   column_key like '%PRI%',
 
-                  concat('`',column_name,'` ',column_type, if (is_nullable='NO',' not null','') )
+                  concat('`',column_name,'` ',column_type,
+                    if(character_set_name is null, '', concat(' character set ',character_set_name,' collate ',collation_name)),
+                    if (is_nullable='NO',' not null','') )
                   ,
                   ''
               )
-              order by column_name 
+              order by seq_in_index
               separator ','
             ) column_def,
 
@@ -134,7 +136,7 @@ BEGIN
                   ,
                   ''
               )
-              order by column_name 
+              order by seq_in_index
               separator ','
             ) columns,
 
@@ -148,7 +150,7 @@ BEGIN
                   ,
                   ''
               )
-              order by column_name 
+              order by seq_in_index
               separator ','
             ) tn_columns,
 
@@ -160,7 +162,7 @@ BEGIN
                   ,
                   ''
               )
-              order by column_name 
+              order by seq_in_index
               separator ','
             ) parameter_def,
 
@@ -173,7 +175,7 @@ BEGIN
                   ,
                   ''
               )
-              order by column_name 
+              order by seq_in_index
               separator ','
             ) parameter_def_columns,
 
@@ -186,15 +188,29 @@ BEGIN
                   ,
                   ''
               )
-              order by column_name 
+              order by seq_in_index
               separator ','
             ) trigger_columns
           
-          from  ds_column where 
-            table_name = x_table.table_name  
-            and column_key like '%PRI%'
+          from (
+            select c.column_name, c.column_type, c.is_nullable,
+              c.column_key, c.character_set_name, c.collation_name,
+              s.seq_in_index
+            from information_schema.statistics s
+            join information_schema.columns c
+              on c.table_schema = s.table_schema
+              and c.table_name = s.table_name
+              and c.column_name = s.column_name
+            where s.table_schema = database()
+              and s.table_name = x_table.table_name
+              and s.index_name = 'PRIMARY'
+          ) primary_columns
       ) do
 
+        if defs.columns is null then
+          signal sqlstate '45000'
+            set message_text = 'Fulltext search requires a table with a primary key.';
+        end if;
 
         set sqlstmt = replace(sqlstmt,'<column_defs>',defs.column_def);
         set sqlstmt = replace(sqlstmt,'<columns>',defs.columns);
@@ -399,6 +415,7 @@ BEGIN
           set refresh_sqlstmt = replace(refresh_sqlstmt,'<columns>',defs.columns); 
           set refresh_sqlstmt = replace(refresh_sqlstmt,'<trigger_columns>',replace(defs.trigger_columns,'NEW.','record.')); 
 
+          select sqlstmt;
           PREPARE stmt FROM sqlstmt;
           EXECUTE stmt;
           DEALLOCATE PREPARE stmt;

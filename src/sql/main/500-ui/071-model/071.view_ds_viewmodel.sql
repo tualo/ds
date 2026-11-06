@@ -31,6 +31,7 @@ select
                 "icon", ds.icon,
                 "listOnAppend", ds.list_on_append,
                 "formOnDoubleClick", ds.form_on_double_click,
+                "formXType", if(ds.alternativeformxtype<>'', ds.alternativeformxtype, concat('widget.dsform_',ds.table_name)),
                 "table_name",ds.table_name,
                 "contextmenu", ifnull(view_ds_contextmenu.contextmenu, JSON_ARRAY())
             )

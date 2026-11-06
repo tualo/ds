@@ -397,8 +397,24 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         if (!Ext.isEmpty(record)) {
             if (model.get('formToPanel') == true) {
+                let formXType = model.get('formXType');
+                if (formXType.indexOf('widget.') !== 0) {
+                    formXType = 'widget.' + formXType;
+                }
+
+                let cls = Ext.ClassManager.getByAlias(formXType);
+                let className = cls.$className;
+                if (!cls) {
+                    Ext.toast({
+                        html: 'Class not found for alias: widget.' + formXType,
+                        title: 'Fehler',
+                        align: 't',
+                        iconCls: 'fa fa-warning'
+                    });
+                    return
+                }
                 let f = Ext.getApplication().addView(
-                    'Tualo.DataSets.dsview.' + tablenamecase,
+                    className,
                     {
                         record: record,
                         isNew: false,
