@@ -347,7 +347,9 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (record) {
             model.set('selectRecordRecordNumber', store.indexOf(record) + 1);
             model.set('record', record);
-            form.loadRecord(record);
+            if (!Ext.isEmpty(form)) {
+                form.loadRecord(record);
+            }
             //this.getView().getComponent('list').getSelectionModel().select(record);
         } else {
             model.set('selectRecordRecordNumber', 0);
@@ -370,12 +372,16 @@ Ext.define('Tualo.DS.panel.Controller', {
             form = this.getView().getComponent('form'),
             record = selModel.getSelection()[0];
         if (record) {
-            form.loadRecord(record);
+            if (!Ext.isEmpty(form)) {
+                form.loadRecord(record);
+            }
         } else {
             model.set('selectRecordRecordNumber', 0);
             model.set('record', null);
         }
     },
+
+
 
 
     onItemDblClick: function (view, record, item, index, e, eOpts) {
@@ -389,39 +395,33 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         console.log('onItemDblClick', tablename, model);
 
-        if (true) {
-            if (record) {
+        if (!Ext.isEmpty(record)) {
+            if (model.get('formToPanel') == true) {
+                let f = Ext.getApplication().addView(
+                    'Tualo.DataSets.dsview.' + tablenamecase,
+                    {
+                        record: record,
+                        isNew: false,
+                        viewTypeOnLoad: 'form',
+                        bind: {
+                            record: '{record}',
+                        }
+                    }
+                );
+
+                f.loadRecord(record);
+            } else {
                 model.set('record', record);
-                form.loadRecord(record);
+                if (!Ext.isEmpty(form)) {
+                    form.loadRecord(record);
+                }
                 if (model.get('formOnDoubleClick') == true) {
                     this.setViewType('form');
                 }
+
             }
 
-
-        } else {
-            let f = Ext.getApplication().addView(
-                'Tualo.DataSets.dsview.' + tablenamecase,
-                {
-                    record: record,
-                    isNew: false,
-                    viewTypeOnLoad: 'form',
-                    bind: {
-                        record: '{record}',
-                    }
-                }
-            );
-            console.log('onItemDblClick', f);
-            window.f = f;
-            window.record = record;
-            f.loadRecord(record);
         }
-        /*
-        console.log('onItemDblClick',arguments);
-        Ext.getApplication().redirectTo('dsform/'+this.getViewModel().get('table_name')+'/'+record.get('__id'),{
-            force: true
-        });
-        */
 
 
     },
@@ -596,7 +596,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             keys = model.get('primaryKeys'),
             tablename = model.get('table_name'),
             form = this.getView().getComponent('form'),
-            invalidFields = form.query("field{isValid()==false}"),
+            invalidFields = (Ext.isEmpty(form) ? [] : form.query("field{isValid()==false}")),
             ok = true;
 
         try {

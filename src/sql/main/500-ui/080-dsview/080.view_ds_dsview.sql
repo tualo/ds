@@ -19,26 +19,7 @@ select
                 "sync", "onSyncStore"
             )
 
-        ),
-        /*,
-        "features", JSON_ARRAY(
-            JSON_OBJECT(
-                "ftype", 'summary',
-                "dock", 'bottom',
-                "showSummaryRow", 1=1
-            ),
-            JSON_OBJECT(
-                "ftype","grouping",
-                "showSummaryRow", 1=1
-            )
-            
-            JSON_OBJECT(
-                "ftype","tualofixedsummary",
-                "showSummaryRow", 1=1
-            )
-            
-        ),
-        */
+        ), 
         "listeners", JSON_OBJECT(
             "drop", "onDropGrid",
             "itemdblclick", 'onItemDblClick'
@@ -76,6 +57,7 @@ select
     ),
     2000000 position
 from ds
+where ds.allowform = 1
 
 -- cmp_belege_report_editorform
 

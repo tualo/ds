@@ -193,7 +193,9 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (record) {
             model.set('selectRecordRecordNumber', store.indexOf(record) + 1);
             model.set('record', record);
-            form.loadRecord(record);
+            if (!Ext.isEmpty(form)) {
+                form.loadRecord(record);
+            }
             //this.getView().getComponent('list').getSelectionModel().select(record);
         } else {
             model.set('selectRecordRecordNumber', 0);
@@ -212,7 +214,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             form = this.getView().getComponent('form'),
             record = selModel.getSelection()[0];
         if (record) {
-            form.loadRecord(record);
+            if (!Ext.isEmpty(form)) {
+                form.loadRecord(record);
+            }
         } else {
             model.set('selectRecordRecordNumber', 0);
             model.set('record', null);
@@ -231,8 +235,9 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         console.log('onItemDblClick', tablename, model);
         if (record) {
-            form.loadRecord(record);
-
+            if (!Ext.isEmpty(form)) {
+                form.loadRecord(record);
+            }
         }
 
         /*

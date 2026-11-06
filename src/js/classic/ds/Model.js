@@ -17,10 +17,14 @@ Ext.define('Tualo.DS.panel.Model', {
         currentTitle: function (get) {
             try {
                 if (!Ext.isEmpty(get('record'))) {
-                    return get('title') + " | Formular: " + get('record').get('__displayfield');
+                    return get('record').get('__displayfield') + " | " + get('title');
                 }
             } catch (e) { }
             return "Formular";
+        },
+        currentIcon: function (get) {
+            return "fa-solid fa-list";
+            // <i class="fa-regular fa-pen-to-square"></i>
         },
         currentWindowTitle: function (get) {
             try {

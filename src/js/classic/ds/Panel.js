@@ -18,6 +18,10 @@ Ext.define('Tualo.DS.Panel', {
             return this.getViewModel().get('title');
         }
     },
+    getWindowIcon: function () {
+        console.log('Getting window icon', this.getViewModel(), this.getViewModel().get('currentIcon'));
+        return this.getViewModel().get('currentIcon');
+    },
 
 
 

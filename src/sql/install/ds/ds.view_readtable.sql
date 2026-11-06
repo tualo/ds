@@ -14,3 +14,7 @@ where
     and `table_name` not like '%_docdata'
     and `table_name` not in ('ds_sync_lock','ds_sync_hstrtable_lock','ds_sync_remove','log_ds_sync')
 ;
+call fill_ds('ds');
+call fill_ds('view_readtable_ds');
+call fill_ds_column('view_readtable_ds');
+call fill_ds_column('ds');

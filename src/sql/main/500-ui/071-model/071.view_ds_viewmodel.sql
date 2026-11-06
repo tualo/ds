@@ -2,6 +2,9 @@ delimiter ;
 
 alter table ds add column if not exists list_on_append tinyint default 0;
 alter table ds add column if not exists form_on_double_click tinyint default 1;
+alter table ds add column if not exists icon varchar(255) default 'fa-solid fa-tags';
+alter table ds add column if not exists form_to_panel tinyint default 0;
+
 -- update ds set list_on_append=1 where table_name='tualo_job_data';
 create or replace view view_ds_viewmodel as
 select 
@@ -23,6 +26,9 @@ select
                 "isModified",false,
                 "hideList",false,
                 "isNew",false,
+                "allowForm", ds.allowform,
+                "formToPanel", ds.form_to_panel,
+                "icon", ds.icon,
                 "listOnAppend", ds.list_on_append,
                 "formOnDoubleClick", ds.form_on_double_click,
                 "table_name",ds.table_name,
