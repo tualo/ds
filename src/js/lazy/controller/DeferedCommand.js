@@ -64,8 +64,13 @@ Ext.define('Tualo.ds.lazy.controller.DeferedCommand', {
     next: async function (btn) {
         var me = this;
         me.getViewModel().set('enableNext', false);
-        await me.c.run(btn);
-        Ext.util.History.back();
+        try {
+            await me.c.run(btn);
+            Ext.util.History.back();
+        } catch (e) {
+            me.getViewModel().set('enableNext', true);
+            Ext.Msg.alert('Fehler', Ext.String.htmlEncode(e.message || String(e)));
+        }
 
     }
 });

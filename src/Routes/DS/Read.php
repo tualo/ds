@@ -41,20 +41,23 @@ class Read extends DSBase
                 if (!isset($request['count'])) $request['count'] = 0;
                 if (!isset($request['comibedfieldname'])) $request['comibedfieldname'] = 0;
                 $db->direct('set @request_options = {request_options};', ['request_options' => json_encode($request['request_options'])]);
-                App::result('use_fulltext', false);
-                if (isset($input['filter_by_search']) && ($input['filter_by_search'] == 1) && !isset($input['fulltext'])) {
 
-                    App::result('use_fulltext', true);
-                    $sql = "select count(*) c from ds where table_name = 'ds_ftsearch_" . $tablename . "'";
-                    $count = $db->singleValue($sql, [], 'c');
+
+                $sql = "select count(*) c from ds where table_name = 'ds_ftsearch_" . $tablename . "'";
+                $count = (int)$db->singleValue($sql, [], 'c');
+                if (!isset($request['fulltext'])) {
+
                     if ($count > 0) {
-                        $input['filter_by_search'] = 2;
-                        $input['fulltext'] = 2;
+                        $request['filter_by_search'] = 1;
+                        $request['fulltext'] = 2;
                     }
+                }
+                if ($count === 0) {
+                    unset($request['fulltext']);
                 }
 
                 $readInvoked = true;
-                StreamResponse::send($db, $request, fn() => ['execution_time' => microtime(true) - $startTime]);
+                StreamResponse::send($db, $request, fn() => ['ft_count' => $count, 'execution_time' => microtime(true) - $startTime]);
                 // response is sent, other routes for this path must not answer again
                 return true;
             } catch (\Throwable $e) {

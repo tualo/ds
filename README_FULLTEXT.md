@@ -9,6 +9,26 @@ Diese Anleitung beschreibt die Schritte zur Einrichtung der Volltextsuche für e
 
 ## Einrichtung Schritt für Schritt
 
+### Geführter Dialog
+
+Im Datenstamm kann der Deferred-Command `ds_ftindex_command`
+(`Tualo.cmp.cmp_ds.commands.DSFTIndex`) als Zusatzkommando verwendet werden.
+Er übernimmt `table_name` des ausgewählten Datensatzes und führt mit
+„Aufbauen“ nacheinander diese Aufrufe aus:
+
+```sql
+CALL ds_create_fulltext_search('<tablename>');
+CALL refresh_searchft_<tablename>();
+```
+
+Die POST-Route `/dsft/run` verwendet `table_name` und `stage=build` bzw.
+`stage=refresh`. Sie benötigt den Scope `ds.procedures` und eine Master-Session.
+Ohne aktive Suchfelder wird der Vorgang abgelehnt. Der Dialog zeigt beide
+Arbeitsschritte und bleibt bei Fehlern für einen erneuten Versuch geöffnet.
+Der Strukturaufbau ist nicht transaktional: Nach einem Fehler kann die Struktur
+bereits teilweise erstellt sein. Die nachstehenden Metadaten-Schritte sind
+bei Bedarf weiterhin separat auszuführen.
+
 ### 1. Suchfelder im Datenstamm festlegen
 
 Definieren Sie zunächst im Datenstamm, welche Felder für die Volltextsuche indexiert werden sollen.
