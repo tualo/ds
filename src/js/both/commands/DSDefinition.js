@@ -10,6 +10,13 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSDefinition', {
         // 'Ext.exporter.excel.Xlsx',
         // 'Ext.grid.plugin.Exporter'
     ],
+
+    getWindowTitle: function () {
+        return 'Definition exportieren'
+    },
+    getWindowIcon: function () {
+        return 'fa-solid fa-bars';
+    },
     layout: 'fit',
     items: [
         {

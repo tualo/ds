@@ -13,6 +13,13 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSExtExporter', {
     plugins: {
         gridexporter: true
     },
+
+    getWindowTitle: function () {
+        return 'Excel exportieren'
+    },
+    getWindowIcon: function () {
+        return 'fa-solid fa-file-excel';
+    },
     layout: 'fit',
     items: [
         {

@@ -5,6 +5,13 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSFTIndex', {
         tooltip: 'Suchstruktur erstellen und Bestandsdaten indexieren'
     },
     extend: 'Ext.panel.Panel',
+
+    getWindowTitle: function () {
+        return 'Volltextsuche Einrichten'
+    },
+    getWindowIcon: function () {
+        return 'fa-solid fa-gears';
+    },
     alias: ['widget.ds_ftindex_command'],
     layout: 'fit',
     bodyPadding: '25px',

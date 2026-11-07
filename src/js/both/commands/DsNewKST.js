@@ -20,6 +20,13 @@ Ext.define('Ext.cmp.cmp_ds.views.DsNewKST', {
       ]
     }
   ],
+
+  getWindowTitle: function () {
+    return 'Neue Kostenstelle'
+  },
+  getWindowIcon: function () {
+    return 'fa-solid fa-plus';
+  },
   loadRecord: function (record, records, selectedrecords, view) {
     this.record = record;
     this.records = records;

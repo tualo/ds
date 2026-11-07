@@ -11,6 +11,13 @@ Ext.define('Tualo.cmp.cmp_ds.commands.DSPugTemplateExport', {
         // 'Ext.grid.plugin.Exporter'
     ],
     layout: 'fit',
+
+    getWindowTitle: function () {
+        return 'PUG Template exportieren'
+    },
+    getWindowIcon: function () {
+        return 'fa-solid fa-gears';
+    },
     items: [
         {
             xtype: 'form',
