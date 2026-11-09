@@ -92,6 +92,8 @@ class Direct extends DSBase
                 Route::$finished = true;
                 return;
             }
+            // wie die bestehenden /.ds-Routen: große Resultsets brauchen mehr als die php.ini-Defaults
+            ini_set('memory_limit', App::configuration('ds', 'direct_memory_limit', '8G'));
 
             $calls = json_decode(file_get_contents('php://input'), true);
             // single (unbuffered) call arrives as an object, not an array of calls
