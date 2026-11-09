@@ -50,8 +50,17 @@ class Read extends DSBase
                     if ($count > 0) {
                         $request['filter_by_search'] = 1;
                         $request['fulltext'] = 2;
+
+
+                        if (isset($request['search'])) {
+                            $wordCount = str_word_count($request['search'], 0, '+-_!');
+                            if ($wordCount > 1) {
+                                $request['fulltext'] = 1;
+                            }
+                        }
                     }
                 }
+
                 if ($count === 0) {
                     unset($request['fulltext']);
                 }
