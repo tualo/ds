@@ -181,7 +181,10 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
 
                 App::result('line', __LINE__);
 
+                App::logger('dstable')->warning('Input for update: ' . json_encode($input));
                 if (($result = $table->update($input, $o)) !== false) {
+                    App::logger('dstable')->warning('After update');
+
                     if ($table->error()) {
                         throw new \Exception($table->errorMessage());
                     }
@@ -191,7 +194,9 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     // if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
+                    App::logger('dstable')->warning('Result after update: ' . json_encode($result));
                     App::result('data', self::readWrittenRows($db, $tablename, $result));
+                    App::logger('dstable')->warning('Update failed with result: ' . json_encode($result));
                 } else {
 
                     App::result('success', false);
