@@ -489,7 +489,9 @@ Ext.define('Tualo.DS.panel.Controller', {
 
         if (me.getView().getComponent('list').getSelectionModel().type == "rowmodel") {
             me.getView().getComponent('list').getSelectionModel().select(sels);
-            me.getView().getComponent('form').loadRecord(model.get('record'));
+            if (!Ext.isEmpty(me.getView().getComponent('form'))) {
+                me.getView().getComponent('form').loadRecord(model.get('record'));
+            }
         }
         if (me.getView().getComponent('list').getSelectionModel().type == "cellmodel") {
             selIndex = store.find('__id', keys[0]);
@@ -500,7 +502,9 @@ Ext.define('Tualo.DS.panel.Controller', {
                 me.getView().getComponent('list').view.bufferedRenderer.scrollTo(selIndex, true);
             }, 300);
             console.debug('preserveSelection', model.get('record'));
-            me.getView().getComponent('form').loadRecord(model.get('record'));
+            if (!Ext.isEmpty(me.getView().getComponent('form'))) {
+                me.getView().getComponent('form').loadRecord(model.get('record'));
+            }
         }
 
     },
