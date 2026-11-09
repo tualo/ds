@@ -54,8 +54,9 @@ class Read extends DSBase
 
                         if (isset($request['search'])) {
                             $wordCount = str_word_count($request['search'], 0, '+-_!');
-                            if ($wordCount > 1) {
-                                $request['fulltext'] = 1;
+                            if ($wordCount == 1) {
+                                // suche über das klassiche suchfeld
+                                unset($request['fulltext']);
                             }
                         }
                     }
