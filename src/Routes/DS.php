@@ -190,13 +190,13 @@ class DS extends \Tualo\Office\Basic\RouteWrapper
                     }
                     App::result('warnings', $table->warnings());
                     App::result('moreResults', $table->moreResults());
-                    App::deferredTrigger();
+                    // App::deferredTrigger();
                     // if (isset($result['data'])) App::result('data', $table->prepareRecords($result['data']));
                     App::result('success', true);
                     App::result('result', $result);
                     App::logger('dstable')->warning('Result after update: ' . json_encode($result));
                     App::result('data', self::readWrittenRows($db, $tablename, $result));
-                    App::logger('dstable')->warning('Update failed with result: ' . json_encode($result));
+                    App::logger('dstable')->warning('Update with result: ' . json_encode($result));
                 } else {
 
                     App::result('success', false);
