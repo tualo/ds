@@ -616,20 +616,22 @@ Ext.define('Tualo.DS.panel.Controller', {
             ok = true;
 
         try {
-            if (form.isValid() == false) {
-                invalidFields.forEach(function (fld) {
-                    if ((fld.hidden == false) && (tablename == fld.tablename)) {
-                        Ext.toast({
-                            html: 'Fehlerhafte Eingabe im Feld: ' + fld.fieldLabel + ' ',
-                            title: 'Fehler',
-                            width: 200,
-                            align: 't',
-                            iconCls: 'fa fa-warning'
-                        });
-                        ok = false;
-                    }
-                });
-                if (ok === false) return;
+            if (!Ext.isEmpty(form)) {
+                if (form.isValid() == false) {
+                    invalidFields.forEach(function (fld) {
+                        if ((fld.hidden == false) && (tablename == fld.tablename)) {
+                            Ext.toast({
+                                html: 'Fehlerhafte Eingabe im Feld: ' + fld.fieldLabel + ' ',
+                                title: 'Fehler',
+                                width: 200,
+                                align: 't',
+                                iconCls: 'fa fa-warning'
+                            });
+                            ok = false;
+                        }
+                    });
+                    if (ok === false) return;
+                }
             }
         } catch (e) {
             console.error('invalidFields', e);

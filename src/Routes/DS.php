@@ -13,7 +13,7 @@ use Tualo\Office\DSX\Read\RestApiGet;
 
 class DS extends \Tualo\Office\Basic\RouteWrapper
 {
-    private static function readWrittenRows($db, string $tablename, array $result): array
+    public static function readWrittenRows($db, string $tablename, array $result): array
     {
         $written = $result['data'] ?? [];
         $ids = [];
