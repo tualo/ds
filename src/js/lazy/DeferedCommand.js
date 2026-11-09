@@ -1,7 +1,7 @@
-Ext.define('Tualo.ds.lazy.DeferedCommand',{
+Ext.define('Tualo.ds.lazy.DeferedCommand', {
     extend: "Ext.panel.Panel",
     layout: 'card',
-    requires:[
+    requires: [
         'Tualo.ds.lazy.controller.DeferedCommand',
         'Tualo.ds.lazy.models.DeferedCommand'
     ],
@@ -10,11 +10,19 @@ Ext.define('Tualo.ds.lazy.DeferedCommand',{
         boxReady: 'boxready'
     },
     controller: 'lazy_ds_defered_command',
-	viewModel: {
-		type: 'lazy_ds_defered_command'
-	},
+    viewModel: {
+        type: 'lazy_ds_defered_command'
+    },
+
+    getWindowTitle: function () {
+        return '...'
+    },
+    getWindowIcon: function () {
+        return 'fa-solid fa-gears';
+    },
+
     items: [
-        { 
+        {
             xtype: 'panel',
             bodyPadding: 10,
             items: [{
@@ -48,6 +56,6 @@ Ext.define('Tualo.ds.lazy.DeferedCommand',{
                 disabled: '{nextDisabled}'
             },
             handler: 'next'
-        }   
+        }
     ]
 });
