@@ -106,7 +106,7 @@ class Direct extends DSBase
                 Route::$finished = true;
                 return;
             }
-            $limit = (int)App::configuration('ds', 'direct_batch_limit', 25);
+            $limit = (int)App::configuration('ds', 'direct_batch_limit', 100);
             if (count($calls) > $limit) {
                 http_response_code(400);
                 App::body(json_encode([self::exceptionEvent(null, 'batch limit exceeded (' . $limit . ')')]));
