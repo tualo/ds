@@ -19,9 +19,13 @@ Ext.define('Tualo.DataSets.proxy.Direct', {
     },
 
     directTablename: function (action) {
-        var api = this.getApi() || {},
-            url = api[action] || api.read || this.getUrl(),
-            m;
+        var api, url, m;
+        // view_ds_store liefert tablename bereits in der Proxy-Config mit
+        if (this.tablename) {
+            return this.tablename;
+        }
+        api = this.getApi() || {};
+        url = api[action] || api.read || this.getUrl();
         if (!url) {
             return null;
         }
@@ -33,7 +37,7 @@ Ext.define('Tualo.DataSets.proxy.Direct', {
         var me = this,
             api = me.directApi(),
             action = operation.getAction(),
-            tablename = api ? me.directTablename(action) : null,
+            tablename = api && me.useDirect !== false ? me.directTablename(action) : null,
             request, writer, method, args, payload, id;
 
         if (!api || !tablename) {
@@ -70,17 +74,19 @@ Ext.define('Tualo.DataSets.proxy.Direct', {
 
         args.push(function (result, event) {
             var success = !!(event && event.status) && !!result && result.success !== false,
+                payload = result || {
+                    success: false,
+                    msg: (event && event.message) || 'Ext.Direct exception'
+                },
                 response = {
                     request: request,
                     status: success ? 200 : 500,
                     statusText: success
                         ? 'OK'
                         : ((event && event.message) || (result && result.msg) || 'Ext.Direct exception'),
-                    responseText: '',
-                    responseJson: result || {
-                        success: false,
-                        msg: (event && event.message) || 'Ext.Direct exception'
-                    }
+                    // der JSON-Reader liest aus responseText — muss das Result als String enthalten
+                    responseText: Ext.JSON.encode(payload),
+                    responseJson: payload
                 };
             me.processResponse(success, operation, request, response);
         });
