@@ -18,7 +18,7 @@ select
             "pageSize", 1000000,
             "proxy",
             json_object(
-                "type", 'ajax',
+                "type", 'tualo_datasets_json',
                 "noCache", 1=0,
                 "tablename",ds.table_name,
                 "api", json_object(

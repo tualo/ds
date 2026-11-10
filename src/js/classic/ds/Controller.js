@@ -551,7 +551,7 @@ Ext.define('Tualo.DS.panel.Controller', {
             extraParams = store.getProxy().getExtraParams();
 
         this.preserveSelectionBeforeLoad();
-
+        console.log('onBeforeStoreLoad', 'listfilter', listfilter)
         if (Ext.getApplication().getDebug() === true) {
             console.log('onBeforeStoreLoad', 'listfilter', listfilter)
             console.log('onBeforeStoreLoad', 'listsorters', listsorters)
@@ -580,8 +580,9 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (view.referencedList === true) {
             referencedRecord = this.getReferencedRecord();
 
-            if (Ext.getApplication().getDebug() === true) console.log('referencedRecord', referencedRecord)
+            console.warn('onBeforeStoreLoad', 'referencedRecord', referencedRecord)
             if ((typeof referencedRecord == 'undefined') || (referencedRecord == null)) return false;
+
             if (!Ext.isEmpty(referencedRecord)) {
                 for (var ref in view.referenced) {
                     if (ref.indexOf(model.get('table_name') + '__') == 0) {

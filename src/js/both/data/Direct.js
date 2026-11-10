@@ -33,6 +33,22 @@ Ext.define('Tualo.DataSets.proxy.Direct', {
         return m ? m[1] : null;
     },
 
+    // tualo_datasets_json
+    // Tualo.ds.Cached.cached
+    isCached: function (tablename) {
+        if (
+            (typeof Tualo == 'object') &&
+            (typeof Tualo.ds == 'object') &&
+            (typeof Tualo.ds.Cached == 'object') &&
+            (typeof Tualo.ds.Cached.cached == 'object') &&
+            (typeof Tualo.ds.Cached.cached[tablename] == 'object') &&
+            (typeof Tualo.ds.Cached.cached[tablename]['data'] != 'undefined')
+        ) {
+            return true;
+        }
+        return false;
+    },
+
     doRequest: function (operation) {
         var me = this,
             api = me.directApi(),
@@ -48,6 +64,30 @@ Ext.define('Tualo.DataSets.proxy.Direct', {
         writer = me.getWriter();
 
         if (action === 'read') {
+
+            if (me.isCached(tablename)) {
+                console.log('Tualo.DataSets.proxy.Direct', tablename, 'isCached');
+
+                id = operation.getId ? operation.getId() : null;
+                method = (result, event) => {
+                    let payload = Tualo.ds.Cached.cached[tablename];
+                    let success = true;
+                    response = {
+                        request: request,
+                        status: 200,
+                        statusText: 'OK',
+                        responseText: Ext.JSON.encode(payload),
+                        responseJson: payload
+                    }
+
+                    me.processResponse(success, operation, request, response);
+                }
+                args = [tablename, id];
+                console.log('Tualo.DataSets.proxy.Direct', '>>>>>>>>>>><', tablename, 'isCached');
+                method.apply(window, args);
+                return request;
+            }
+
             id = operation.getId ? operation.getId() : null;
             if (id !== null && id !== undefined) {
                 method = api.readSingle;
@@ -56,6 +96,7 @@ Ext.define('Tualo.DataSets.proxy.Direct', {
                 method = api.read;
                 args = [tablename, request.getParams() || {}];
             }
+
         } else {
             if (writer && operation.allowWrite()) {
                 request = writer.write(request);

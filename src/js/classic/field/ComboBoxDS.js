@@ -60,18 +60,21 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
             && typeof me.up('form') !== 'undefined'
             && typeof me.up('form').getRecord == 'function'
         ) {
-            let recordData = me.up('form').getRecord().data;
-            let reference = {};
+            let record = me.up('form').getRecord();
+            if (!Ext.isEmpty(record)) {
+                let recordData = record.data;
+                let reference = {};
 
-            for (let sourceField in me.config.filterFields) {
-                let targetField = me.config.filterFields[sourceField];
-                if (me.config.filterFields.hasOwnProperty(sourceField)) {
-                    if (recordData[sourceField]) {
-                        reference[targetField] = recordData[sourceField];
+                for (let sourceField in me.config.filterFields) {
+                    let targetField = me.config.filterFields[sourceField];
+                    if (me.config.filterFields.hasOwnProperty(sourceField)) {
+                        if (recordData[sourceField]) {
+                            reference[targetField] = recordData[sourceField];
+                        }
                     }
                 }
+                params.reference = Ext.JSON.encode(reference);
             }
-            params.reference = Ext.JSON.encode(reference);
         }
         // field.up('form').getRecord().data
         // e

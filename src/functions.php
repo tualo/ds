@@ -17,6 +17,8 @@ require_once "Commandline/InstallDocsystem.php";
 require_once "Routes/DS.php";
 require_once "Routes/DS/Read.php";
 require_once "Routes/DS/Direct.php";
+require_once "Routes/DS/Cached.php";
+
 require_once "Middlewares/CSS.php";
 require_once "Middlewares/DirectJS.php";
 require_once "Routes/CSS.php";

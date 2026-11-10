@@ -21,7 +21,7 @@ class DirectJS implements IMiddleware
                     TualoApplication::javascript('ds_direct_api', './.ds/direct/api.js', [], 500);
                 }
             } catch (\Exception $e) {
-                TualoApplication::logger('ds')->error($e->getMessage());
+                TualoApplication::logger('ds')->error($e->getMessage(), []);
             }
         }, -100, [
             'needActiveSession' => true,

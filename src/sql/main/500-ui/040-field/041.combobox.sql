@@ -18,7 +18,7 @@ select
                     "remoteFilter", 0=1,
                     "proxy",
                     json_object(
-                        "type", 'ajax',
+                        "type", 'tualo_datasets_json',
                         "noCache", 1=0,
                         "tablename",ds_dropdownfields.table_name,
                         "api", json_object(
