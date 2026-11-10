@@ -595,6 +595,8 @@ Ext.define('Tualo.DS.panel.Controller', {
                             reference[ref] = referencedRecord.get(view.referenced[ref].v);
                     }
                 }
+            } else {
+                return false;
             }
             extraParams.reference = Ext.JSON.encode(reference);
         }
