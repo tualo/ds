@@ -161,6 +161,8 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
                             reference[ref] = referencedRecord.get(view.referenced[ref].v);
                     }
                 }
+            } else {
+                return false;
             }
             extraParams.reference = Ext.JSON.encode(reference);
         }
