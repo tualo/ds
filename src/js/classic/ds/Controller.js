@@ -117,6 +117,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     onReferencedRecordChange: function (record) {
         if (record) {
             if (Ext.getApplication().getDebug() === true) console.log('referenced record changed', this.$className, record);
+            console.warn('onReferencedRecordChange', this.$className, record);
             this.getStore().load();
         }
     },
@@ -175,6 +176,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         } else if (typeof view.filterBy == 'object') {
             this.filterBy(view.filterBy);
         } else {
+            console.warn('Tualo.DS.panel.Controller', 'initEvents')
             store.load();
         }
 
@@ -187,6 +189,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         store.getProxy().setExtraParam("search", searchFor);
         view.down('dssearchfield').setValue(searchFor);
         view.getController().setViewType("list");
+        console.warn('Tualo.DS.panel.Controller', 'searchFor')
         store.load();
     },
 
@@ -224,6 +227,9 @@ Ext.define('Tualo.DS.panel.Controller', {
             }
         });
         if (typeof cb == 'function') cb = () => { };
+
+        console.warn('Tualo.DS.panel.Controller', 'filterBy')
+
         store.load({
             callback: cb
         });
@@ -534,6 +540,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     },
 
     onDeferedStoreLoad: function () {
+        console.warn('Tualo.DS.panel.Controller', 'onDeferedStoreLoad')
         this.getStore().load();
     },
 

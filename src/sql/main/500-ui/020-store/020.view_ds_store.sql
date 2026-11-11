@@ -48,7 +48,10 @@ select
             "storeId", concat('ds_',ds.table_name),
             -- "requires", JSON_MERGE('[]', if( suppressRequires() ,  '[]', concat('[',doublequote(concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2)))),']')) ),
             "model", concat('Tualo.DataSets.model.',UCASE(LEFT(ds.table_name, 1)), lower(SUBSTRING(ds.table_name, 2))),
+            
+            -- ToDo, check if remote filtering should be enabled
             "remoteFilter", TRUE is true,
+
             "statefulFilters", FALSE is true,
 
             "autoLoad", FALSE is true,

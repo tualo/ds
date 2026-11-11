@@ -30,7 +30,6 @@ Ext.define("Tualo.DataSets.proxy.Proxy", {
 
             if (me.isCached(tablename)) {
                 let request = me.buildRequest(operation);
-                console.log('Tualo.DataSets.proxy.Proxy', tablename, 'isCached');
 
                 id = operation.getId ? operation.getId() : null;
                 method = (result, event) => {
