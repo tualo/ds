@@ -53,6 +53,7 @@ from
 
 call fill_ds('ds_column_list_label');
 
+call fill_ds('view_readtable_ds_column_list_label_all');
 call fill_ds_column('view_readtable_ds_column_list_label_all');
 
 call fill_ds_column('ds_column_list_label');
