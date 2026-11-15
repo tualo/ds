@@ -400,6 +400,7 @@ CREATE OR REPLACE PROCEDURE `dsx_rest_api_set_handle_filedata`( IN  request JSON
 BEGIN
     DECLARE sql_command LONGTEXT;
     if JSON_EXISTS(request,'$.data[0].__file_data') and JSON_EXISTS(request,'$.data[0].__file_name') then
+        DROP TEMPORARY TABLE IF EXISTS temp_dsx_rest_data;
         set sql_command = concat('create temporary table temp_dsx_rest_data as select * from ',temp_table_name);
         call dsx_rest_api_set_log_statement(sql_command);
         PREPARE stmt FROM sql_command;
@@ -484,6 +485,7 @@ BEGIN
                 call ds_files_cleanup(use_table_name);
         end for;
 
+        DROP TEMPORARY TABLE IF EXISTS temp_dsx_rest_data;
     end if;
 END //
 
@@ -599,6 +601,7 @@ CREATE OR REPLACE PROCEDURE `dsx_rest_api_set`( IN  request JSON , OUT  result J
 BEGIN
 
     DECLARE temp_table_name varchar(128);
+    DECLARE previous_temp_table_name varchar(128);
     DECLARE use_table_name varchar(128);
     DECLARE subtype varchar(128);
     DECLARE use_template_columns LONGTEXT;
@@ -616,7 +619,17 @@ BEGIN
 
 
     call dsx_rest_api_set_checks(request);
+
+    SET previous_temp_table_name = @dsx_rest_api_set_temp_table_name;
+    IF previous_temp_table_name REGEXP '^temp_dsx_rest_data[0-9a-f]{32}$' THEN
+        SET sql_command = CONCAT('DROP TEMPORARY TABLE IF EXISTS `',previous_temp_table_name,'`');
+        PREPARE stmt FROM sql_command;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
+
     set temp_table_name = concat('temp_dsx_rest_data',replace(uuid(),'-',''));
+    SET @dsx_rest_api_set_temp_table_name = temp_table_name;
     -- derzeit unsicher, ob noch benötigt
     -- SET request = fixBackslashBug(request); 
 
