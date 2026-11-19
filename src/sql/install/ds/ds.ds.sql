@@ -141,6 +141,7 @@ INSERT IGNORE INTO `ds_addcommands` (`iconcls`,`label`,`location`,`position`,`ta
 INSERT IGNORE INTO `ds_addcommands` (`iconcls`,`label`,`location`,`position`,`table_name`,`xtype`) VALUES ('x-fa fa-plus','','toolbar','1','ds','cmp_setup_update_history_tables_command') ; 
 INSERT IGNORE INTO `ds_addcommands` (`label`,`location`,`position`,`table_name`,`xtype`) VALUES ('Kompiler','toolbar','1','ds','compiler_command') ; 
 INSERT IGNORE INTO `ds_addcommands` (`location`,`position`,`table_name`,`xtype`) VALUES ('toolbar','1','ds','ds_ftindex_command') ; 
+
 INSERT IGNORE INTO `ds_addcommands` (`iconcls`,`label`,`location`,`position`,`table_name`,`xtype`) VALUES ('x-fa fa-plus','','toolbar','1','ds','ds_refresh_information_schema_command') ; 
 INSERT IGNORE INTO `ds_addcommands` (`iconcls`,`label`,`location`,`position`,`table_name`,`xtype`) VALUES ('x-fa fa-plus','','toolbar','1','ds','ds_rmcache_command') ; 
 INSERT IGNORE INTO `ds_access` (`append`,`delete`,`read`,`role`,`table_name`,`write`) VALUES ('0','0','1','_default_','ds','0') ; 

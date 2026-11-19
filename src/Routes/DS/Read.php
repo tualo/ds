@@ -32,6 +32,7 @@ class Read extends DSBase
             $readInvoked = false;
             App::result('n', false);
             try {
+                self::assertTableScope(self::scope(), $tablename);
                 $db = App::get('session')->getDB();
                 $request = $_REQUEST;
                 if (!isset($request['request_options'])) {
@@ -71,6 +72,9 @@ class Read extends DSBase
                 // response is sent, other routes for this path must not answer again
                 return true;
             } catch (\Throwable $e) {
+                if ($e->getCode() == 15403) {
+                    http_response_code(403);
+                }
                 if (!$readInvoked || !class_exists(\Tualo\Office\DSX\ErrorLogger::class)) {
                     ErrorLogger::log($db, 'read', $tablename, $e);
                 }
@@ -94,6 +98,7 @@ class Read extends DSBase
             $db = null;
             ini_set('memory_limit', '8G');
             try {
+                self::assertTableScope(self::scope(), $tablename);
                 $db = App::get('session')->getDB();
                 $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
@@ -170,6 +175,7 @@ class Read extends DSBase
             $db = null;
             ini_set('memory_limit', '8G');
             try {
+                self::assertTableScope(self::scope(), $tablename);
                 $db = App::get('session')->getDB();
                 $db->tinyIntAsBoolean(true);
                 self::setRequestParameter();
@@ -193,6 +199,9 @@ class Read extends DSBase
             } catch (\Throwable $e) {
                 App::result('success', false);
                 App::result('code', $e->getCode());
+                if ($e->getCode() == 15403) {
+                    http_response_code(403);
+                }
                 ErrorLogger::log($db, 'read', $tablename, $e);
                 App::result('msg', $e->getMessage());
                 //App::result('dq', implode("\n",$GLOBALS['debug_query']));

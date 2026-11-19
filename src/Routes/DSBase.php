@@ -29,4 +29,22 @@ class DSBase extends \Tualo\Office\Basic\RouteWrapper
             }
         }
     }
+
+    /**
+     * Enforces table-level sub-scopes: a session scoped to e.g. "ds.read:ds"
+     * may only access the table "ds". Sessions whose scope has no sub-scopes
+     * (plain "ds.read") remain unrestricted.
+     *
+     * @throws Exception with code 15403 when the table is not covered
+     */
+    public static function assertTableScope(string $scope, string $tablename): void
+    {
+        $subScopes = Route::getUserSubScopes($scope);
+        if ($subScopes !== [] && !in_array($tablename, $subScopes, true)) {
+            throw new Exception(
+                'Access to table "' . $tablename . '" is not covered by scope "' . $scope . '"',
+                15403
+            );
+        }
+    }
 }
