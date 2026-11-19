@@ -528,15 +528,7 @@ Ext.define('Tualo.DS.panel.Controller', {
 
     saveSubStores: function () {
         var model = this.getViewModel();
-        try {
-            /*
-            model.get('subStores').each(function(item){
-                item.sync();
-            });
-            */
-        } catch (e) {
-            console.error(e);
-        }
+
     },
     filterField: function (field, id) {
         var me = this,
