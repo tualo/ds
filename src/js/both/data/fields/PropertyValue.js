@@ -4,11 +4,10 @@ Ext.define('Tualo.ds.data.field.PropertyValue', {
         'data.field.tualo_ds_property_value'
     ],
     calculate: function (data) {
-        console.log('tualo_ds_property_value',data);
-        v=data.value;
-        return v;
+        console.log('tualo_ds_property_value', data);
+        return data.value;
     },
-    critical:true,
+    critical: true,
     persist: true,
     depends: ['value'],
 });

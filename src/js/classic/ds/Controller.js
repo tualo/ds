@@ -529,8 +529,8 @@ Ext.define('Tualo.DS.panel.Controller', {
         let me = this,
             view = me.getView(),
             store = me.getStore(),
-            range = store.getRange()
-        model = me.getViewModel(),
+            range = store.getRange(),
+            model = me.getViewModel(),
             selModel = me.getView().getComponent('list').getSelectionModel(),
             record = selModel.getSelection()[0];
         if (Ext.isEmpty(record) && (range.length > 0)) {
@@ -828,12 +828,13 @@ Ext.define('Tualo.DS.panel.Controller', {
         var model = this.getViewModel(),
             useRecord = model.get('record'),
             fields = useRecord.getFields(),
+            newRecord = null,
             values = {};
 
 
 
 
-        for (i = 0; i < fields.length; i++) {
+        for (var i = 0; i < fields.length; i++) {
             console.log('cloneRecord', fields[i].name, model.get('record').get(fields[i].name));
             if (fields[i].name.indexOf('__') != 0)
                 values[fields[i].name] = model.get('record').get(fields[i].name);
