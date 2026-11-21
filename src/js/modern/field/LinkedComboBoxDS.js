@@ -1,7 +1,7 @@
 Ext.define('Tualo.cmp.cmp_ds.field.LinkedComboBoxDS', {
     extend: 'Ext.field.ComboBox',
     xtype: 'tualo_ds_linkedcomboboxfield',
-    value: 'To Do',
+    // value: 'To Do',
 
     triggers: {
         opends: {

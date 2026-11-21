@@ -1,3 +1,4 @@
+
 Ext.define('Tualo.DS.panel.Controller', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.dspanelcontroller',
@@ -5,6 +6,7 @@ Ext.define('Tualo.DS.panel.Controller', {
         util: 'Tualo.DS.panel.mixins.ControllerTools'
     },
     constructor: function (config) {
+        console.log('MODERN ######################', 'Controller constructor called');
         this.callParent([config]);
     },
     onBoxReady: function (x) {

@@ -847,6 +847,10 @@ Ext.define('Tualo.DS.panel.Controller', {
 
     },
 
+    onFormFieldChanged: function (field, newValue, oldValue) {
+        // console.log('Form field changed', field, newValue, oldValue);
+    },
+
 
     onProxyError: function (response) {
         let form = this.getView().getComponent('form'),
