@@ -52,8 +52,8 @@ class FileImport extends \Tualo\Office\Basic\RouteWrapper
                 */
                 $sftp_filematch = $server['filematch'];
 
-                if (class_exists("phpseclib3\\Net\\SFTP")) {
-                    $sftpClass = "phpseclib3\\Net\\SFTP";
+                if (class_exists("phpseclib4\\Net\\SFTP")) {
+                    $sftpClass = "phpseclib4\\Net\\SFTP";
                 } elseif (class_exists("phpseclib\\Net\\SFTP")) {
                     $sftpClass = "phpseclib\\Net\\SFTP";
                 } else {

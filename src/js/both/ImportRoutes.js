@@ -1,16 +1,16 @@
 Ext.Loader.setPath('Tualo.ds.lazy', './jsds');
 
-Ext.define('Tualo.routes.DSImport', {
+Ext.define('Tualo.routes.DSImportTable', {
     statics: {
-        load: async function() {
+        load: async function () {
             let list = [];
             return list;
         }
-    }, 
+    },
     url: 'dsimport/:table',
     handler: {
         action: function (tablename) {
-            Ext.getApplication().addView('Tualo.ds.lazy.ImportPanel',{
+            Ext.getApplication().addView('Tualo.ds.lazy.ImportPanel', {
                 tablename: tablename
             });
         },
@@ -23,20 +23,20 @@ Ext.define('Tualo.routes.DSImport', {
 
 Ext.define('Tualo.routes.DSImport', {
     statics: {
-        load: async function() {
+        load: async function () {
             let list = [];
             return list;
         }
-    }, 
+    },
     url: 'dsimport/:table/:cmpId',
     handler: {
-        action: function (tablename,cmpId) {
-            Ext.getApplication().addView('Tualo.ds.lazy.ImportPanel',{
+        action: function (tablename, cmpId) {
+            Ext.getApplication().addView('Tualo.ds.lazy.ImportPanel', {
                 tablename: tablename,
                 cmpId: cmpId
             });
         },
-        before: function (tablename,cmpId, action) {
+        before: function (tablename, cmpId, action) {
             action.resume();
         }
     }
