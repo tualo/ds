@@ -2,7 +2,7 @@ delimiter;
 
 
 LOCK TABLES `ds` WRITE;
-INSERT INTO `ds` (`table_name`, `title`, `reorderfield`, `use_history`, `searchfield`, `displayfield`, `sortfield`, `searchany`, `hint`, `overview_tpl`, `sync_table`, `writetable`, `globalsearch`, `listselectionmodel`, `sync_view`, `syncable`, `cssstyle`, `alternativeformxtype`, `read_table`, `class_name`, `special_add_panel`, `existsreal`, `character_set_name`, `read_filter`, `listxtypeprefix`, `phpexporter`, `phpexporterfilename`, `combined`, `default_pagesize`, `allowForm`, `listviewbaseclass`, `showactionbtn`, `modelbaseclass`) VALUES ('ds_listplugins','DS-Plugins','',0,'ptype','ptype','ptype',1,'','','','',0,'rowmodel','',0,'','','','Datenstamm','',1,'','','listview','XlsxWriter','',0,100,0,'Tualo.DataSets.ListView',1,'Tualo.DataSets.model.Basic')
+INSERT INTO `ds` (`table_name`, `title`, `reorderfield`, `use_history`, `searchfield`, `displayfield`, `sortfield`, `searchany`, `hint`, `overview_tpl`, `sync_table`, `writetable`, `globalsearch`, `listselectionmodel`, `sync_view`, `syncable`, `cssstyle`, `alternativeformxtype`, `read_table`, `class_name`, `special_add_panel`, `existsreal`, `character_set_name`, `read_filter`, `listxtypeprefix`, `phpexporter`, `phpexporterfilename`, `combined`, `default_pagesize`, `allowForm`, `listviewbaseclass`, `showactionbtn`, `modelbaseclass`) VALUES ('ds_listplugins','DS-Plugins','',0,'ptype','ptype','ptype',1,'','','','',0,'rowmodel','',0,'','','','Datenstamm','',1,'','','listview','XlsxWriter','',0,100,1,'Tualo.DataSets.ListView',1,'Tualo.DataSets.model.Basic')
 ON DUPLICATE KEY UPDATE
                     `title`=VALUES(`title`),
                     `reorderfield`=VALUES(`reorderfield`),
