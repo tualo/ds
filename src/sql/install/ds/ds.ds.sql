@@ -6,6 +6,13 @@ alter table ds add column if not exists form_on_double_click tinyint default 1;
 alter table ds add column if not exists icon varchar(255) default 'fa-solid fa-tags';
 alter table ds add column if not exists form_to_panel tinyint default 0;
 
+
+update ds_column set column_name = lower(column_name) ;
+update ds_column_list_label set column_name = lower(column_name) ;
+update ds_column_form_label set column_name = lower(column_name) ;
+
+
+
 alter table  ds_column drop column if exists use_autom_bank_account;
 call fill_ds_column('ds_column');
 call fill_ds_column('ds');

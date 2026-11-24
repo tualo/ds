@@ -505,7 +505,7 @@ BEGIN
 
         ifnull( group_concat( concat(
             doublequote(
-                if(comibedfieldname=1,concat('',JSON_VALUE(userequest,'$.tablename'),'__',ds_column.column_name,''),ds_column.column_name)
+                if(comibedfieldname=1,concat('',JSON_VALUE(userequest,'$.tablename'),'__',lower(ds_column.column_name),''),lower(ds_column.column_name))
             ),',',column_name
         ) separator ', '
         ),concat( '"_nofields_", 1'  )
@@ -522,7 +522,12 @@ BEGIN
         and existsreal=1
         and 
         if(JSON_EXTRACT(userequest,'$.returnfields') is not null,
-            JSON_SEARCH(JSON_EXTRACT(userequest,'$.returnfields'), 'one', column_name)!="NULL"  -- is not null
+            exists(
+                select 1
+                from json_table(JSON_EXTRACT(userequest,'$.returnfields'), '$[*]'
+                    columns(field_name varchar(128) path '$')) requested_fields
+                where lower(requested_fields.field_name) = lower(ds_column.column_name)
+            )
         ,true)
     ;
 

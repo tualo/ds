@@ -48,7 +48,7 @@ select
                 'dataIndex',
                 concat(
                     /*`ds_column`.`table_name`,'__',*/
-                    `ds_column`.`column_name`
+                    lower(`ds_column`.`column_name`)
                 ),
                 'groupable',
                 1 = 1,

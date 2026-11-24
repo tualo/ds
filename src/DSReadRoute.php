@@ -158,6 +158,7 @@ class DSReadRoute
             foreach ($o['data'] as $elem) {
                 $res_elem = [];
                 foreach ($elem as $k => $v) {
+                    $k = strtolower($k);
                     if (in_array($k, ['__table_name', '__id', '__displayfield'])) {
                         $res_elem[$k] = $v;
                     } else if ($request['comibedfieldname'] == 0) {
@@ -172,6 +173,8 @@ class DSReadRoute
                 $res[] = $res_elem;
             }
             $o['data'] = $res;
+        } else {
+            $o['data'] = array_map(fn($row) => array_change_key_case($row, CASE_LOWER), $o['data']);
         }
 
 

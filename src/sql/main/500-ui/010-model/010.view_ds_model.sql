@@ -30,7 +30,7 @@ create
 or replace view view_ds_model_ds_column as
 select
     table_name,
-    column_name,
+    lower(column_name) column_name,
     default_value,
     default_max_value,
     default_min_value,
@@ -61,7 +61,7 @@ from
 union
 select
     ds_virtual_columns.table_name,
-    ds_virtual_columns.column_name,
+    lower(ds_virtual_columns.column_name) column_name,
     '' default_value,
     '' default_max_value,
     '' default_min_value,

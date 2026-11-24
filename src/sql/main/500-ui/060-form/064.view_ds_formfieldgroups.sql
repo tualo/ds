@@ -69,14 +69,14 @@ select `ds_column_form_label`.`table_name`,
             `ds_column_form_label`.`label`,
             'name',
             concat(
-                `ds_column_form_label`.`column_name`
+                lower(`ds_column_form_label`.`column_name`)
             ),
             'bind',
             JSON_OBJECT(
                 "value",
                 concat(
                     '{record.',
-                    `ds_column_form_label`.`column_name`,
+                    lower(`ds_column_form_label`.`column_name`),
                     '}'
                 )
             ),
@@ -117,14 +117,14 @@ select `ds_column_form_label`.`table_name`,
                             `ds_column_form_label`.`label`,
                             'name',
                             concat(
-                                `ds_column_form_label`.`column_name`
+                                lower(`ds_column_form_label`.`column_name`)
                             ),
                             'bind',
                             JSON_OBJECT(
                                 "value",
                                 concat(
                                     '{record.',
-                                    `ds_column_form_label`.`column_name`,
+                                    lower(`ds_column_form_label`.`column_name`),
                                     '}'
                                 )
                             ),

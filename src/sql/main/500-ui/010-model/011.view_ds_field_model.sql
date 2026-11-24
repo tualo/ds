@@ -26,9 +26,9 @@ with name as (
         ) AS `filename`,
         
         table_name,
-        idfield,
+        lower(idfield) idfield,
         name shortname,
-        displayfield
+        lower(displayfield) displayfield
     from 
         ds_dropdownfields
 ),

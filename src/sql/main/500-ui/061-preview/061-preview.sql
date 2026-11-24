@@ -64,9 +64,9 @@ select
             
 
             'placeholder', `ds_preview_form_label`.`label`,
-            'name', concat(  `ds_preview_form_label`.`column_name`),
+            'name', lower(`ds_preview_form_label`.`column_name`),
             'bind', JSON_OBJECT( 
-                "value",concat('{record.', `ds_preview_form_label`.`column_name`,'}')
+                "value",concat('{record.', lower(`ds_preview_form_label`.`column_name`),'}')
             )
                 
         )

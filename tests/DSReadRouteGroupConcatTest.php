@@ -149,6 +149,7 @@ namespace {
                     '__id' => '1',
                     '__displayfield' => '1',
                     'task_id' => 'example-task',
+                    'allowForm' => 1,
                     'mail_addresses' => $this->groupConcatMaxLen === 1073741824 ? '' : '["sample@example.invalid"]',
                 ]];
             }
@@ -195,10 +196,12 @@ namespace {
     $db = new TestDatabase(2097152);
     $result = DSReadRoute::read($db, 'example', ['postprocessing' => 0]);
     check($result['data'][0]['mail_addresses'] === '["sample@example.invalid"]', 'The procedure session limit was not used for the data query');
+    check($result['data'][0]['allowform'] === 1 && !array_key_exists('allowForm', $result['data'][0]), 'Unprocessed read did not lowercase field names');
     check($result['total'] === 1 && $db->groupConcatMaxLen === PROCEDURE_LIMIT, 'The procedure session limit or total was changed');
 
     $db = new TestDatabase(4294967295);
-    DSReadRoute::read($db, 'example', []);
+    $result = DSReadRoute::read($db, 'example', ['shortfieldnames' => 0]);
+    check($result['data'][0]['example__allowform'] === 1, 'Combined read did not lowercase the field name');
     check($db->groupConcatMaxLen === PROCEDURE_LIMIT, 'The procedure did not replace the original session limit');
 
     foreach (['callFailure', 'resultsFailure'] as $property) {

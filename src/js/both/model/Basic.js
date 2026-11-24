@@ -15,6 +15,8 @@ Ext.define('Tualo.DataSets.model.Basic', {
     get: function (fieldName) {
         if (Ext.isEmpty(fieldName)) return null;
         if (this.data.hasOwnProperty(fieldName)) return this.data[fieldName];
+        if (typeof fieldName === 'string') fieldName = fieldName.toLowerCase();
+        if (this.data.hasOwnProperty(fieldName)) return this.data[fieldName];
         if (this.data.hasOwnProperty("__table_name") && this.data.hasOwnProperty(this.data["__table_name"] + "__" + fieldName)) return this.data[this.data["__table_name"] + "__" + fieldName];
         if (typeof fieldName != 'string') return fieldName + ' not a string';
         if (this.data.hasOwnProperty("__table_name") && this.data.hasOwnProperty(fieldName.replace(this.data["__table_name"] + "__", ''))) return this.data[fieldName.replace(this.data["__table_name"] + "__", '')];

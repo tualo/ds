@@ -1,5 +1,6 @@
 DELIMITER ;
 
+
 CREATE OR REPLACE VIEW  `view_readtable_ds` AS
 select 
     *

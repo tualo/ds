@@ -20,7 +20,7 @@ select
                 "title", ds.title,
                 "pagerText","",
                 "selectRecordRecordNumber",0,
-                "reorderfield",ds.reorderfield,
+                "reorderfield",lower(ds.reorderfield),
                 "disableNext",true,
                 "disablePrev",  true,
                 "isModified",false,

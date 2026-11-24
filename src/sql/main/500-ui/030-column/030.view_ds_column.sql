@@ -36,8 +36,8 @@ select
                         "reader", json_object(
                             "type", 'json',
                             "rootProperty", 'data',
-                            "idProperty", ds_dropdownfields.idfield,
-                            "clientIdProperty", ds_dropdownfields.idfield
+                            "idProperty", lower(ds_dropdownfields.idfield),
+                            "clientIdProperty", lower(ds_dropdownfields.idfield)
                         )
 
                     )
