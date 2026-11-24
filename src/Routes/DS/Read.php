@@ -48,7 +48,7 @@ class Read extends DSBase
                 $count = (int)$db->singleValue($sql, [], 'c');
                 if (!isset($request['fulltext'])) {
 
-                    if ($count > 0) {
+                    if ($count > 0 && !isset($request['query'])) {
                         $request['filter_by_search'] = 1;
                         $request['fulltext'] = 2;
 

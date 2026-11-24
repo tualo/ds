@@ -19,7 +19,9 @@ namespace Tualo\Office\Basic {
 }
 
 namespace Tualo\Office\DS\Routes {
-    class DSBase {}
+    class DSBase {
+        protected static function assertTableScope(string $scope, string $table): void {}
+    }
     class DefaultExpectedFields { public static array $Fields = []; }
 }
 
@@ -60,13 +62,23 @@ namespace {
     Read::register();
     $handler = Route::$handlers['/ds/(?P<tablename>\w+)/read'];
     foreach ([null, 0, 1, 2, '2'] as $mode) {
-        $_REQUEST = ['search' => 'needle'];
+        $_REQUEST = ['search' => 'needle words'];
         if ($mode !== null) $_REQUEST['fulltext'] = $mode;
         $handler(['tablename' => 'adressen']);
         $expected = $mode ?? 2;
         if (StreamResponse::$request['fulltext'] !== $expected) {
             throw new \RuntimeException('Fulltext mode was not passed to the reader');
         }
+    }
+    $_REQUEST = ['query' => 'needle'];
+    $handler(['tablename' => 'adressen']);
+    if (isset(StreamResponse::$request['fulltext'])) {
+        throw new \RuntimeException('A query must not automatically enable fulltext');
+    }
+    $_REQUEST = ['query' => 'needle', 'fulltext' => 2];
+    $handler(['tablename' => 'adressen']);
+    if (StreamResponse::$request['fulltext'] !== 2) {
+        throw new \RuntimeException('An explicit fulltext mode was not retained for query');
     }
     $db->fulltextCount = '0';
     $_REQUEST = ['search' => 'needle', 'fulltext' => 2];

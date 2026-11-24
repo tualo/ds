@@ -1,10 +1,15 @@
 delimiter ;
 
+alter table ds_dropdownfields add column if not exists additional_config json default '{}';
+update ds_dropdownfields set additional_config='{}' where additional_config is null;
+
 create or replace view view_ds_combobox as
 select 
     concat(  'Tualo/DataSets/combobox/',lower(ds_dropdownfields.table_name),'/',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  ,'.js') filename,
     concat(
         'Ext.define(',doublequote(concat('Tualo.DataSets.combobox.',lower(ds_dropdownfields.table_name),'.',UCASE(LEFT(ds_dropdownfields.name, 1)), lower(SUBSTRING(ds_dropdownfields.name, 2))  )),',',
+
+            JSON_MERGE( ifnull(ds_dropdownfields.additional_config,'{}'), 
             JSON_OBJECT(
                 "extend",  "Tualo.cmp.cmp_ds.field.ComboBoxDS",
                 -- "requires", JSON_MERGE('[]',concat('[',doublequote(concat('Tualo.DataSets.store.',UCASE(LEFT(ds_dropdownfields.table_name, 1)), lower(SUBSTRING(ds_dropdownfields.table_name, 2)))),']')) ,
@@ -41,7 +46,7 @@ select
                     )
                 ),
                 "alias", concat('widget.combobox_',`ds_dropdownfields`.`table_name`,'_',lower(ds_dropdownfields.name))
-            ),
+            )),
         ')',char(59)
     ) js,
     `ds_dropdownfields`.`table_name`,

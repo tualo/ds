@@ -20,6 +20,7 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
     },
 
     initViewModel: function (vm) {
+        vm.bind('{isNew}', this.onIsNewChanged, this);
         /*
         var me = this;
         me.callParent(arguments);
@@ -153,6 +154,8 @@ Ext.define('Tualo.cmp.cmp_ds.controller.DS', {
         if (Ext.isEmpty(extraParams)) { extraParams = {}; };
         if (view.referencedList === true) {
             if (!Ext.isEmpty(referencedRecord)) {
+                // solange der übergeordnete Datensatz neu/ungespeichert ist, nichts laden
+                if (referencedRecord.phantom === true) return false;
                 for (var ref in view.referenced) {
                     if (typeof view.referenced[ref] == 'string')
                         reference[ref] = referencedRecord.get(view.referenced[ref]);

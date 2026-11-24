@@ -11,6 +11,7 @@ Ext.define('Tualo.DS.panel.Controller', {
     onBoxReady: function (x) {
         this.initEvents();
         // window[this.getView().xtype]=this;
+        this.getViewModel().bind('{isNew}', this.onIsNewChanged, this);
         if (this.getView().referencedList === true) {
             if (!Ext.isEmpty(this.getReferencedRecord())) {
                 this.getReferencedView().getViewModel().bind('{record}', this.onReferencedRecordChange, this);
@@ -118,7 +119,48 @@ Ext.define('Tualo.DS.panel.Controller', {
         if (record) {
             if (Ext.getApplication().getDebug() === true) console.log('referenced record changed', this.$className, record);
             console.warn('onReferencedRecordChange', this.$className, record);
+            // neue, noch ungespeicherte Datensätze haben keine referenzierbaren Inhalte
+            if (record.phantom === true) return;
             this.getStore().load();
+        }
+    },
+    // deaktiviert alle referencedList-Tabs solange der Datensatz neu (isNew) ist
+    // und wechselt dabei auf den ersten Formular-Tab
+    onIsNewChanged: function (isNew) {
+        let me = this,
+            wasNew = me._wasNew === true,
+            form = me.getView().getComponent('form'),
+            tabpanel = null,
+            firstFormTab = null,
+            activeTab = null;
+
+        me._wasNew = (isNew === true);
+
+        if (Ext.isEmpty(form) || Ext.isEmpty(form.items)) return;
+        tabpanel = form.items.getAt(0);
+        if (Ext.isEmpty(tabpanel) || Ext.isEmpty(tabpanel.items)) return;
+        if (typeof tabpanel.setActiveTab !== 'function') return;
+
+        activeTab = tabpanel.getActiveTab();
+        tabpanel.items.each(function (tab) {
+            if (tab.referencedList === true) {
+                tab.setDisabled(isNew === true);
+                try {
+                    if (isNew === true) {
+                        tab.getStore().loadData([]);
+                    } else if (wasNew) {
+                        tab.getController().onDeferedStoreLoad();
+                    }
+                } catch (e) {
+                    console.error('onIsNewChanged', e);
+                }
+            } else if (firstFormTab === null) {
+                firstFormTab = tab;
+            }
+        });
+
+        if ((isNew === true) && (firstFormTab !== null) && (activeTab !== firstFormTab)) {
+            tabpanel.setActiveTab(firstFormTab);
         }
     },
     getReferencedView: function () {
@@ -282,7 +324,7 @@ Ext.define('Tualo.DS.panel.Controller', {
                 referencedRecord = this.getReferencedRecord();
             console.info('todo check parent status for', referencedRecord, me.getReferencedView(), me.getReferencedView().getViewModel());
             if (ref = me.getReferencedView()) {
-                if (referencedRecord) {
+                if (referencedRecord && (referencedRecord.phantom !== true)) {
                     ref.getController().refreshRecordFromRemote.bind(ref)(referencedRecord.get('__id'));
                 }
             }
@@ -589,6 +631,8 @@ Ext.define('Tualo.DS.panel.Controller', {
 
             console.warn('onBeforeStoreLoad', 'referencedRecord', referencedRecord)
             if ((typeof referencedRecord == 'undefined') || (referencedRecord == null)) return false;
+            // solange der übergeordnete Datensatz neu/ungespeichert ist, nichts laden
+            if (referencedRecord.phantom === true) return false;
 
             if (!Ext.isEmpty(referencedRecord)) {
                 for (var ref in view.referenced) {

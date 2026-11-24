@@ -289,7 +289,14 @@ BEGIN
     IF JSON_EXISTS( userequest, '$.filter'  ) = 0 THEN SET userequest = JSON_SET( userequest, '$.filter', JSON_ARRAY() ); END IF;
 
     IF JSON_VALUE(userequest,'$.query') IS NOT NULL THEN
-        SET userequest = JSON_SET( userequest, '$.search', concat('%',JSON_VALUE(userequest,'$.query'),'%') );
+        IF JSON_VALUE(userequest,'$.fulltext') IN (1, 2) THEN
+            SET userequest = JSON_SET( userequest, '$.search', concat('%',JSON_VALUE(userequest,'$.query'),'%') );
+        ELSE
+            SET userequest = JSON_SET( userequest, '$.search', concat(JSON_VALUE(userequest,'$.query'),if(searchany=1,'','%')) );
+        END IF;
+        IF JSON_VALUE(userequest,'$.fulltext') IS NULL THEN
+            SET userequest = JSON_SET( userequest, '$.fulltext', 0 );
+        END IF;
         SET userequest = JSON_SET( userequest, '$.filter_by_search', 1 );
         
     END IF;
