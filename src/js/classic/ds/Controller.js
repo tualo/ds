@@ -474,12 +474,18 @@ Ext.define('Tualo.DS.panel.Controller', {
                 );
 
                 f.loadRecord(record);
+                if (model.get('formOnDoubleClickFirstTab') == 1) {
+                    this.selectFirstFormTab(f);
+                }
             } else {
                 model.set('record', record);
                 if (!Ext.isEmpty(form)) {
                     form.loadRecord(record);
                 }
                 if (model.get('formOnDoubleClick') == true) {
+                    if (model.get('formOnDoubleClickFirstTab') == 1) {
+                        this.selectFirstFormTab(form);
+                    }
                     this.setViewType('form');
                 }
 
@@ -488,6 +494,18 @@ Ext.define('Tualo.DS.panel.Controller', {
         }
 
 
+    },
+    selectFirstFormTab: function (form) {
+        let tabpanel = form && form.items && form.items.getAt(0),
+            first = null;
+        if (!tabpanel || !tabpanel.items || typeof tabpanel.setActiveTab !== 'function') return;
+        tabpanel.items.each(function (tab) {
+            if (!tab.referencedList) {
+                first = tab;
+                return false;
+            }
+        });
+        if (first && tabpanel.getActiveTab() !== first) tabpanel.setActiveTab(first);
     },
     setViewType: function (view) {
         let v = this.getView().getComponent(view);

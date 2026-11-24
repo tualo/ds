@@ -2,6 +2,7 @@ delimiter ;
 
 alter table ds add column if not exists list_on_append tinyint default 0;
 alter table ds add column if not exists form_on_double_click tinyint default 1;
+alter table ds add column if not exists form_on_double_click_firsttab tinyint default 1;
 alter table ds add column if not exists icon varchar(255) default 'fa-solid fa-tags';
 alter table ds add column if not exists form_to_panel tinyint default 0;
 
@@ -31,6 +32,7 @@ select
                 "icon", ds.icon,
                 "listOnAppend", ds.list_on_append,
                 "formOnDoubleClick", ds.form_on_double_click,
+                "formOnDoubleClickFirstTab", ds.form_on_double_click_firsttab,
                 "formXType", if(ds.alternativeformxtype<>'', ds.alternativeformxtype, concat('widget.dsform_',ds.table_name)),
                 "table_name",ds.table_name,
                 "contextmenu", ifnull(view_ds_contextmenu.contextmenu, JSON_ARRAY())
