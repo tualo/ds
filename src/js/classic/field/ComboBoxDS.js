@@ -16,7 +16,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
     },
     */
     forceSelection: true,
-    showInvalidSelection: true,
+    showInvalidSelection: false,
 
     invalidSelectionCls: 'cmp-ds-combobox-invalid-selection',
     invalidSelectionText: 'Der Wert ist nicht in der Auswahlliste vorhanden.',
