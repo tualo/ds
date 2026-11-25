@@ -15,9 +15,42 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
         }
     },
     */
+    forceSelection: true,
+
+    invalidSelectionCls: 'cmp-ds-combobox-invalid-selection',
+    invalidSelectionText: 'Der Wert ist nicht in der Auswahlliste vorhanden.',
 
     config: {
         filterFields: null
+    },
+
+    getErrors: function (value) {
+        var me = this,
+            errors = me.callParent(arguments) || [],
+            invalid = me.hasInvalidForcedSelection();
+
+        if (invalid) {
+            errors.push(me.invalidSelectionText);
+        }
+        if (me.rendered) {
+            me.toggleCls(me.invalidSelectionCls, invalid);
+        }
+        return errors;
+    },
+
+    hasInvalidForcedSelection: function () {
+        var me = this,
+            store = me.getStore(),
+            value = me.getValue();
+
+        if (!me.forceSelection || Ext.isEmpty(value)) {
+            return false; // leeres Feld regelt allowBlank
+        }
+        if (!store || store.isLoading() || !store.isLoaded()) {
+            return false; // noch nicht entscheidbar
+        }
+        return !me.getSelection()
+            && store.findExact(me.valueField, value) === -1;
     },
 
     applyFilterFields: function (filterFields) {
@@ -47,7 +80,14 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
         this.callParent([config]);
         let store = this.getStore();
         store.on('beforeload', this.onBeforeLoad, this);
+        store.on('load', this.revalidateSelection, this);
         store.load();
+    },
+    revalidateSelection: function () {
+        // Nach dem (Nach-)Laden des Stores prüfen, ob der aktuelle Wert gültig ist
+        if (this.rendered && !this.destroyed) {
+            this.validate();
+        }
     },
     onBeforeLoad: function (store, operation, eOpts) {
         let me = this;

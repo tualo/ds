@@ -1,0 +1,7 @@
+// Hervorhebung, wenn forceSelection aktiv ist, aber kein gültiger Wert gewählt wurde
+.cmp-ds-combobox-invalid-selection {
+    .x-form-text {
+        background-color: #fdecea;
+        border-color: #cf4a35;
+    }
+}
