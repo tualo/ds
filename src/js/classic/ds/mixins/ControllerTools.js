@@ -162,10 +162,19 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                     this.setViewType('list');
                     let payload = [];
                     let fields = store.getModel().getFields();
+                    let remoteRecords = selection.filter(function (record) {
+                        if (record.phantom === true) {
+                            store.remove(record);
+                            return false;
+                        }
+                        return true;
+                    });
 
+                    if (remoteRecords.length === 0) {
+                        return;
+                    }
 
-
-                    selection.forEach(function (record) {
+                    remoteRecords.forEach(function (record) {
                         let o = {};
                         fields.forEach(function (field) {
                             if (field.critical) {
