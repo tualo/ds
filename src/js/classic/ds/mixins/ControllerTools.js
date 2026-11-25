@@ -197,6 +197,12 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                     const jsonData = await response.json();
 
                     if (jsonData.success) {
+                        let selectionModel = list.getSelectionModel();
+                        if (selectionModel.isCellModel) {
+                            selectionModel.setPosition(null);
+                        } else {
+                            selectionModel.deselect(remoteRecords);
+                        }
                         store.remove(remoteRecords, true);
                     } else {
                         let msg = jsonData.msg;
