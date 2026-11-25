@@ -16,6 +16,7 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
     },
     */
     forceSelection: true,
+    showInvalidSelection: true,
 
     invalidSelectionCls: 'cmp-ds-combobox-invalid-selection',
     invalidSelectionText: 'Der Wert ist nicht in der Auswahlliste vorhanden.',
@@ -42,6 +43,9 @@ Ext.define('Tualo.cmp.cmp_ds.field.ComboBoxDS', {
         var me = this,
             store = me.getStore(),
             value = me.getValue();
+        if (!me.showInvalidSelection) {
+            return false;
+        }
 
         if (!me.forceSelection || Ext.isEmpty(value)) {
             return false; // leeres Feld regelt allowBlank
