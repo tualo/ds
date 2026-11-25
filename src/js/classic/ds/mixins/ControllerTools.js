@@ -197,7 +197,7 @@ Ext.define('Tualo.DS.panel.mixins.ControllerTools', {
                     const jsonData = await response.json();
 
                     if (jsonData.success) {
-                        store.load();
+                        store.remove(remoteRecords, true);
                     } else {
                         let msg = jsonData.msg;
                         if (msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
