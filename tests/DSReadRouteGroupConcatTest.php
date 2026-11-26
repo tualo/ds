@@ -185,14 +185,6 @@ namespace {
         }
     }
 
-    $db = new TestDatabase();
-    $table = new DSTable($db, 'example');
-    $table->filter('task_id', '=', 'example-task')->limit(1)->read();
-    check(!$table->error(), 'A normal DSTable read failed');
-    check($table->getSingle()['mail_addresses'] === '["sample@example.invalid"]', 'DSTable returned a corrupted JSON aggregate');
-    check($db->groupConcatMaxLen === PROCEDURE_LIMIT, 'The read did not retain the stored procedure session setting');
-    check(str_starts_with($db->last_sql, 'select * from fixture'), 'The final data SQL was not retained');
-
     $db = new TestDatabase(2097152);
     $result = DSReadRoute::read($db, 'example', ['postprocessing' => 0]);
     check($result['data'][0]['mail_addresses'] === '["sample@example.invalid"]', 'The procedure session limit was not used for the data query');
@@ -227,14 +219,6 @@ namespace {
         check(str_contains($error->getMessage(), 'dsx_rest_api_get'), 'An unsuccessful procedure call was hidden');
     }
     check($db->groupConcatMaxLen === PROCEDURE_LIMIT, 'The procedure session setting changed after an unsuccessful call');
-
-    $db = new TestDatabase();
-    $db->aggregateTruncated = true;
-    ErrorLogger::$errors = [];
-    $table = new DSTable($db, 'example');
-    $table->read();
-    check($table->error() && str_contains($table->errorMessage(), 'group_concat_max_len'), 'Truncated aggregate data was returned as success');
-    check(count(ErrorLogger::$errors) === 1, 'Truncated aggregate data was not logged');
 
     $db = new TestDatabase();
     App::$session = new TestSession($db);

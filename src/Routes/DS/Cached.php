@@ -25,14 +25,19 @@ class Cached extends DSBase
     {
 
         Route::add('/.ds/cached', function () {
-            $db = App::get('session')->getDB();
-            $tables = []; //['zahlungsarten', 'zahlungsschluessel', 'rechnungsweg', 'kundenbetreuer', 'tualo_holding', 'mengeneinheiten', 'adressen_status', 'adressen_kundenklasse'];
             $result = [];
-            foreach ($tables as $table) {
-                $result[$table] = [
-                    'checksum'  => $db->singleValue('checksum table `' . $table . '`', [], 'checksum'),
-                    'data'      => DSTable::instance($table)->limit(1000000)->g()
-                ];
+            $db = App::get('session')->getDB();
+            try {
+                $data = $db->direct('SELECT table_name FROM ds WHERE cachable=1 LIMIT 1000000', []);
+                $tables = array_map(fn($row) => $row['table_name'], $data); //['zahlungsarten', 'zahlungsschluessel', 'rechnungsweg', 'kundenbetreuer', 'tualo_holding', 'mengeneinheiten', 'adressen_status', 'adressen_kundenklasse'];
+                foreach ($tables as $table) {
+                    $result[$table] = [
+                        'checksum'  => $db->singleValue('checksum table `' . $table . '`', [], 'checksum'),
+                        'data'      => DSTable::instance($table)->limit(1000000)->g()
+                    ];
+                }
+            } catch (\Throwable $error) {
+                App::logger('ds_cached')->error($error->getMessage(), []);
             }
             $script = "Ext.define('Tualo.ds.Cached', { singleton: true, cached: " . json_encode($result) . "})";
             App::body($script);

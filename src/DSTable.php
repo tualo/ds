@@ -232,14 +232,17 @@ class DSTable
     public function read(): DSTable
     {
         $request = array(
-            'start' => $this->start,
-            'shortfieldnames' => 1,
-            'limit' => $this->limit,
+            'tablename' => $this->tablename,
+            'start' => max(0, $this->start),
+            'comibedfieldname' => 0,
+            'limit' => max(1, $this->limit),
             'filter' => $this->filter,
             'sort' => $this->sorter
         );
+        $readInvoked = false;
         try {
-            $read = DSReadRoute::read($this->db, $this->tablename, $request);
+            $read = DSXRead::read($this->db, $request, $readInvoked);
+            $readInvoked = false;
             $this->isQueried = true;
             if (count($read['data']) == 0) {
                 $this->isEmpty = true;
@@ -248,7 +251,12 @@ class DSTable
             }
             $this->data = $read['data'];
         } catch (\Throwable $e) {
-            $this->logError('read', $e);
+            if ($readInvoked) {
+                $this->hasError = true;
+                $this->errorMessage = $e->getMessage();
+            } else {
+                $this->logError('read', $e);
+            }
         }
         return $this;
     }

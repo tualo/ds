@@ -30,6 +30,7 @@ namespace Tualo\Office\Basic {
         }
 
         public static function contenttype(string $contenttype): void {}
+        public static function deferredTrigger(): void {}
     }
 
     class Route
@@ -37,11 +38,17 @@ namespace Tualo\Office\Basic {
         public static array $handlers = [];
         public static bool $finished = false;
 
+        public static function canAccessByScope(string $scope): bool { return true; }
+
         public static function add(string $path, callable $handler, array $methods, bool $authenticated, array $fields = [], string $scope = ''): void
         {
             self::$handlers[$path] = $handler;
         }
     }
+}
+
+namespace Tualo\Office\Basic\MYSQL {
+    class Database {}
 }
 
 namespace Tualo\Office\DS {
@@ -60,6 +67,8 @@ namespace Tualo\Office\DS\Routes {
     class DSBase
     {
         public static function setRequestParameter(): void {}
+        public static function assertTableScope(string $scope, string $tablename): void {}
+        public static function sanitizeInput(string $input): string { return $input; }
     }
 
     class DefaultExpectedFields
@@ -103,6 +112,24 @@ namespace Tualo\Office\DSX\Write {
 namespace Tualo\Office\DSX\Read {
     use Tualo\Office\DSX\ErrorLogger;
 
+    class RestApiGet
+    {
+        public static ?\Throwable $failure = null;
+        public static array $request = [];
+
+        public function __construct(private \Tualo\Office\Basic\MYSQL\Database $db) {}
+
+        public function execute(array $request): array
+        {
+            self::$request = $request;
+            if (self::$failure !== null) {
+                ErrorLogger::log($this->db, 'read', $request['tablename'], self::$failure);
+                throw self::$failure;
+            }
+            return ['data' => [['id' => 1]], 'total' => 1];
+        }
+    }
+
     class StreamResponse
     {
         public static ?\Throwable $failure = null;
@@ -124,19 +151,23 @@ namespace {
     use Tualo\Office\DS\DSReadRoute;
     use Tualo\Office\DS\DSTable;
     use Tualo\Office\DS\Routes\DS\Read;
+    use Tualo\Office\DS\Routes\DS\Direct;
     use Tualo\Office\DSX\ErrorLogger;
     use Tualo\Office\DSX\Read\StreamResponse;
+    use Tualo\Office\DSX\Read\RestApiGet;
 
     require_once dirname(__DIR__) . '/src/ErrorLogger.php';
+    require_once dirname(__DIR__) . '/src/DSXRead.php';
     require_once dirname(__DIR__) . '/src/DSTable.php';
     require_once dirname(__DIR__) . '/src/Routes/DS/Read.php';
+    require_once dirname(__DIR__) . '/src/Routes/DS/Direct.php';
 
     function check(bool $condition, string $message): void
     {
         if (!$condition) throw new \RuntimeException($message);
     }
 
-    class TestDatabase
+    class TestDatabase extends \Tualo\Office\Basic\MYSQL\Database
     {
         public string $last_sql = '';
         public ?\Throwable $setupFailure = null;
@@ -152,9 +183,15 @@ namespace {
         {
             return $value;
         }
+
+        public function singleValue(string $sql, array $parameters = [], string $key = ''): int
+        {
+            return 0;
+        }
     }
 
     $db = new TestDatabase();
+    RestApiGet::$failure = new \RuntimeException('dstable read failed', 11);
     $table = new DSTable($db, 'example');
     $table->read();
     check($table->error() && $table->errorMessage() === 'dstable read failed', 'DSTable read error state changed');
@@ -162,12 +199,40 @@ namespace {
     check(ErrorLogger::$records[0]['tablename'] === 'example' && ErrorLogger::$records[0]['error']->getCode() === 11, 'DSTable read context is incorrect');
 
     ErrorLogger::$records = [];
-    DSReadRoute::$failure = new \Error('dstable read type error');
+    RestApiGet::$failure = new \Error('dstable read type error');
     $table = new DSTable($db, 'example');
     $table->read();
     check($table->error() && $table->errorMessage() === 'dstable read type error', 'DSTable did not handle a read error');
-    check(count(ErrorLogger::$records) === 1 && ErrorLogger::$records[0]['error'] === DSReadRoute::$failure, 'DSTable did not log the read error');
-    DSReadRoute::$failure = null;
+    check(count(ErrorLogger::$records) === 1 && ErrorLogger::$records[0]['error'] === RestApiGet::$failure, 'DSTable did not log the read error');
+    RestApiGet::$failure = null;
+
+    $table = new DSTable($db, 'example');
+    $table->filter('id', 'eq', 1)->sort('id', 'DESC')->start(2)->limit(3)->read();
+    check(!$table->error() && $table->getSingle()['id'] === 1, 'DSTable did not return DSX rows');
+    check(RestApiGet::$request['tablename'] === 'example' && RestApiGet::$request['start'] === 2 && RestApiGet::$request['limit'] === 3, 'DSTable did not pass pagination');
+    check(RestApiGet::$request['filter'][0]['value'] === 1 && RestApiGet::$request['sort'][0]['direction'] === 'DESC', 'DSTable did not pass filters and sorting');
+
+    $dispatch = new \ReflectionMethod(Direct::class, 'dispatch');
+    $call = ['action' => 'TualoDS', 'method' => 'read', 'tid' => 7, 'data' => ['example', [
+        'start' => 5, 'limit' => 3, 'shortfieldnames' => 1,
+        'fields' => '["id"]', 'filter' => [['property' => 'id', 'operator' => 'eq', 'value' => 1]],
+    ]]];
+    $event = $dispatch->invoke(null, $db, $call);
+    check($event['type'] === 'rpc' && $event['tid'] === 7 && $event['result'] === ['success' => true, 'data' => [['id' => 1]], 'total' => 1], 'Direct read response changed');
+    check(RestApiGet::$request['start'] === 5 && RestApiGet::$request['limit'] === 3 && RestApiGet::$request['filter'][0]['value'] === 1, 'Direct did not pass read options');
+    check(RestApiGet::$request['count'] === 0 && RestApiGet::$request['nodata'] === 0 && RestApiGet::$request['tablename'] === 'example', 'Direct did not normalize its DSX request');
+
+    ErrorLogger::$records = [];
+    RestApiGet::$failure = new \RuntimeException('direct read failed');
+    $event = $dispatch->invoke(null, $db, $call);
+    check($event['type'] === 'exception' && $event['result']['success'] === false, 'Direct read error was not returned');
+    check(count(ErrorLogger::$records) === 1 && ErrorLogger::$records[0]['error'] === RestApiGet::$failure, 'Direct read error was not logged exactly once');
+    ErrorLogger::$records = [];
+    $call['method'] = 'readSingle';
+    $call['data'][1] = '1';
+    $event = $dispatch->invoke(null, $db, $call);
+    check($event['type'] === 'exception' && count(ErrorLogger::$records) === 1, 'Direct single-read error was not logged exactly once');
+    RestApiGet::$failure = null;
 
     ErrorLogger::$records = [];
     $table = new DSTable($db, 'example');
@@ -219,12 +284,12 @@ namespace {
     $db = new TestDatabase();
     App::$session = new TestSession($db);
     App::$testResult = ['success' => true];
-    DSReadRoute::$failure = new \Error('single read failed');
+    RestApiGet::$failure = new \Error('single read failed');
     $singleHandler = Route::$handlers['/ds/(?P<tablename>\w+)/read/(?P<id>.+)'];
     $singleHandler(['tablename' => 'example', 'id' => '1']);
     check(App::$testResult['success'] === false && App::$testResult['msg'] === 'single read failed', 'Single read failure was not returned');
-    check(count(ErrorLogger::$records) === 1 && ErrorLogger::$records[0]['error'] === DSReadRoute::$failure, 'Single read failure was not logged exactly once');
-    DSReadRoute::$failure = null;
+    check(count(ErrorLogger::$records) === 1 && ErrorLogger::$records[0]['error'] === RestApiGet::$failure, 'Single read failure was not logged exactly once');
+    RestApiGet::$failure = null;
 
     echo "DSTable and read route logging tests passed\n";
 }

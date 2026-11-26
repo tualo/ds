@@ -5,7 +5,7 @@ namespace Tualo\Office\DS\Routes\DS;
 use Exception;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\Basic\Route;
-use Tualo\Office\DS\DSReadRoute;
+use Tualo\Office\DS\DSXRead;
 use Tualo\Office\DS\DSTable;
 use Tualo\Office\DS\ErrorLogger;
 use Tualo\Office\DS\Routes\DSBase;
@@ -149,6 +149,7 @@ class Direct extends DSBase
         $data = isset($call['data']) && is_array($call['data']) ? $call['data'] : [];
         $tablename = isset($data[0]) && is_string($data[0]) ? $data[0] : '';
         $payload = $data[1] ?? [];
+        $readLogged = false;
         try {
             if ($tablename === '' || !preg_match('/^[a-zA-Z0-9_]+$/', $tablename)) {
                 throw new Exception('invalid tablename');
@@ -157,8 +158,8 @@ class Direct extends DSBase
                 throw new Exception('forbidden', 15403);
             }
             $result = match ($method) {
-                'read' => self::read($db, $tablename, is_array($payload) ? $payload : []),
-                'readSingle' => self::readSingle($db, $tablename, $payload),
+                'read' => self::read($db, $tablename, is_array($payload) ? $payload : [], $readLogged),
+                'readSingle' => self::readSingle($db, $tablename, $payload, $readLogged),
                 'create' => self::create($db, $tablename, $payload),
                 'update' => self::update($db, $tablename, $payload),
                 'destroy' => self::destroy($db, $tablename, $payload),
@@ -177,7 +178,7 @@ class Direct extends DSBase
                 'update' => 'update',
                 'destroy' => 'delete',
             };
-            ErrorLogger::log($db, $op, $tablename, $e);
+            if (!$readLogged) ErrorLogger::log($db, $op, $tablename, $e);
             $event = self::exceptionEvent($call, $e->getMessage());
             $event['result'] = ['success' => false, 'msg' => $e->getMessage(), 'code' => $e->getCode()];
             return $event;
@@ -199,7 +200,7 @@ class Direct extends DSBase
         }
     }
 
-    private static function read($db, string $tablename, array $input): array
+    private static function read($db, string $tablename, array $input, bool &$readLogged): array
     {
         $db->tinyIntAsBoolean(true);
         self::applyRequestParameter($db, $input);
@@ -222,16 +223,47 @@ class Direct extends DSBase
             $input['search'] = self::sanitizeInput($input['search']);
         }
 
-        $read = DSReadRoute::read($db, $tablename, $input);
-        return ['success' => true, 'data' => $read['data'], 'total' => $read['total']];
+        $input['tablename'] = $tablename;
+        $input['limit'] = max(1, (int)($input['limit'] ?? 10));
+        $input['page'] = max(1, (int)($input['page'] ?? 1));
+        if (isset($input['start'])) $input['start'] = max(0, (int)$input['start']);
+        $input['comibedfieldname'] = ($input['postprocessing'] ?? 1) == 0
+            ? 0
+            : ((isset($input['shortfieldnames']) && $input['shortfieldnames'] != 1) ? 1 : 0);
+        $input['nodata'] = 0;
+        $input['count'] = 0;
+        unset($input['returnfields']);
+        $fields = isset($input['fields']) && is_string($input['fields'])
+            ? json_decode($input['fields'], true)
+            : null;
+        if (!is_array($fields) || count($fields) === 0) unset($input['fields']);
+        $read = DSXRead::read($db, $input, $readLogged);
+        $readLogged = false;
+        if (is_array($fields) && count($fields) > 0) {
+            $selected = [];
+            foreach ($fields as $field) {
+                if (!is_string($field)) continue;
+                $field = strtolower($field);
+                $selected[] = $input['comibedfieldname'] && !str_starts_with($field, '__')
+                    ? $tablename . '__' . $field
+                    : $field;
+            }
+            $selectedKeys = array_flip($selected);
+            $read['data'] = array_map(
+                fn(array $row): array => array_intersect_key($row, $selectedKeys),
+                $read['data']
+            );
+        }
+        return ['success' => true, 'data' => $read['data'], 'total' => count($read['data'])];
     }
 
-    private static function readSingle($db, string $tablename, $id): array
+    private static function readSingle($db, string $tablename, $id, bool &$readLogged): array
     {
         $db->tinyIntAsBoolean(true);
         $table = new DSTable($db, $tablename);
         $read = $table->f('__id', 'eq', $id)->get();
         if ($table->error()) {
+            $readLogged = true;
             throw new Exception($table->errorMessage());
         }
         return ['success' => true, 'data' => $read];

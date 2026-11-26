@@ -70,6 +70,7 @@ namespace {
         require_once $bsc . '/' . $file;
     }
     require_once dirname(__DIR__) . '/src/DSReadRoute.php';
+    require_once dirname(__DIR__) . '/src/DSXRead.php';
     require_once dirname(__DIR__) . '/src/DSTable.php';
     foreach (['SqlQuoter', 'AccessControl', 'TableDefinition', 'FilterBuilder', 'SortBuilder', 'RestApiGet'] as $class) {
         require_once $dsx . '/Read/' . $class . '.php';
@@ -159,10 +160,10 @@ namespace {
 
         $db->direct('SET SESSION group_concat_max_len = 1048576');
         $table = new DSTable($db, 'fixture_view');
-        $table->read();
+        $table->filter('task_id', 'eq', 'small')->read();
         check(!$table->error(), 'DSTable failed: ' . $table->errorMessage());
         check($table->getSingle()['mail_addresses'] === '["sample@example.invalid"]', 'The small JSON aggregate changed');
-        check(sessionLimit($db) === $procedureLimit, 'The read did not retain the procedure session limit');
+        check(sessionLimit($db) === $procedureLimit, 'The DSX read did not preserve the procedure session limit');
 
         foreach (['call-failure', 'result-failure'] as $scenario) {
             try {

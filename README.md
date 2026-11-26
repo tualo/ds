@@ -4,7 +4,7 @@ Datenstämme, Verwalten von Tabellen und Zugriffsrechten
 
 ## DSX-Abhaengigkeit
 
-Die PHP-Lese- und Schreibwege benoetigen `tualo/dsx` ab Version 1.0.5. Bei Anwendungen
+Die PHP-Lese- und Schreibwege benoetigen `tualo/dsx` ab Version 1.0.22. Bei Anwendungen
 mit `composer.lock` muss die Abhaengigkeit im Lockfile aktualisiert und
 anschliessend installiert werden; `composer dump-autoload` allein aktualisiert
 das Paket nicht. Falls der gemeinsame Logger wegen einer veralteten
@@ -46,11 +46,16 @@ Die Fehlerprotokollierung laesst sich ohne Datenbank mit
 
 ## MariaDB und group_concat_max_len
 
-Die Prozedur `dsx_rest_api_get` setzt `group_concat_max_len` auf `173741824`.
-Dieser Wert gilt fuer die anschliessende Datenabfrage von `DSTable` und
-`DSReadRoute` und bleibt wie bisher auf der Verbindung bestehen. PHP stellt
-keinen vorherigen Wert wieder her. Der Export setzt vor dem Prozeduraufruf
-keinen zusaetzlichen Maximalwert.
+Die Prozedur `dsx_rest_api_get` setzt `group_concat_max_len` auf `173741820`.
+`DSTable` und der Direct-Router verwenden den DSX-PHP-Reader statt der
+Prozedur und setzen denselben Wert vor dem Lesen. Der Wert bleibt wie bisher
+auf der Verbindung bestehen; PHP stellt keinen vorherigen Wert wieder her.
+Der Export verwendet weiterhin `DSReadRoute` und die Prozedur.
+
+Der Reader liest Datenbankzeilen bei Unterstuetzung durch die Verbindung
+ungepuffert, sammelt sie fuer `DSTable` und Direct aber weiterhin als Arrays. Dadurch bleiben deren Schnittstellen
+erhalten; grosse Ergebnisse belegen weiterhin entsprechend viel PHP-Speicher.
+Es gilt die DSX-Feldabbildung anhand der konfigurierten `ds_column`-Spalten.
 
 In der untersuchten MariaDB-11.8.9-Umgebung trat das Problem mit leeren
 `JSON_ARRAYAGG`-View-Ergebnissen beim Erreichen bzw. Ueberschreiten des

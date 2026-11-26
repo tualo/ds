@@ -77,6 +77,7 @@ namespace Tualo\Office\DS\Routes {
     class DSBase
     {
         public static function setRequestParameter(): void {}
+        public static function assertTableScope(string $scope, string $tablename): void {}
     }
 
     class DefaultExpectedFields
@@ -114,6 +115,7 @@ namespace {
     use Tualo\Office\DS\Routes\DS\Read;
 
     require_once dirname(__DIR__) . '/src/ErrorLogger.php';
+    require_once dirname(__DIR__) . '/src/DSXRead.php';
     require_once dirname(__DIR__) . '/src/DSTable.php';
     require_once dirname(__DIR__) . '/src/Routes/DS/Read.php';
 
@@ -137,6 +139,11 @@ namespace {
         {
             return $value;
         }
+
+        public function singleValue(string $sql, array $parameters = [], string $key = ''): int
+        {
+            return 0;
+        }
     }
 
     check(!class_exists(\Tualo\Office\DSX\ErrorLogger::class), 'The DSX logger must be absent in this test');
@@ -155,8 +162,8 @@ namespace {
     App::$testLogger = new TestLogger();
     $table = new DSTable($db, 'example');
     $table->read();
-    check($table->error() && $table->errorMessage() === 'legacy read failed', 'Legacy read failure was not preserved');
-    check(count(App::$testLogger->records) === 1 && App::$testLogger->records[0]['context']['operation'] === 'read', 'Legacy read failure was not logged');
+    check($table->error() && str_contains($table->errorMessage(), 'RestApiGet'), 'Missing DSX reader was not reported');
+    check(count(App::$testLogger->records) === 1 && App::$testLogger->records[0]['context']['operation'] === 'read', 'Missing DSX reader was not logged');
 
     App::$testLogger = new TestLogger();
     App::$session = new TestSession($db);
@@ -177,7 +184,7 @@ namespace {
         App::$testLogger->fail = true;
         $table = new DSTable($db, 'example');
         $table->read();
-        check($table->error() && $table->errorMessage() === 'legacy read failed', 'A failed log sink masked the read error');
+        check($table->error() && str_contains($table->errorMessage(), 'RestApiGet'), 'A failed log sink masked the read error');
         $fallback = file_get_contents($logFile);
         check(is_string($fallback) && str_contains($fallback, 'log sink unavailable') && str_contains($fallback, 'Version 1.0.5'), 'Fallback failure was not surfaced');
     } finally {

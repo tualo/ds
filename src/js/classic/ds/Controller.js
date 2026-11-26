@@ -739,8 +739,21 @@ Ext.define('Tualo.DS.panel.Controller', {
                     if (Ext.getApplication().getDebug() === true) console.error('save failure', arguments);
                     console.error('save failure', arguments);
 
-                    let response = batch.operations[0]._response;
-                    if (response.responseJson) {
+                    try {
+                        let response = batch.operations[0]._response;
+                        if (response.responseJson) {
+                            let msg = response.responseJson.msg;
+                            if (!msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
+                            Ext.toast({
+                                html: msg,
+                                title: 'Fehler',
+                                width: 200,
+                                align: 't'
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error processing failure response', e);
+                    } finally {
                         let msg = response.responseJson.msg;
                         if (!msg) msg = "Leider ist ein unbekannter Fehler aufgetreten.";
                         Ext.toast({
@@ -750,10 +763,9 @@ Ext.define('Tualo.DS.panel.Controller', {
                             align: 't'
                         });
                     }
-
-
                     model.set('saving', false);
                 },
+
                 success: function (c, o) {
                     if (Ext.getApplication().getDebug() === true) console.log('save success', arguments);
                     if (o && o.operations && o.operations.create) {

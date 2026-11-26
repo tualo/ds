@@ -7,6 +7,8 @@ alter table ds add column if not exists icon varchar(255) default 'fa-solid fa-t
 alter table ds add column if not exists form_to_panel tinyint default 0;
 alter table ds add column if not exists form_on_double_click_firsttab tinyint default 1;
 
+alter table ds add column if not exists cachable tinyint default 0;
+
 
 update ds_column set column_name = lower(column_name) ;
 update ds_column_list_label set column_name = lower(column_name) ;
